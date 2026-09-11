@@ -75,11 +75,18 @@ class Phoneme:
     contour: Contour
     dur: Dur
     cls: SoundClass = SoundClass.TONE
+    freq_hz: float = 0.0   # optional exact-center override (0 = use band center).
+                           # Used for sub-band texture pulses like the hum, which
+                           # sit below the LOW tonal band.
 
     @property
     def features(self) -> Tuple[str, str, str, str]:
         """The invariant tuple a decoder recovers. This IS the phoneme's identity."""
         return (self.band.value, self.contour.value, self.dur.value, self.cls.value)
+
+    @property
+    def center(self) -> float:
+        return self.freq_hz if self.freq_hz else BAND_CENTER[self.band]
 
     # -- rendering -----------------------------------------------------------
     def _contour_points(self):
@@ -110,9 +117,13 @@ class Phoneme:
         if self.cls == SoundClass.TONE:
             return gen.tonal(gen.Gesture(pts, dur, env, vib))
         if self.cls == SoundClass.GARGLE:
-            return gen.gargle(dur=dur, center=BAND_CENTER[self.band])
+            # low hum pulses want a gentler, slower flutter than the sharp default
+            # gargle, so they read as humming rather than a buzzy roll.
+            if self.center < 400:
+                return gen.gargle(dur=dur, center=self.center, tremolo_hz=22, depth=0.5)
+            return gen.gargle(dur=dur, center=self.center)
         if self.cls == SoundClass.RASP:
-            return gen.raspberry(dur=dur, center=max(250, BAND_CENTER[self.band] // 3))
+            return gen.raspberry(dur=dur, center=max(250, self.center / 3))
         raise ValueError(self.cls)
 
 
@@ -120,8 +131,8 @@ class Phoneme:
 # The working inventory (~16 separable primitives).
 # Named with short mnemonic codes: <band><contour-initial><s/l>[+class]
 # ---------------------------------------------------------------------------
-def _p(name, band, contour, dur, cls=SoundClass.TONE):
-    return Phoneme(name, band, contour, dur, cls)
+def _p(name, band, contour, dur, cls=SoundClass.TONE, freq_hz=0.0):
+    return Phoneme(name, band, contour, dur, cls, freq_hz)
 
 
 INVENTORY = [
@@ -146,7 +157,17 @@ INVENTORY = [
     _p("Rz",  Band.LOW,  Contour.FALL, Dur.SHORT, SoundClass.RASP),
 ]
 
-BY_NAME = {p.name: p for p in INVENTORY}
+# Texture sub-units used INSIDE morphemes (e.g. the hum), not part of the
+# decodable phoneme alphabet — so they don't need unique feature tuples. They
+# are distinguished only by exact pitch, which the hum uses as flavour.
+SUBUNITS = [
+    # Two LOW hum pulses for "muttering to itself" — both low so it reads as
+    # HMM-hmmm, not beep-boop. Exact centers overridden below the tonal bands.
+    _p("Hum1", Band.LOW, Contour.FLAT, Dur.SHORT, SoundClass.GARGLE, freq_hz=300),  # higher hmm
+    _p("Hum0", Band.LOW, Contour.FLAT, Dur.SHORT, SoundClass.GARGLE, freq_hz=190),  # lower hmmm
+]
+
+BY_NAME = {p.name: p for p in INVENTORY + SUBUNITS}
 
 
 def render_inventory_montage():

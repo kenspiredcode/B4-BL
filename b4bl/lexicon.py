@@ -24,7 +24,42 @@ group meaning, and where the protocol layer will later insert structure.
 """
 
 from __future__ import annotations
-from typing import Dict, List
+from dataclasses import dataclass
+from typing import Dict, List, Union
+
+
+@dataclass(frozen=True)
+class Rep:
+    """A repeated phoneme group — repetition is a LEXICAL axis of meaning.
+
+    unit  : phoneme names rendered as one pulse.
+    count : how many pulses (fixed; part of identity, prosody must not change it).
+    rate  : pulses per second (the rhythm — slow pulses read very differently from
+            fast ones, e.g. slow gargle = 'calculating', fast rising whistle = 'alarm').
+
+    Reserving repetition COUNTS as lexical (and forbidding prosody from adding or
+    removing repeats) is what keeps 'ALARM' distinct from 'an urgently-repeated
+    single whistle'. See prosody.py.
+    """
+    unit: tuple
+    count: int
+    rate: float = 3.0
+    alternate: bool = False   # if True, each pulse uses ONE cycling member of unit
+                              # (tick/tock), instead of playing the whole unit together
+
+    def flatten(self) -> List[str]:
+        """Phoneme-name view for unambiguity checks / decoding."""
+        out = []
+        for k in range(self.count):
+            if self.alternate:
+                out.append(self.unit[k % len(self.unit)])
+            else:
+                out.extend(self.unit)
+        return out
+
+
+# A morpheme body is either a flat list of phoneme names, or a Rep group.
+MorphemeBody = Union[List[str], Rep]
 
 # concept -> phoneme-name sequence. Kept short for common concepts.
 # (phoneme names are defined in phonology.INVENTORY)
@@ -56,22 +91,37 @@ MORPHEMES: Dict[str, List[str]] = {
     "LOW":      ["Lr", "Ld"],
     "HIGH":     ["Hr", "Hd"],
     "OBSTACLE": ["Rz", "Mfl"],      # rasp = something bad
-    "URGENT":   ["Hr", "Hr", "Hr"],
     # directions
     "BACK":     ["Ld", "Lf"],
     "NEAR":     ["Mf", "Mf"],
+    # --- repetition-axis morphemes (identity includes count + rhythm) ---
+    # ALARM: 3 fast high-rising whistles — the classic R2 distress signature.
+    "ALARM":    Rep(unit=("Hr",), count=3, rate=6.0),
+    # CALCULATING/BUSY: slow up/down GARGLE hum — muttering to itself while
+    # thinking. Gargle (texture), not tones, so it reads as process-noise/humming
+    # rather than as saying words. Alternates high hum / low hum.
+    "CALCULATING": Rep(unit=("Hum1", "Hum0"), count=6, rate=3.0, alternate=True),
 }
 
-# reverse map for decoding: tuple(phoneme names) -> concept
-_BY_SEQ = {tuple(v): k for k, v in MORPHEMES.items()}
+# reverse map for decoding: tuple(flattened phoneme names) -> concept
+def _body_seq(body: MorphemeBody):
+    return tuple(body.flatten()) if isinstance(body, Rep) else tuple(body)
+
+
+_BY_SEQ = {_body_seq(v): k for k, v in MORPHEMES.items()}
 
 
 def is_known(concept: str) -> bool:
     return concept in MORPHEMES
 
 
+def morpheme_body(concept: str) -> MorphemeBody:
+    return MORPHEMES[concept]
+
+
 def concept_to_phonemes(concept: str) -> List[str]:
-    return list(MORPHEMES[concept])
+    """Flat phoneme-name view (repetition expanded). Used for unambiguity/decoding."""
+    return list(_body_seq(MORPHEMES[concept]))
 
 
 def phonemes_to_concept(seq):

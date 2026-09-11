@@ -45,7 +45,19 @@ def main():
         variants.append(codec._silence(0.4))
     gen.write_wav(os.path.join(OUT, "prosody_compare.wav"), np.concatenate(variants))
 
-    print("rendered inventory, sentences, and prosody comparison into audio_samples/")
+    # 4. repetition-axis morphemes
+    gen.write_wav(os.path.join(OUT, "alarm.wav"), codec.encode(["ALARM"], prosody.URGENT))
+    gen.write_wav(os.path.join(OUT, "calculating.wav"),
+                  codec.encode(["CALCULATING"], prosody.NEUTRAL))
+    # a little scene: "thinking... then alarm: obstacle ahead!"
+    scene = np.concatenate([
+        codec.encode(["CALCULATING"], prosody.CALM),
+        codec._silence(0.35),
+        codec.encode(["ALARM", "OBSTACLE", "FRONT"], prosody.URGENT),
+    ])
+    gen.write_wav(os.path.join(OUT, "scene_think_then_alarm.wav"), scene)
+
+    print("rendered inventory, sentences, prosody, and repetition morphemes into audio_samples/")
 
 
 if __name__ == "__main__":

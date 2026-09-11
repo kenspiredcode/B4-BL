@@ -27,21 +27,35 @@ class Prosody:
         conf = max(0.0, min(1.0, self.confidence))
         urg = max(0.0, min(1.0, self.urgency))
 
-        # urgency tightens timing (shorter, snappier)
-        dur = dur * (1.0 - 0.35 * urg)
+        # --- timing: urgency makes it MUCH faster; low confidence drags it out ---
+        # range roughly 0.5x (very urgent) to 1.8x (very hesitant) of base duration.
+        dur = dur * (1.0 - 0.5 * urg) * (1.0 + 0.7 * (1 - conf))
 
-        # low confidence -> more vibrato (tremulous) and gentler onset
+        # --- vibrato: low confidence = strongly tremulous; urgency = tighter ---
         vib_rate, vib_depth = vib if vib else (7, 0.03)
-        vib_depth = vib_depth + (1 - conf) * 0.05
+        vib_depth = vib_depth + (1 - conf) * 0.18          # up to ~5x baseline wobble
+        vib_rate = vib_rate * (1.0 + 0.5 * urg)
         vib = (vib_rate, vib_depth)
-        if conf < 0.4 and env == "stab":
-            env = "swell"  # hesitant sounds don't stab
 
-        # urgency exaggerates the contour swing; low confidence shrinks it
-        exagg = 1.0 + 0.4 * urg - 0.3 * (1 - conf)
+        # --- envelope: urgent stabs, hesitant swells ---
+        if urg > 0.6:
+            env = "stab"
+        elif conf < 0.45:
+            env = "swell"
+
+        # --- contour swing: urgency exaggerates a lot; low confidence flattens ---
+        exagg = 1.0 + 1.0 * urg - 0.6 * (1 - conf)
+        exagg = max(0.4, exagg)
+
+        # --- brightness: urgency shifts everything up; low confidence droops it ---
+        # multiplicative pitch shift, kept modest so the BAND (lexical) is preserved.
+        bright = 1.0 + 0.12 * urg - 0.10 * (1 - conf)
+
         if len(points) >= 2:
             center = sum(p[1] for p in points) / len(points)
-            points = [(f, center + (hz - center) * exagg) for (f, hz) in points]
+            points = [(f, (center + (hz - center) * exagg) * bright) for (f, hz) in points]
+        elif points:
+            points = [(f, hz * bright) for (f, hz) in points]
 
         return points, dur, env, vib
 

@@ -49,22 +49,57 @@ def concepts_to_phoneme_words(concepts: List[str]) -> List[List[str]]:
     return words
 
 
-def phoneme_words_to_audio(words: List[List[str]], prosody: Prosody = NEUTRAL) -> np.ndarray:
+def _render_phoneme_seq(pnames: List[str], prosody: Prosody) -> List[np.ndarray]:
     clips = []
-    for wi, word in enumerate(words):
-        for pi, pname in enumerate(word):
-            phoneme = ph.BY_NAME[pname]
-            clips.append(phoneme.render(prosody=prosody))
-            if pi != len(word) - 1:
-                clips.append(_silence(PHONE_GAP))
-        if wi != len(words) - 1:
-            clips.append(_silence(WORD_GAP))
-    return np.concatenate(clips) if clips else np.zeros(0, dtype=np.float32)
+    for pi, pname in enumerate(pnames):
+        clips.append(ph.BY_NAME[pname].render(prosody=prosody))
+        if pi != len(pnames) - 1:
+            clips.append(_silence(PHONE_GAP))
+    return clips
+
+
+def _render_rep(rep: "lex.Rep", prosody: Prosody) -> List[np.ndarray]:
+    """Render a repeated group at its lexical rhythm. The inter-pulse gap comes
+    from `rate`; prosody may scale intensity/timing but NEVER the count."""
+    unit = list(rep.unit)
+    # gap so that pulse_period = 1/rate; clamp so pulses don't overlap.
+    period = 1.0 / max(rep.rate, 0.3)
+    clips = []
+    for k in range(rep.count):
+        if rep.alternate:
+            pulse = [unit[k % len(unit)]]     # tick/tock: one cycling member per pulse
+        else:
+            pulse = unit
+        clips += _render_phoneme_seq(pulse, prosody)
+        if k != rep.count - 1:
+            # approximate: subtract a nominal unit duration from the period
+            gap = max(0.02, period - 0.16)
+            clips.append(_silence(gap))
+    return clips
+
+
+def _render_concept(concept: str, prosody: Prosody) -> List[np.ndarray]:
+    if lex.is_known(concept):
+        body = lex.morpheme_body(concept)
+        if isinstance(body, lex.Rep):
+            return _render_rep(body, prosody)
+        return _render_phoneme_seq(body, prosody)
+    # spelling fallback
+    seq = list(lex.SPELL_MARKER)
+    for ch in concept.lower():
+        if ch in lex.CHAR_TO_PHONES:
+            seq += lex.CHAR_TO_PHONES[ch]
+    return _render_phoneme_seq(seq, prosody)
 
 
 def encode(concepts: List[str], prosody: Prosody = NEUTRAL) -> np.ndarray:
-    """Top-level: list of concepts -> audio."""
-    return phoneme_words_to_audio(concepts_to_phoneme_words(concepts), prosody)
+    """Top-level: list of concepts -> audio, respecting repetition rhythm."""
+    clips = []
+    for ci, c in enumerate(concepts):
+        clips += _render_concept(c, prosody)
+        if ci != len(concepts) - 1:
+            clips.append(_silence(WORD_GAP))
+    return np.concatenate(clips) if clips else np.zeros(0, dtype=np.float32)
 
 
 def _silence(dur: float) -> np.ndarray:

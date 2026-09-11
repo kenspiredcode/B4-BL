@@ -15,15 +15,21 @@ def test_inventory_features_unique():
 
 
 def test_morpheme_sequences_unambiguous():
-    """No morpheme's phoneme-sequence may be identical to another's."""
-    seqs = [tuple(v) for v in lex.MORPHEMES.values()]
+    """No morpheme's flattened phoneme-sequence may be identical to another's."""
+    seqs = [tuple(lex.concept_to_phonemes(c)) for c in lex.MORPHEMES]
     assert len(seqs) == len(set(seqs)), "two morphemes share a phoneme sequence"
 
 
 def test_all_morpheme_phonemes_exist():
-    for concept, seq in lex.MORPHEMES.items():
-        for pname in seq:
+    for concept in lex.MORPHEMES:
+        for pname in lex.concept_to_phonemes(concept):
             assert pname in ph.BY_NAME, f"{concept} uses unknown phoneme {pname}"
+
+
+def test_repetition_morphemes_roundtrip():
+    for concept in ["ALARM", "CALCULATING"]:
+        _w, back = codec.roundtrip_symbolic([concept])
+        assert back == [concept], f"{concept} -> {back}"
 
 
 def test_known_concepts_roundtrip():
