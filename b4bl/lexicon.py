@@ -154,10 +154,19 @@ def _body_seq(body: "MorphemeBody"):
 # construction (enforced by tests).
 def _alloc_pool():
     from . import phonology as _ph
-    # tone phonemes only, stable order, excluding very-high (reserved/sparse)
-    pool = [p.name for p in _ph.INVENTORY
-            if p.cls == _ph.SoundClass.TONE and p.band != _ph.Band.VHIGH]
-    return pool
+    # tone phonemes only, stable order, excluding:
+    #  - very-high band (reserved for alarm/surprise, kept sparse)
+    #  - LONG FLAT tones: a sustained flat pitch reads as a cheap-sci-fi UFO hum,
+    #    the least astromech sound there is. Excluded so no ordinary morpheme uses it.
+    def ok(p):
+        if p.cls != _ph.SoundClass.TONE:
+            return False
+        if p.band == _ph.Band.VHIGH:
+            return False
+        if p.contour == _ph.Contour.FLAT and p.dur == _ph.Dur.LONG:
+            return False
+        return True
+    return [p.name for p in _ph.INVENTORY if ok(p)]
 
 
 def _build_morphemes() -> "Dict[str, MorphemeBody]":

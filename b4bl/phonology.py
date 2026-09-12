@@ -126,6 +126,10 @@ class Phoneme:
         pts = self._contour_points()
         env = "stab" if self.dur == Dur.SHORT else "even"
         vib = (7, 0.03)
+        # A long FLAT tone with vibrato reads as a cheap-sci-fi UFO warble. Keep it
+        # dead steady so a held pitch reads as a deliberate "hold", not a UFO.
+        if self.contour == Contour.FLAT and self.dur == Dur.LONG:
+            vib = None
         if prosody is not None:
             pts, dur, env, vib = prosody.apply(self, pts, dur, env, vib)
 
@@ -187,8 +191,8 @@ def _gen_inventory():
     # TONE phonemes across bands x a curated contour/dur set.
     # LOW: flat, rise, fall(long), dip
     combos += [(Band.LOW, c, d, T) for (c, d) in
-               [(Contour.FLAT, S), (Contour.RISE, S), (Contour.FALL, L),
-                (Contour.DIP, L), (Contour.SCOOP, S)]]
+               [(Contour.FLAT, S), (Contour.RISE, S), (Contour.FALL, S),
+                (Contour.FALL, L), (Contour.DIP, L), (Contour.SCOOP, S)]]
     # MID: the richest band (most contours) — the workhorse
     combos += [(Band.MID, c, d, T) for (c, d) in
                [(Contour.FLAT, S), (Contour.FLAT, L), (Contour.RISE, S),

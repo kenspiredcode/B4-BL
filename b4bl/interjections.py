@@ -27,8 +27,13 @@ def _seq(*clips, gap=0.03):
 
 
 def aww() -> np.ndarray:
-    """Disappointed — soft, slow falling whistle."""
-    return gen.tonal(gen.Gesture([(0, 1100), (0.3, 950), (1, 480)], 0.75, "decay", vib=(5, 0.04)))
+    """Disappointed — a long, soft, whimpering downward whistle. Deliberately
+    contrasted with DENY (short firm low fall): AWW starts HIGH, is much LONGER,
+    droops with a wavering vibrato, and has a couple of little 'sad' bumps so it
+    reads as a whimper/voice, not a beep."""
+    return gen.tonal(gen.Gesture(
+        [(0, 1650), (0.2, 1500), (0.45, 1550), (0.7, 1050), (1, 620)],
+        1.0, "swell", vib=(6.5, 0.09)))
 
 
 def yay() -> np.ndarray:
