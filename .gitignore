@@ -12,3 +12,4 @@ venv/
 # Keep a curated set in audio_samples/ but ignore scratch renders.
 audio_samples/scratch/
 *.tmp.wav
+recordings/
