@@ -338,7 +338,15 @@ def _nearest_phoneme(band, contour, dur, cls) -> str:
 # top level
 # ---------------------------------------------------------------------------
 def audio_to_phoneme_words(audio: np.ndarray) -> List[List[str]]:
-    """Segment audio, group phonemes into words by gap size, classify each."""
+    """Segment audio, group phonemes into words by gap size, classify each.
+
+    Uses the trained classifier when a model is present (see b4bl.classifier),
+    otherwise the threshold classifier here. Both return (name, feature-tuple)."""
+    try:
+        from . import classifier as _clf
+        seg_classify = _clf.classify_segment if _clf.available() else classify_segment
+    except Exception:
+        seg_classify = classify_segment
     segs = _segments(audio)
     words: List[List[str]] = []
     current: List[str] = []
@@ -346,7 +354,7 @@ def audio_to_phoneme_words(audio: np.ndarray) -> List[List[str]]:
         seg = audio[s:e]
         if len(seg) < int(0.02 * SR):
             continue
-        name, _feats = classify_segment(seg)
+        name, _feats = seg_classify(seg)
         if k > 0 and gap >= WORD_GAP_MIN and current:
             words.append(current)
             current = []

@@ -90,4 +90,4 @@ def test_acoustic_decode_baseline():
         words = decoder.audio_to_phoneme_words(codec.encode([c], prosody.NEUTRAL))
         back = lex.phonemes_to_concept(words[0]) if words else None
         ok += (back == c)
-    assert ok >= 24, f"acoustic decode regressed: {ok}/40"
+    assert ok >= 30, f"acoustic decode regressed: {ok}/40"
