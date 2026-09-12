@@ -104,13 +104,68 @@ def build_dataset(samples_per=SAMPLES_PER_PHONEME):
             np.array(y_dur), np.array(y_cls))
 
 
-def train(samples_per=SAMPLES_PER_PHONEME, save=True):
+def build_dataset_from_recordings(manifest_path):
+    """Load real recordings and derive per-PHONEME labeled features by segmenting
+    each recording and aligning segments to its known phoneme sequence.
+
+    Only recordings whose segment count matches the expected phoneme count are
+    used (a clean alignment); the rest are skipped as unreliable labels. This is
+    the V2 path — real audio replaces synthetic augmentation."""
+    import json
+    from scipy.io import wavfile
+    from . import decoder as _dec, lexicon as lex, codec
+
+    rec_dir = os.path.dirname(manifest_path)
+    X, yb, yc, yd, ycl = [], [], [], [], []
+    used = skipped = 0
+    with open(manifest_path) as f:
+        for line in f:
+            line = line.strip()
+            if not line:
+                continue
+            r = json.loads(line)
+            # expected flat phoneme sequence for this message (word by word)
+            exp_words = codec.concepts_to_phoneme_words(r["concepts"])
+            exp = [p for w in exp_words for p in w]
+            sr, data = wavfile.read(os.path.join(rec_dir, r["file"]))
+            audio = data.astype(np.float32) / 32768.0
+            segs = _dec._segments(audio)
+            segs = [(s, e) for (s, e, _g) in segs if (e - s) >= int(0.02 * SR)]
+            if len(segs) != len(exp):
+                skipped += 1
+                continue
+            for (s, e), pname in zip(segs, exp):
+                p = ph.BY_NAME.get(pname)
+                if p is None:
+                    continue
+                X.append(F.extract(audio[s:e]))
+                yb.append(p.band.value); yc.append(p.contour.value)
+                yd.append(p.dur.value); ycl.append(p.cls.value)
+            used += 1
+    print(f"  recordings used {used}, skipped {skipped} (alignment mismatch); "
+          f"{len(X)} phoneme samples")
+    return (np.array(X), np.array(yb), np.array(yc), np.array(yd), np.array(ycl))
+
+
+def train(samples_per=SAMPLES_PER_PHONEME, save=True, recordings=None, mix_synth=True):
     from sklearn.ensemble import RandomForestClassifier
     from sklearn.model_selection import train_test_split
     import joblib
 
-    print(f"generating dataset ({len(ph.INVENTORY)} phonemes x {samples_per})...")
-    X, yb, yc, yd, ycl = build_dataset(samples_per)
+    if recordings:
+        print(f"loading real recordings from {recordings} ...")
+        Xr, ybr, ycr, ydr, yclr = build_dataset_from_recordings(recordings)
+        if mix_synth:
+            print(f"generating synthetic dataset ({len(ph.INVENTORY)} x {samples_per}) to mix in...")
+            Xs, ybs, ycs, yds, ycls = build_dataset(samples_per)
+            X = np.vstack([Xr, Xs]); yb = np.concatenate([ybr, ybs])
+            yc = np.concatenate([ycr, ycs]); yd = np.concatenate([ydr, yds])
+            ycl = np.concatenate([yclr, ycls])
+        else:
+            X, yb, yc, yd, ycl = Xr, ybr, ycr, ydr, yclr
+    else:
+        print(f"generating dataset ({len(ph.INVENTORY)} phonemes x {samples_per})...")
+        X, yb, yc, yd, ycl = build_dataset(samples_per)
     print(f"  {X.shape[0]} samples, {X.shape[1]} features each")
 
     models = {}
@@ -135,4 +190,13 @@ def train(samples_per=SAMPLES_PER_PHONEME, save=True):
 
 
 if __name__ == "__main__":
-    train()
+    import argparse
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--recordings", default=None,
+                    help="path to recordings/manifest.jsonl to train on real audio")
+    ap.add_argument("--no-mix-synth", action="store_true",
+                    help="train ONLY on recordings (default mixes in synthetic)")
+    ap.add_argument("--samples", type=int, default=SAMPLES_PER_PHONEME)
+    args = ap.parse_args()
+    train(samples_per=args.samples, recordings=args.recordings,
+          mix_synth=not args.no_mix_synth)
