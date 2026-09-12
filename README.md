@@ -27,8 +27,9 @@ output. The acoustic decoder (microphone → symbols) is not built yet.
 | Interjections | standalone emotive vocalizations (own layer) | ✅ implemented |
 | L3 Prosody | affect as transforms on expressive dimensions | ✅ implemented |
 | Codec | meaning ↔ phonemes ↔ audio | ✅ encode + symbolic round-trip |
-| Decoder | audio → phonemes (file/loopback) | 🟡 ~65% concept accuracy; improving |
-| Protocol | preamble/identity/seq/checksum | ✅ framing + checksum; ⛔ ACK/retry |
+| Decoder | audio → phonemes (trained RF classifier) | ✅ ~87% concept accuracy (loopback) |
+| Protocol | preamble/identity/seq/checksum | ✅ framing + checksum |
+| Link | ACK / retry transport | ✅ 87% single-shot, 93% w/ retries (loopback) |
 
 ## Layout
 
