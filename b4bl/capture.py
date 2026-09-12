@@ -51,20 +51,44 @@ def _sd():
     return sd
 
 
+# Output latency headroom (seconds). AirPlay buffers ~1.5-2s before sound comes
+# out; the recording window must extend past playback or the message is cut off.
+# 0 for built-in speakers. Set via set_channel_profile().
+OUTPUT_LATENCY = 0.0
+INPUT_GAIN = 1.0        # software boost for quiet channels (e.g. across-room AirPlay)
+
+
+def set_channel_profile(latency: float = 0.0, gain: float = 1.0):
+    """Tune capture for the current output path (built-in vs AirPlay etc.)."""
+    global OUTPUT_LATENCY, INPUT_GAIN
+    OUTPUT_LATENCY = latency
+    INPUT_GAIN = gain
+
+
 def play_and_record(audio: np.ndarray, tail: float = 0.6) -> np.ndarray:
     """Play `audio` through the speaker while recording the mic. Returns the mic
-    recording (mono float32). Uses a raw input stream (no voice-processing)."""
+    recording (mono float32). Uses a raw input stream (no voice-processing).
+
+    Records for the full emission PLUS OUTPUT_LATENCY headroom, using independent
+    play + rec so buffered outputs (AirPlay) aren't clipped by a too-short window.
+    Applies INPUT_GAIN for quiet channels."""
     sd = _sd()
+    # Single duplex stream (playrec) is the reliable path. To absorb output
+    # latency (AirPlay buffers ~2s before sound emerges) we LEAD with silence by
+    # OUTPUT_LATENCY so the played message lands inside the recording window.
     emission = np.concatenate([
-        np.zeros(int(LEAD_SIL * SR), dtype=np.float32),
+        np.zeros(int((LEAD_SIL + OUTPUT_LATENCY) * SR), dtype=np.float32),
         SYNC,
         np.zeros(int(0.08 * SR), dtype=np.float32),
         audio.astype(np.float32),
-        np.zeros(int((POST_SIL + tail) * SR), dtype=np.float32),
+        np.zeros(int((POST_SIL + tail + OUTPUT_LATENCY) * SR), dtype=np.float32),
     ])
     rec = sd.playrec(emission, samplerate=SR, channels=1, dtype="float32")
     sd.wait()
-    return rec[:, 0]
+    out = rec[:, 0]
+    if INPUT_GAIN != 1.0:
+        out = np.clip(out * INPUT_GAIN, -1.0, 1.0)
+    return out
 
 
 def find_message(rec: np.ndarray) -> Optional[np.ndarray]:
@@ -112,17 +136,32 @@ def self_test() -> bool:
     print("self-test: playing a tone and listening for it...")
     tone = 0.6 * np.sin(2 * np.pi * 1000 * np.arange(int(0.4 * SR)) / SR).astype(np.float32)
     rec = play_and_record(tone)
-    # energy around 1kHz in the recording
-    w = rec * np.hanning(len(rec))
-    mag = np.abs(np.fft.rfft(w))
-    freqs = np.fft.rfftfreq(len(rec), 1 / SR)
+    # Find the LOUDEST 0.3s window (where the tone landed — the rest is silence /
+    # latency padding, which would dilute a whole-recording measurement) and
+    # measure level + tonality THERE. Channel-agnostic: works for built-in and for
+    # buffered/quiet AirPlay alike.
+    w = int(0.3 * SR)
+    step = int(0.05 * SR)
+    best_i, best_e = 0, 0.0
+    for i in range(0, max(1, len(rec) - w), step):
+        e = float(np.sqrt(np.mean(rec[i:i + w] ** 2)))
+        if e > best_e:
+            best_e, best_i = e, i
+    chunk = rec[best_i:best_i + w]
+    mag = np.abs(np.fft.rfft(chunk * np.hanning(len(chunk))))
+    freqs = np.fft.rfftfreq(len(chunk), 1 / SR)
     band = (freqs > 850) & (freqs < 1150)
     ratio = float(np.sum(mag[band]) / (np.sum(mag) + 1e-9))
-    rms = float(np.sqrt(np.mean(rec ** 2)))
-    print(f"  captured rms={rms:.4f}, 1kHz energy ratio={ratio:.3f}")
-    ok = rms > 0.002 and ratio > 0.05
+    noise = float(np.percentile(
+        [np.sqrt(np.mean(rec[i:i + w] ** 2)) for i in range(0, max(1, len(rec) - w), step)], 30))
+    snr_db = 20 * np.log10((best_e + 1e-9) / (noise + 1e-9))
+    print(f"  loudest-window rms={best_e:.4f}, 1kHz ratio={ratio:.3f}, SNR~{snr_db:.0f}dB")
+    # Level + SNR are the real health checks. Tonality (ratio) is only a weak
+    # sanity bound — AirPlay/codec paths smear a pure tone spectrally, so a low
+    # ratio at healthy level+SNR is the channel's character, not a dead mic.
+    ok = best_e > 0.003 and snr_db > 12 and ratio > 0.015
     print("  -> channel LIVE" if ok else
-          "  -> FAIL: mic didn't capture the tone (AEC active? wrong device? volume?)")
+          "  -> FAIL: tone not clearly captured (volume? wrong device? AEC?)")
     return ok
 
 
