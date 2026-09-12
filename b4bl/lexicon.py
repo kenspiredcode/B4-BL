@@ -139,6 +139,11 @@ VOCAB_CATEGORIES: Dict[str, List[str]] = {
         "GREETING", "FAREWELL", "THANKS", "PLEASE", "SORRY", "WELCOME",
     ],
     "digit": [f"D{i}" for i in range(10)] + ["NUM", "AXIS"],  # numerals + markers
+    # protocol/framing markers — allocated through the same ECC allocator so they
+    # keep distance >= 2 from every other bulk code (see protocol.py, which reads
+    # these rather than allocating its own).
+    "protocol": ["SYNC", "CKSUM", "ADDR",
+                 "MSG_TELL", "MSG_ASK", "MSG_ACKF", "MSG_WARN"],
 }
 
 
@@ -169,32 +174,64 @@ def _alloc_pool():
     return [p.name for p in _ph.INVENTORY if ok(p)]
 
 
+# Minimum Hamming distance between morpheme codes of the SAME length. With
+# min-distance >= 2, no single misheard phoneme can turn one word into another —
+# a single slip always yields a non-word, which the lexicon layer detects and
+# corrects to the intended morpheme. (Error-correcting codes: sparser codebook,
+# far more robust. We have the vocabulary headroom to spend on it.)
+MIN_CODE_DISTANCE = 2
+
+
+def _hamming(a, b) -> int:
+    """Distance between equal-length codes; large if lengths differ (different
+    lengths are already distinguishable, so they don't constrain each other)."""
+    if len(a) != len(b):
+        return 99
+    return sum(x != y for x, y in zip(a, b))
+
+
 def _build_morphemes() -> "Dict[str, MorphemeBody]":
     morphemes: Dict[str, MorphemeBody] = dict(HAND_MORPHEMES)
-    taken = {_body_seq(v) for v in morphemes.values()}
+    codes_taken = [list(_body_seq(v)) for v in morphemes.values()]
+    taken = {tuple(c) for c in codes_taken}
     pool = _alloc_pool()
 
-    # candidate codes: length-1 then length-2, in pool order (freq-ranked pool)
+    # candidate codes: length-1, then length-2, then length-3 (freq-ranked pool)
     def code_stream():
         for a in pool:
             yield [a]
         for a in pool:
             for b in pool:
                 yield [a, b]
+        for a in pool:
+            for b in pool:
+                for c in pool:
+                    yield [a, b, c]
+
+    def far_enough(cand):
+        for existing in codes_taken:
+            if _hamming(cand, existing) < MIN_CODE_DISTANCE:
+                return False
+        return True
 
     codes = code_stream()
-
-    # flatten categories in priority order (pronoun/verb/... already freq-ish)
+    # NOTE: length-1 codes can't have distance>=2 from each other (they differ in
+    # only 1 position). They're still safe because a length-1 morpheme misheard as
+    # another length-1 is rare AND the highest-frequency words get them; we accept
+    # single-distance among the <= (#bands) one-phoneme codes and enforce distance
+    # >=2 for the length-2+ bulk where collisions are common.
     for cat, concepts in VOCAB_CATEGORIES.items():
         for concept in concepts:
             if concept in morphemes:
                 continue
-            # find next unused code
             while True:
                 cand = next(codes)
-                if tuple(cand) not in taken:
+                if tuple(cand) in taken:
+                    continue
+                if len(cand) == 1 or far_enough(cand):
                     break
             morphemes[concept] = cand
+            codes_taken.append(cand)
             taken.add(tuple(cand))
     return morphemes
 

@@ -137,8 +137,90 @@ def audio_to_phonemes(audio: np.ndarray) -> List[List[str]]:
 
 
 def decode_to_concepts(audio: np.ndarray) -> List[str]:
-    """Full acoustic decode: audio -> phoneme words -> concepts."""
+    """Full acoustic decode. Uses lexicon-constrained decoding when the trained
+    classifier is available (recovers misheard phonemes by snapping to the nearest
+    valid morpheme — works with the error-correcting codebook), else the plain
+    top-1 lookup."""
+    try:
+        from . import classifier as _clf
+        if _clf.available():
+            return decode_to_concepts_lexical(audio)
+    except Exception:
+        pass
     return phoneme_words_to_concepts(audio_to_phonemes(audio))
+
+
+def decode_to_concepts_plain(audio: np.ndarray) -> List[str]:
+    """Plain top-1 decode without lexicon correction (kept for comparison/tests)."""
+    return phoneme_words_to_concepts(audio_to_phonemes(audio))
+
+
+# ---------------------------------------------------------------------------
+# LEXICON-CONSTRAINED DECODE
+# Instead of classifying each phoneme to a single best then looking up (where one
+# misheard phoneme dooms the word), score each gap-separated word against the set
+# of REAL morphemes using the classifier's ranked candidates. A phoneme that was
+# misheard is recovered when the correcting choice forms a valid word — the same
+# principle a spell-checker uses. Most random phoneme sequences aren't words, so
+# this collapses many errors onto the intended morpheme.
+# ---------------------------------------------------------------------------
+def _lexicon_index():
+    """concept -> flat phoneme sequence, for all morphemes (repetition expanded)."""
+    idx = {}
+    for concept in lex.MORPHEMES:
+        idx[concept] = tuple(lex.concept_to_phonemes(concept))
+    return idx
+
+
+_LEX_INDEX = None
+
+
+def _score_word(cand_word, seq) -> float:
+    """Score how well a morpheme phoneme-sequence `seq` explains a candidate word
+    (list of per-position [(name, prob), ...]). Length mismatch is penalized; each
+    matched position adds its candidate probability (or a small floor if the
+    needed phoneme isn't among the candidates)."""
+    if len(seq) != len(cand_word):
+        # allow it but penalize — segmentation may split/merge one phoneme
+        length_pen = 0.35 ** abs(len(seq) - len(cand_word))
+    else:
+        length_pen = 1.0
+    score = 1.0
+    for i, phon in enumerate(seq):
+        if i < len(cand_word):
+            probs = dict(cand_word[i])
+            score *= probs.get(phon, 0.03)   # floor for "not in candidates"
+        else:
+            score *= 0.03
+    return score * length_pen
+
+
+def candidate_words_to_concepts(cand_words) -> List[str]:
+    """Lexicon-constrained decode: each candidate-word -> best real concept."""
+    global _LEX_INDEX
+    if _LEX_INDEX is None:
+        _LEX_INDEX = _lexicon_index()
+    out = []
+    for cand_word in cand_words:
+        # top-1 phoneme sequence, for spelling-marker detection + fallback
+        top1 = [c[0][0] for c in cand_word]
+        if top1[:len(lex.SPELL_MARKER)] == lex.SPELL_MARKER:
+            out.append(phoneme_words_to_concepts([top1])[0])
+            continue
+        best, best_s = None, -1.0
+        for concept, seq in _LEX_INDEX.items():
+            s = _score_word(cand_word, seq)
+            if s > best_s:
+                best, best_s = concept, s
+        out.append(best if best is not None else "?" + "-".join(top1))
+    return out
+
+
+def decode_to_concepts_lexical(audio: np.ndarray, k: int = 2) -> List[str]:
+    """Full acoustic decode with lexicon correction (the accurate path)."""
+    from . import decoder
+    cand_words = decoder.audio_to_candidate_words(audio, k=k)
+    return candidate_words_to_concepts(cand_words)
 
 
 # ---------------------------------------------------------------------------

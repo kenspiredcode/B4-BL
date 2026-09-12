@@ -338,10 +338,9 @@ def _nearest_phoneme(band, contour, dur, cls) -> str:
 # top level
 # ---------------------------------------------------------------------------
 def audio_to_phoneme_words(audio: np.ndarray) -> List[List[str]]:
-    """Segment audio, group phonemes into words by gap size, classify each.
-
-    Uses the trained classifier when a model is present (see b4bl.classifier),
-    otherwise the threshold classifier here. Both return (name, feature-tuple)."""
+    """Segment audio, group phonemes into words by gap size, classify each
+    (top-1 per phoneme). Uses the trained classifier when present, else thresholds.
+    For lexicon-corrected decoding to concepts, use audio_to_concepts()."""
     try:
         from . import classifier as _clf
         seg_classify = _clf.classify_segment if _clf.available() else classify_segment
@@ -359,6 +358,29 @@ def audio_to_phoneme_words(audio: np.ndarray) -> List[List[str]]:
             words.append(current)
             current = []
         current.append(name)
+    if current:
+        words.append(current)
+    return words
+
+
+def audio_to_candidate_words(audio: np.ndarray, k: int = 2):
+    """Like audio_to_phoneme_words, but each phoneme is a ranked candidate list
+    [(name, score), ...] rather than a single name. Feeds lexicon-constrained
+    decoding. Requires the trained classifier (falls back to top-1 otherwise)."""
+    from . import classifier as _clf
+    have = _clf.available()
+    segs = _segments(audio)
+    words = []
+    current = []
+    for idx, (s, e, gap) in enumerate(segs):
+        seg = audio[s:e]
+        if len(seg) < int(0.02 * SR):
+            continue
+        cands = _clf.phoneme_candidates(seg, k=k) if have else [(classify_segment(seg)[0], 1.0)]
+        if idx > 0 and gap >= WORD_GAP_MIN and current:
+            words.append(current)
+            current = []
+        current.append(cands)
     if current:
         words.append(current)
     return words

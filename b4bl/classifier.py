@@ -69,3 +69,41 @@ def classify_segment(seg: np.ndarray) -> Tuple[str, tuple]:
     cls = models["cls"].predict(feats)[0]
     name = _nearest_by_features(band, contour, dur, cls)
     return name, (band, contour, dur, cls)
+
+
+def _topk(model, feats, k):
+    """Return [(label, prob), ...] top-k for one sklearn model."""
+    proba = model.predict_proba(feats)[0]
+    classes = model.classes_
+    order = np.argsort(proba)[::-1][:k]
+    return [(classes[i], float(proba[i])) for i in order]
+
+
+def phoneme_candidates(seg: np.ndarray, k: int = 2):
+    """Return a ranked list of (phoneme_name, score) candidates for a segment.
+
+    Combines top-k per feature dimension into candidate feature tuples, scored by
+    the product of the per-dimension probabilities. This N-best output is what
+    lets the lexicon layer recover a misheard phoneme by choosing the candidate
+    that forms a valid word."""
+    m = load()
+    if m is None:
+        name, _ = _dec.classify_segment(seg)
+        return [(name, 1.0)]
+    feats = F.extract(seg).reshape(1, -1)
+    models = m["models"]
+    bands = _topk(models["band"], feats, k)
+    contours = _topk(models["contour"], feats, k)
+    durs = _topk(models["dur"], feats, 1)      # duration is ~perfect, no need for k
+    classes = _topk(models["cls"], feats, 1)   # class is ~perfect too
+    cands = {}
+    for b, pb in bands:
+        for c, pc in contours:
+            for d, pd in durs:
+                for cl, pcl in classes:
+                    name = _nearest_by_features(b, c, d, cl)
+                    score = pb * pc * pd * pcl
+                    # keep the best score per resulting phoneme name
+                    if name not in cands or score > cands[name]:
+                        cands[name] = score
+    return sorted(cands.items(), key=lambda kv: kv[1], reverse=True)

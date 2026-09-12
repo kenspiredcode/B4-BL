@@ -31,32 +31,15 @@ ADDR_PREFIX = "ADDR"          # addresses are ADDR + a numeral group
 
 
 def _ensure_protocol_morphemes():
-    """Register protocol markers as real morphemes if not already present, by
-    auto-allocating codes the same way the bulk vocabulary does. Idempotent."""
+    """Protocol markers are defined in the lexicon's 'protocol' category and
+    allocated by its ECC-aware allocator (distance >= 2 from other codes). This
+    just checks they're present."""
     need = [PREAMBLE, CHECKSUM_MARK, ADDR_PREFIX] + MSG_TYPES
     missing = [m for m in need if m not in lex.MORPHEMES]
-    if not missing:
-        return
-    taken = {lex._body_seq(v) for v in lex.MORPHEMES.values()}
-    pool = lex._alloc_pool()
-    stream = ([a] for a in pool)  # length-1 first
-
-    def gen_codes():
-        for a in pool:
-            yield [a]
-        for a in pool:
-            for b in pool:
-                yield [a, b]
-    codes = gen_codes()
-    for m in missing:
-        while True:
-            cand = next(codes)
-            if tuple(cand) not in taken:
-                break
-        lex.MORPHEMES[m] = cand
-        taken.add(tuple(cand))
-    # rebuild reverse map
-    lex._BY_SEQ = {lex._body_seq(v): k for k, v in lex.MORPHEMES.items()}
+    if missing:
+        raise RuntimeError(
+            f"protocol markers missing from lexicon: {missing} — add them to "
+            "lexicon.VOCAB_CATEGORIES['protocol']")
 
 
 _ensure_protocol_morphemes()

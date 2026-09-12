@@ -90,4 +90,24 @@ def test_acoustic_decode_baseline():
         words = decoder.audio_to_phoneme_words(codec.encode([c], prosody.NEUTRAL))
         back = lex.phonemes_to_concept(words[0]) if words else None
         ok += (back == c)
-    assert ok >= 30, f"acoustic decode regressed: {ok}/40"
+    assert ok >= 34, f"acoustic decode regressed: {ok}/40"
+
+
+def test_ecc_min_distance():
+    """Auto-allocated morpheme codes (length 2+) keep Hamming distance >= 2, so a
+    single misheard phoneme can't turn one bulk word into another (error-
+    correcting codebook). Hand-designed speech acts are exempt — they use
+    deliberately human-legible shapes and are the small set humans learn."""
+    codes = [tuple(lex.concept_to_phonemes(c)) for c in lex.MORPHEMES
+             if c not in lex.ALIASES and c not in lex.HAND_MORPHEMES
+             and len(lex.concept_to_phonemes(c)) >= 2]
+    # only compare equal-length codes
+    from collections import defaultdict
+    by_len = defaultdict(list)
+    for c in codes:
+        by_len[len(c)].append(c)
+    for L, group in by_len.items():
+        for i in range(len(group)):
+            for j in range(i + 1, len(group)):
+                d = sum(x != y for x, y in zip(group[i], group[j]))
+                assert d >= 2, f"codes {group[i]} and {group[j]} too close (d={d})"
