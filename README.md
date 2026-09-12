@@ -22,11 +22,13 @@ output. The acoustic decoder (microphone → symbols) is not built yet.
 | Layer | What | State |
 |-------|------|-------|
 | Sound palette | pure-tonal + rough generators | ✅ implemented, ear-tested |
-| L1 Phonology | ~16 acoustic primitives w/ shared synth+recognizer feature model | ✅ inventory + render; classifier pending |
-| L2 Lexicon | morpheme vocabulary + spelling fallback | ✅ encode + symbolic decode |
+| L1 Phonology | ~35 acoustic primitives w/ shared synth+recognizer feature model | ✅ inventory + render |
+| L2 Lexicon | ~200 morphemes, categories, numerals, spelling fallback | ✅ encode + symbolic decode |
+| Interjections | standalone emotive vocalizations (own layer) | ✅ implemented |
 | L3 Prosody | affect as transforms on expressive dimensions | ✅ implemented |
-| Codec | meaning ↔ phonemes ↔ audio | ✅ encode + symbolic round-trip; ⛔ acoustic decode |
-| Protocol | preamble/identity/seq/FEC/ACK | ⛔ not started |
+| Codec | meaning ↔ phonemes ↔ audio | ✅ encode + symbolic round-trip |
+| Decoder | audio → phonemes (file/loopback) | 🟡 ~65% concept accuracy; improving |
+| Protocol | preamble/identity/seq/checksum | ✅ framing + checksum; ⛔ ACK/retry |
 
 ## Layout
 
