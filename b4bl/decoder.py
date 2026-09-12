@@ -164,7 +164,7 @@ def _nearest_band(hz: float) -> ph.Band:
         # VHIGH is reserved/rare; bias against it so a bright HIGH sound doesn't
         # get pulled up into it (a common error with neutral prosody's lift).
         if band == ph.Band.VHIGH:
-            d += 0.25
+            d += 0.10
         if d < bestd:
             best, bestd = band, d
     return best
@@ -179,7 +179,7 @@ _CONTOUR_TEMPLATES = {
     ph.Contour.ARCH:   np.array([-1.0, -0.2, 0.5, 1.0, 0.9, 0.5, 0.0, -0.4]),
     ph.Contour.DIP:    np.array([1.0, 0.3, -0.5, -1.0, -0.8, -0.3, 0.1, 0.4]),
     ph.Contour.SCOOP:  np.array([0.0, -0.5, -0.7, -0.5, -0.2, 0.3, 0.7, 1.0]),
-    ph.Contour.DOUBLE: np.array([-0.7, 0.6, -0.2, 0.9, -0.1, 0.7, 0.2, -0.3]),
+    ph.Contour.DOUBLE: np.array([-0.7, 0.7, 0.7, -0.5, -1.0, -0.2, 0.55, 0.35]),
 }
 
 
