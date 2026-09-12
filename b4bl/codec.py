@@ -129,18 +129,16 @@ def phoneme_words_to_concepts(words: List[List[str]]) -> List[str]:
 
 def audio_to_phonemes(audio: np.ndarray) -> List[List[str]]:
     """Acoustic front-end: segment audio and classify each segment into a phoneme
-    name, grouping by word gaps.
+    name, grouping by word gaps. Implemented in b4bl.decoder (Phase-2 v1,
+    file/loopback). Not yet perfect per-phoneme; the protocol layer's checksum/FEC
+    is what makes it reliable end to end."""
+    from . import decoder
+    return decoder.audio_to_phoneme_words(audio)
 
-    NOT YET IMPLEMENTED. This is the Phase 2/4 DSP task. It will:
-      1. segment on silence (PHONE_GAP vs WORD_GAP thresholds),
-      2. per segment estimate (band, contour, duration, class) = Phoneme.features,
-      3. nearest-match against phonology.INVENTORY.
-    See docs/phase-0-sound.md and the plan's Layer-1 section.
-    """
-    raise NotImplementedError(
-        "Acoustic decode (mic -> phonemes) is the Phase 2/4 signal-processing task; "
-        "the symbolic round-trip (phoneme_words_to_concepts) is implemented and tested."
-    )
+
+def decode_to_concepts(audio: np.ndarray) -> List[str]:
+    """Full acoustic decode: audio -> phoneme words -> concepts."""
+    return phoneme_words_to_concepts(audio_to_phonemes(audio))
 
 
 # ---------------------------------------------------------------------------

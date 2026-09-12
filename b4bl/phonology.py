@@ -99,7 +99,10 @@ class Phoneme:
     # -- rendering -----------------------------------------------------------
     def _contour_points(self):
         c = self.center
-        s = BAND_SPAN
+        # span PROPORTIONAL to center: a rise/fall should be a clear musical
+        # interval (~a fifth), so contours are unmistakable both to the decoder
+        # and to a human ear, and never blur into 'flat'.
+        s = c * 0.33
         if self.contour == Contour.FLAT:
             return [(0, c), (1, c)]
         if self.contour == Contour.RISE:

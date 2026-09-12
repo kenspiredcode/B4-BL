@@ -73,3 +73,21 @@ def test_interjections_render():
     for name in itj.INTERJECTIONS:
         a = itj.render(name)
         assert a.ndim == 1 and len(a) > 100
+
+
+def test_acoustic_decode_baseline():
+    """Encode -> audio -> decode a sample of concepts. This is the file/loopback
+    decoder (Phase-2 v1); it is not yet perfect. Assert a floor so it can't
+    regress while we improve it. The protocol layer's checksum/FEC is what makes
+    imperfect per-phoneme decoding usable end to end."""
+    import random
+    from b4bl import decoder, prosody
+    concepts = [c for c in lex.MORPHEMES if c not in lex.ALIASES]
+    random.seed(1)
+    sample = random.sample(concepts, 40)
+    ok = 0
+    for c in sample:
+        words = decoder.audio_to_phoneme_words(codec.encode([c], prosody.NEUTRAL))
+        back = lex.phonemes_to_concept(words[0]) if words else None
+        ok += (back == c)
+    assert ok >= 24, f"acoustic decode regressed: {ok}/40"
