@@ -37,17 +37,21 @@ from . import generators as gen
 
 
 class Band(Enum):
+    SUB = "S"        # below the tonal range — hums/growls
     LOW = "L"
     MID = "M"
     HIGH = "H"
+    VHIGH = "V"      # very-high — used SPARINGLY (alarm/surprise), stays salient
 
 
 class Contour(Enum):
     FLAT = "flat"
     RISE = "rise"
     FALL = "fall"
-    ARCH = "arch"   # up then down
-    DIP = "dip"     # down then up
+    ARCH = "arch"     # up then down
+    DIP = "dip"       # down then up
+    SCOOP = "scoop"   # down a bit then up past start (question-like)
+    DOUBLE = "double" # two little bumps (bip-bip within one gesture)
 
 
 class Dur(Enum):
@@ -56,15 +60,19 @@ class Dur(Enum):
 
 
 class SoundClass(Enum):
-    TONE = "tone"
-    GARGLE = "gargle"
-    RASP = "rasp"
+    TONE = "tone"       # pure sine
+    WHISTLE = "whistle" # breathier sine w/ slight air (rendered as tone for now)
+    TRILL = "trill"     # fast pitch flutter
+    GARGLE = "gargle"   # amplitude flutter texture
+    RASP = "rasp"       # noisy buzz
 
 
 # Representative center frequencies per band (Hz). The decoder only needs the
 # band, but the synth needs an actual number; exact value is expressive.
-BAND_CENTER = {Band.LOW: 500, Band.MID: 1100, Band.HIGH: 2000}
-BAND_SPAN = 380  # how far the contour swings around the center
+BAND_CENTER = {
+    Band.SUB: 260, Band.LOW: 520, Band.MID: 1000, Band.HIGH: 1750, Band.VHIGH: 2700,
+}
+BAND_SPAN = 300  # how far the contour swings around the center
 DUR_SEC = {Dur.SHORT: 0.16, Dur.LONG: 0.5}
 
 
@@ -90,7 +98,7 @@ class Phoneme:
 
     # -- rendering -----------------------------------------------------------
     def _contour_points(self):
-        c = BAND_CENTER[self.band]
+        c = self.center
         s = BAND_SPAN
         if self.contour == Contour.FLAT:
             return [(0, c), (1, c)]
@@ -102,6 +110,13 @@ class Phoneme:
             return [(0, c - s), (0.5, c + s), (1, c)]
         if self.contour == Contour.DIP:
             return [(0, c + s), (0.5, c - s), (1, c)]
+        if self.contour == Contour.SCOOP:
+            # dip a little then rise past start — reads as questioning
+            return [(0, c), (0.3, c - s * 0.6), (1, c + s)]
+        if self.contour == Contour.DOUBLE:
+            # two bumps within one gesture
+            return [(0, c - s * 0.5), (0.25, c + s * 0.5), (0.5, c - s * 0.3),
+                    (0.75, c + s * 0.5), (1, c)]
         return [(0, c), (1, c)]
 
     def render(self, prosody=None) -> np.ndarray:
@@ -116,6 +131,13 @@ class Phoneme:
 
         if self.cls == SoundClass.TONE:
             return gen.tonal(gen.Gesture(pts, dur, env, vib))
+        if self.cls == SoundClass.WHISTLE:
+            # breathier whistle: pure tone with a gentle onset swell
+            return gen.tonal(gen.Gesture(pts, dur, "swell" if env == "even" else env, vib))
+        if self.cls == SoundClass.TRILL:
+            # fast pitch flutter on top of the contour
+            rate, depth = vib
+            return gen.tonal(gen.Gesture(pts, dur, env, (max(rate, 16), max(depth, 0.08))))
         if self.cls == SoundClass.GARGLE:
             # low hum pulses want a gentler, slower flutter than the sharp default
             # gargle, so they read as humming rather than a buzzy roll.
@@ -135,27 +157,97 @@ def _p(name, band, contour, dur, cls=SoundClass.TONE, freq_hz=0.0):
     return Phoneme(name, band, contour, dur, cls, freq_hz)
 
 
-INVENTORY = [
-    # LOW band
-    _p("Lf",  Band.LOW,  Contour.FLAT, Dur.SHORT),
-    _p("Lr",  Band.LOW,  Contour.RISE, Dur.SHORT),
-    _p("Ld",  Band.LOW,  Contour.FALL, Dur.LONG),      # groan-like
-    # MID band
-    _p("Mf",  Band.MID,  Contour.FLAT, Dur.SHORT),
-    _p("Mr",  Band.MID,  Contour.RISE, Dur.SHORT),
-    _p("Mfl", Band.MID,  Contour.FALL, Dur.SHORT),
-    _p("Ma",  Band.MID,  Contour.ARCH, Dur.LONG),
-    _p("Mi",  Band.MID,  Contour.DIP,  Dur.LONG),
-    # HIGH band
-    _p("Hf",  Band.HIGH, Contour.FLAT, Dur.SHORT),
-    _p("Hr",  Band.HIGH, Contour.RISE, Dur.SHORT),      # surprised blip
-    _p("Hd",  Band.HIGH, Contour.FALL, Dur.SHORT),
-    _p("Ha",  Band.HIGH, Contour.ARCH, Dur.LONG),       # whistle
-    # texture classes (used sparingly, high separability from tones)
-    _p("Grm", Band.MID,  Contour.FLAT, Dur.SHORT, SoundClass.GARGLE),
-    _p("Grl", Band.MID,  Contour.FLAT, Dur.LONG,  SoundClass.GARGLE),
-    _p("Rz",  Band.LOW,  Contour.FALL, Dur.SHORT, SoundClass.RASP),
-]
+# ---------------------------------------------------------------------------
+# The widened inventory (~40 separable primitives), generated from a curated
+# subset of the band x contour x dur x class grid. We do NOT take the full
+# cross-product (that would include hard-to-classify cells and overuse very-
+# high); we pick combinations that are pairwise separable through a cheap mic.
+# The final set is confirmed by the Phase-2 separability test.
+#
+# Names are stable mnemonics: <band-letter><contour-initial><dur><class?>.
+# ---------------------------------------------------------------------------
+_CONTOUR_LETTER = {
+    Contour.FLAT: "f", Contour.RISE: "r", Contour.FALL: "d", Contour.ARCH: "a",
+    Contour.DIP: "i", Contour.SCOOP: "c", Contour.DOUBLE: "w",
+}
+_CLASS_LETTER = {
+    SoundClass.TONE: "", SoundClass.WHISTLE: "W", SoundClass.TRILL: "T",
+    SoundClass.GARGLE: "G", SoundClass.RASP: "R",
+}
+
+
+def _name(band, contour, dur, cls):
+    return f"{band.value}{_CONTOUR_LETTER[contour]}{'L' if dur == Dur.LONG else ''}{_CLASS_LETTER[cls]}"
+
+
+def _gen_inventory():
+    S, L = Dur.SHORT, Dur.LONG
+    T = SoundClass.TONE
+    combos = []
+    # TONE phonemes across bands x a curated contour/dur set.
+    # LOW: flat, rise, fall(long), dip
+    combos += [(Band.LOW, c, d, T) for (c, d) in
+               [(Contour.FLAT, S), (Contour.RISE, S), (Contour.FALL, L),
+                (Contour.DIP, L), (Contour.SCOOP, S)]]
+    # MID: the richest band (most contours) — the workhorse
+    combos += [(Band.MID, c, d, T) for (c, d) in
+               [(Contour.FLAT, S), (Contour.FLAT, L), (Contour.RISE, S),
+                (Contour.FALL, S), (Contour.ARCH, L), (Contour.DIP, L),
+                (Contour.SCOOP, S), (Contour.DOUBLE, S), (Contour.RISE, L),
+                (Contour.FALL, L)]]
+    # HIGH: flat, rise, fall, arch(long), scoop, double
+    combos += [(Band.HIGH, c, d, T) for (c, d) in
+               [(Contour.FLAT, S), (Contour.RISE, S), (Contour.FALL, S),
+                (Contour.ARCH, L), (Contour.SCOOP, S), (Contour.DOUBLE, S)]]
+    # SUB: low growly tones — flat, rise, fall
+    combos += [(Band.SUB, c, S, T) for c in (Contour.FLAT, Contour.RISE, Contour.FALL)]
+    # VHIGH: SPARINGLY — only rise + double (alarm/surprise)
+    combos += [(Band.VHIGH, Contour.RISE, S, T), (Band.VHIGH, Contour.DOUBLE, S, T)]
+    # WHISTLE class: a few long expressive whistles (mid/high arch, high rise-long)
+    combos += [(Band.MID, Contour.ARCH, L, SoundClass.WHISTLE),
+               (Band.HIGH, Contour.ARCH, L, SoundClass.WHISTLE)]
+    # TRILL class: fast flutter (mid/high)
+    combos += [(Band.MID, Contour.RISE, S, SoundClass.TRILL),
+               (Band.HIGH, Contour.RISE, S, SoundClass.TRILL)]
+    # GARGLE class textures
+    combos += [(Band.MID, Contour.FLAT, S, SoundClass.GARGLE),
+               (Band.MID, Contour.FLAT, L, SoundClass.GARGLE),
+               (Band.LOW, Contour.FLAT, S, SoundClass.GARGLE)]
+    # RASP class (rude/error) — low fall
+    combos += [(Band.LOW, Contour.FALL, S, SoundClass.RASP),
+               (Band.MID, Contour.FALL, S, SoundClass.RASP)]
+
+    out, seen = [], set()
+    for band, contour, dur, cls in combos:
+        key = (band, contour, dur, cls)
+        if key in seen:
+            continue
+        seen.add(key)
+        out.append(Phoneme(_name(band, contour, dur, cls), band, contour, dur, cls))
+    return out
+
+
+INVENTORY = _gen_inventory()
+
+# --- backward-compatible aliases for the original hand-named phonemes, so the
+#     existing lexicon/tests keep working while we migrate names. ---
+_ALIAS = {
+    "Lf": (Band.LOW, Contour.FLAT, Dur.SHORT, SoundClass.TONE),
+    "Lr": (Band.LOW, Contour.RISE, Dur.SHORT, SoundClass.TONE),
+    "Ld": (Band.LOW, Contour.FALL, Dur.LONG, SoundClass.TONE),
+    "Mf": (Band.MID, Contour.FLAT, Dur.SHORT, SoundClass.TONE),
+    "Mr": (Band.MID, Contour.RISE, Dur.SHORT, SoundClass.TONE),
+    "Mfl": (Band.MID, Contour.FALL, Dur.SHORT, SoundClass.TONE),
+    "Ma": (Band.MID, Contour.ARCH, Dur.LONG, SoundClass.TONE),
+    "Mi": (Band.MID, Contour.DIP, Dur.LONG, SoundClass.TONE),
+    "Hf": (Band.HIGH, Contour.FLAT, Dur.SHORT, SoundClass.TONE),
+    "Hr": (Band.HIGH, Contour.RISE, Dur.SHORT, SoundClass.TONE),
+    "Hd": (Band.HIGH, Contour.FALL, Dur.SHORT, SoundClass.TONE),
+    "Ha": (Band.HIGH, Contour.ARCH, Dur.LONG, SoundClass.TONE),
+    "Grm": (Band.MID, Contour.FLAT, Dur.SHORT, SoundClass.GARGLE),
+    "Grl": (Band.MID, Contour.FLAT, Dur.LONG, SoundClass.GARGLE),
+    "Rz": (Band.LOW, Contour.FALL, Dur.SHORT, SoundClass.RASP),
+}
 
 # Texture sub-units used INSIDE morphemes (e.g. the hum), not part of the
 # decodable phoneme alphabet — so they don't need unique feature tuples. They
@@ -168,6 +260,12 @@ SUBUNITS = [
 ]
 
 BY_NAME = {p.name: p for p in INVENTORY + SUBUNITS}
+
+# resolve aliases to the canonical generated phoneme with the same feature tuple
+_BY_FEATURES = {(p.band, p.contour, p.dur, p.cls): p for p in INVENTORY}
+for _alias_name, _feat in _ALIAS.items():
+    if _alias_name not in BY_NAME and _feat in _BY_FEATURES:
+        BY_NAME[_alias_name] = _BY_FEATURES[_feat]
 
 
 def render_inventory_montage():

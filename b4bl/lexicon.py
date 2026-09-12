@@ -67,47 +67,132 @@ MorphemeBody = Union[List[str], Rep]
 # the shortest (1-phoneme) codes; the rest use distinct 2-phoneme codes. Single-
 # phoneme codes are a scarce resource — only 15 phonemes exist — so they are
 # spent on the highest-frequency concepts.
-MORPHEMES: Dict[str, List[str]] = {
-    # --- 1-phoneme codes: the most frequent concepts ---
-    "ACK":      ["Hf"],             # yes/ok/acknowledged
-    "DENY":     ["Ld"],             # no
-    "SELF":     ["Lf"],
-    "YOU":      ["Mf"],
-    "OBJECT":   ["Ma"],
-    "LOCATION": ["Mi"],
-    "STOP":     ["Mfl"],
-    "FRONT":    ["Ha"],
-    "FAR":      ["Grl"],
-    # --- 2-phoneme codes ---
-    # markers / speech acts
-    "QUERY":    ["Hr", "Mr"],       # rising-rising = "?"
-    "WARNING":  ["Hr", "Hr"],       # double high rise = attention
-    # predicates / verbs
-    "MOVE":     ["Mr", "Hf"],
-    "FOLLOW":   ["Mr", "Mr"],
-    "QUERY_STATE": ["Hr", "Ma"],
-    # states / properties
-    "ENERGY":   ["Ma", "Mf"],
-    "LOW":      ["Lr", "Ld"],
-    "HIGH":     ["Hr", "Hd"],
-    "OBSTACLE": ["Rz", "Mfl"],      # rasp = something bad
-    # directions
-    "BACK":     ["Ld", "Lf"],
-    "NEAR":     ["Mf", "Mf"],
-    # --- repetition-axis morphemes (identity includes count + rhythm) ---
-    # ALARM: 3 fast high-rising whistles — the classic R2 distress signature.
-    "ALARM":    Rep(unit=("Hr",), count=3, rate=6.0),
-    # CALCULATING/BUSY: slow up/down GARGLE hum — muttering to itself while
-    # thinking. Gargle (texture), not tones, so it reads as process-noise/humming
-    # rather than as saying words. Alternates high hum / low hum.
-    "CALCULATING": Rep(unit=("Hum1", "Hum0"), count=6, rate=3.0, alternate=True),
+# --- (1) HAND-DESIGNED morphemes: speech acts get intentional, human-legible
+#     shapes; repetition morphemes carry count+rhythm. These are the sounds a
+#     human learns by living with the droid. ---
+HAND_MORPHEMES: Dict[str, MorphemeBody] = {
+    # speech acts — the human-legible layer (see vocabulary-spec.md)
+    "QUERY":    ["Hr", "Mr"],        # clear rising "?" — asked a question
+    "CONFIRM":  ["Ma", "Ld"],        # settled arch->fall "got it"
+    "CLARIFY":  ["Mc", "Mr"],        # scoop + rise — "which?"
+    "ACK":      ["Hf"],              # crisp high blip — "heard you"
+    "DENY":     ["Ld"],              # firm low fall — "no"
+    "WARN":     ["Hr", "Hr"],        # double high rise — "heads up"
+    "DONE":     ["Mr", "Ha"],        # rise-resolve — "finished"
+    "REPEAT":   ["Hw"],              # stutter (double contour) — "say again"
+    "WAIT":     ["MfL"],             # long flat hold — "hold on"
+    "ERROR":    ["Rz", "Ld"],        # rasp + fall — "something's wrong"
+    # repetition-axis morphemes (identity includes count + rhythm)
+    "ALARM":    Rep(unit=("Vr",), count=3, rate=6.0),        # 3 fast very-high rises
+    "WORKING":  Rep(unit=("Hum1", "Hum0"), count=6, rate=3.0, alternate=True),
+}
+# alias kept for older references
+HAND_MORPHEMES["CALCULATING"] = HAND_MORPHEMES["WORKING"]
+
+# --- (2) BULK vocabulary: concepts by category. Phoneme sequences are
+#     AUTO-ALLOCATED (see _allocate below) so we don't hand-write ~250 codes.
+#     Order matters: earlier = more frequent = gets a shorter code. ---
+VOCAB_CATEGORIES: Dict[str, List[str]] = {
+    "pronoun": [
+        "SELF", "YOU", "IT", "THIS", "THAT", "OTHER_BOT", "ALL", "NONE", "WE",
+        # household role slots (user-assigned; glossed as roles, not names)
+        "PARENT_F", "PARENT_M", "CHILD_GIRL", "CHILD_BOY", "GUEST",
+    ],
+    "verb": [
+        "MOVE", "STOP", "FOLLOW", "COME", "GO", "BRING", "TAKE", "GIVE", "FIND",
+        "SEARCH", "SCAN", "CHARGE", "DOCK", "OPEN", "CLOSE", "PICK", "PLACE",
+        "TURN", "LOOK", "TELL", "ASK", "HELP", "CARRY", "CLEAN", "WAIT_V",
+        "START", "FINISH", "STORE", "STOP_V", "STAY", "STAND", "STANDBY",
+        "STANDDOWN", "STANDUP", "REMIND", "PLAY", "STOP_MEDIA", "CALL", "SEND",
+        "STORE_V", "STOPPED", "STANDBY_V", "SLEEP", "WAKE", "STANDGUARD",
+    ],
+    "spatial": [
+        "FRONT", "BACK", "LEFT", "RIGHT", "UP", "DOWN", "NEAR", "FAR", "HERE",
+        "THERE", "IN", "ON", "UNDER", "TOWARD", "AWAY", "LOCATION", "ROOM",
+        "DOORWAY", "CORNER", "CENTER", "EDGE", "ABOVE", "BELOW", "BESIDE",
+        "BETWEEN", "AROUND", "THROUGH", "DISTANCE", "METER", "STEP",
+    ],
+    "state": [
+        "ENERGY", "LOW", "HIGH", "OK", "FAULT", "BUSY", "IDLE", "FULL", "EMPTY",
+        "HOT", "COLD", "FAST", "SLOW", "ONSTATE", "OFFSTATE", "LOCKED", "UNLOCKED",
+        "READY", "NOTREADY", "MOVING", "STOPPEDSTATE", "CHARGED", "UNCHARGED",
+        "CONNECTED", "OFFLINE", "SAFE", "UNSAFE", "CLEAR", "BLOCKED",
+    ],
+    "object": [
+        "OBJECT", "TOOL", "DOOR", "PERSON", "CHARGER", "CONTAINER", "OBSTACLE",
+        "TARGET", "ITEM", "BOX", "CUP", "BOTTLE", "KEY", "PHONE", "REMOTE",
+        "LIGHT", "TABLE", "CHAIR", "FLOOR", "WALL", "STAIRS", "PET", "FOOD",
+        "WATER", "PACKAGE", "MAIL", "BAG", "CLOTHES", "TOY", "TRASH",
+    ],
+    "quantity": [
+        "MORE", "LESS", "HALF", "MANY", "FEW", "SOME", "ENOUGH",
+    ],
+    "time": [
+        "NOW", "THEN", "BEFORE", "AFTER", "SOON", "LATER", "EVERY", "ONCE",
+        "AGAIN_T", "UNTIL",
+    ],
+    "logic": [
+        "AND", "OR", "NOT", "IF", "BECAUSE", "VERY", "MAYBE", "SAME",
+        "DIFFERENT", "AGAIN", "WITH", "WITHOUT",
+    ],
+    "social": [
+        "GREETING", "FAREWELL", "THANKS", "PLEASE", "SORRY", "WELCOME",
+    ],
+    "digit": [f"D{i}" for i in range(10)] + ["NUM", "AXIS"],  # numerals + markers
 }
 
-# reverse map for decoding: tuple(flattened phoneme names) -> concept
-def _body_seq(body: MorphemeBody):
+
+def _body_seq(body: "MorphemeBody"):
     return tuple(body.flatten()) if isinstance(body, Rep) else tuple(body)
 
 
+# --- auto-allocation of phoneme sequences to bulk concepts ------------------
+# Frequency-ranked concepts get short codes. We allocate from a pool of TONE
+# phonemes (texture classes are reserved for special/hand morphemes), using
+# length-1 codes first, then length-2, skipping any sequence already taken by a
+# hand morpheme so nothing collides. This is deterministic and unambiguous by
+# construction (enforced by tests).
+def _alloc_pool():
+    from . import phonology as _ph
+    # tone phonemes only, stable order, excluding very-high (reserved/sparse)
+    pool = [p.name for p in _ph.INVENTORY
+            if p.cls == _ph.SoundClass.TONE and p.band != _ph.Band.VHIGH]
+    return pool
+
+
+def _build_morphemes() -> "Dict[str, MorphemeBody]":
+    morphemes: Dict[str, MorphemeBody] = dict(HAND_MORPHEMES)
+    taken = {_body_seq(v) for v in morphemes.values()}
+    pool = _alloc_pool()
+
+    # candidate codes: length-1 then length-2, in pool order (freq-ranked pool)
+    def code_stream():
+        for a in pool:
+            yield [a]
+        for a in pool:
+            for b in pool:
+                yield [a, b]
+
+    codes = code_stream()
+
+    # flatten categories in priority order (pronoun/verb/... already freq-ish)
+    for cat, concepts in VOCAB_CATEGORIES.items():
+        for concept in concepts:
+            if concept in morphemes:
+                continue
+            # find next unused code
+            while True:
+                cand = next(codes)
+                if tuple(cand) not in taken:
+                    break
+            morphemes[concept] = cand
+            taken.add(tuple(cand))
+    return morphemes
+
+
+MORPHEMES: Dict[str, MorphemeBody] = _build_morphemes()
+
+# reverse map for decoding: tuple(flattened phoneme names) -> concept
 _BY_SEQ = {_body_seq(v): k for k, v in MORPHEMES.items()}
 
 
@@ -149,13 +234,37 @@ PHONES_TO_CHAR = {tuple(v): k for k, v in CHAR_TO_PHONES.items()}
 SPELL_MARKER = ["Grm"]
 
 
+# documented aliases: two concept names that intentionally share one sound.
+ALIASES = {"CALCULATING": "WORKING"}
+
+
+# --- compositional numerals -------------------------------------------------
+def number_to_concepts(n: int) -> List[str]:
+    """Integer -> concept sequence: NUM marker then digits, e.g. 42 -> NUM D4 D2."""
+    return ["NUM"] + [f"D{int(d)}" for d in str(abs(int(n)))]
+
+
+def concepts_to_number(concepts: List[str]):
+    """Parse a NUM..D.. run back to an int, or None if not a number run."""
+    if not concepts or concepts[0] != "NUM":
+        return None
+    digits = []
+    for c in concepts[1:]:
+        if c.startswith("D") and c[1:].isdigit():
+            digits.append(c[1:])
+        else:
+            break
+    return int("".join(digits)) if digits else None
+
+
 def example_sentences():
     """Return (english, [concepts]) pairs used in demos/tests."""
     return [
         ("Is your energy low?",      ["QUERY", "YOU", "ENERGY", "LOW"]),
         ("My energy is low.",        ["SELF", "ENERGY", "LOW"]),
-        ("Warning: obstacle ahead.", ["WARNING", "OBSTACLE", "FRONT"]),
+        ("Warning: obstacle ahead.", ["WARN", "OBSTACLE", "FRONT"]),
         ("Acknowledged.",            ["ACK"]),
         ("Follow me.",               ["YOU", "FOLLOW", "SELF"]),
+        ("Bring me the cup.",        ["YOU", "BRING", "SELF", "CUP"]),
         ("Stop.",                    ["STOP"]),
     ]

@@ -57,7 +57,33 @@ def main():
     ])
     gen.write_wav(os.path.join(OUT, "scene_think_then_alarm.wav"), scene)
 
-    print("rendered inventory, sentences, prosody, and repetition morphemes into audio_samples/")
+    # 5. interjections (emotive, standalone)
+    from b4bl import interjections as itj
+    gen.write_wav(os.path.join(OUT, "interjections.wav"), itj.montage())
+    # "tell the bot no -> it goes awww"
+    no_aww = np.concatenate([codec.encode(["DENY"], prosody.NEUTRAL),
+                             codec._silence(0.2), itj.render("AWW")])
+    gen.write_wav(os.path.join(OUT, "scene_no_aww.wav"), no_aww)
+    # "good job -> yay!"
+    praise_yay = np.concatenate([codec.encode(["DONE"], prosody.CALM),
+                                 codec._silence(0.15), itj.render("YAY")])
+    gen.write_wav(os.path.join(OUT, "scene_done_yay.wav"), praise_yay)
+
+    # 6. the human-legible speech acts, in a row
+    acts = ["QUERY", "CONFIRM", "CLARIFY", "ACK", "DENY", "WARN", "DONE",
+            "REPEAT", "WAIT", "ERROR", "ALARM", "WORKING"]
+    clips2 = []
+    for a in acts:
+        clips2.append(codec.encode([a], prosody.NEUTRAL))
+        clips2.append(codec._silence(0.35))
+    gen.write_wav(os.path.join(OUT, "speech_acts.wav"), np.concatenate(clips2))
+
+    # 7. a number: "go to room 3" (MOVE ROOM NUM D3)
+    num = codec.encode(["GO", "ROOM"] + lex.number_to_concepts(3), prosody.NEUTRAL)
+    gen.write_wav(os.path.join(OUT, "say_go_room_3.wav"), num)
+
+    print("rendered inventory, sentences, prosody, repetition, interjections, "
+          "speech-acts, numerals into audio_samples/")
 
 
 if __name__ == "__main__":

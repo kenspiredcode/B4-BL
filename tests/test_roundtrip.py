@@ -15,9 +15,11 @@ def test_inventory_features_unique():
 
 
 def test_morpheme_sequences_unambiguous():
-    """No morpheme's flattened phoneme-sequence may be identical to another's."""
-    seqs = [tuple(lex.concept_to_phonemes(c)) for c in lex.MORPHEMES]
-    assert len(seqs) == len(set(seqs)), "two morphemes share a phoneme sequence"
+    """No two DISTINCT concepts may share a phoneme-sequence (documented aliases
+    excepted — they intentionally name the same sound)."""
+    concepts = [c for c in lex.MORPHEMES if c not in lex.ALIASES]
+    seqs = [tuple(lex.concept_to_phonemes(c)) for c in concepts]
+    assert len(seqs) == len(set(seqs)), "two distinct morphemes share a sequence"
 
 
 def test_all_morpheme_phonemes_exist():
@@ -47,5 +49,27 @@ def test_spelling_fallback_roundtrip():
 
 
 def test_encode_produces_audio():
-    audio = codec.encode(["WARNING", "OBSTACLE", "FRONT"])
+    audio = codec.encode(["WARN", "OBSTACLE", "FRONT"])
     assert audio.ndim == 1 and len(audio) > 1000
+
+
+def test_vocabulary_size():
+    """A primitive-but-real language: expect a couple hundred morphemes."""
+    assert len(lex.MORPHEMES) >= 180
+
+
+def test_numerals_roundtrip():
+    for n in [0, 7, 42, 100, 2599]:
+        assert lex.concepts_to_number(lex.number_to_concepts(n)) == n
+
+
+def test_number_concepts_are_known():
+    for c in lex.number_to_concepts(42):
+        assert lex.is_known(c), f"{c} not a known morpheme"
+
+
+def test_interjections_render():
+    from b4bl import interjections as itj
+    for name in itj.INTERJECTIONS:
+        a = itj.render(name)
+        assert a.ndim == 1 and len(a) > 100
