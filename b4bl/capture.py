@@ -51,37 +51,35 @@ def _sd():
     return sd
 
 
-# Output latency headroom (seconds). AirPlay buffers ~1.5-2s before sound comes
-# out; the recording window must extend past playback or the message is cut off.
-# 0 for built-in speakers. Set via set_channel_profile().
-OUTPUT_LATENCY = 0.0
+# Recording MARGIN (seconds) added on both ends of the emission. We do NOT try to
+# time playback precisely against variable output latency (AirPlay's buffering
+# drifts run to run); instead we record a generously long window that always
+# contains the message with margin, and let the sync-chirp find + clip it. Set
+# MARGIN comfortably above the worst-case output latency.
+REC_MARGIN = 0.5
 INPUT_GAIN = 1.0        # software boost for quiet channels (e.g. across-room AirPlay)
 
 
 def set_channel_profile(latency: float = 0.0, gain: float = 1.0):
-    """Tune capture for the current output path (built-in vs AirPlay etc.)."""
-    global OUTPUT_LATENCY, INPUT_GAIN
-    OUTPUT_LATENCY = latency
+    """Tune capture for the current output path. `latency` sets the recording
+    margin (record long, clip later); `gain` boosts quiet channels."""
+    global REC_MARGIN, INPUT_GAIN
+    REC_MARGIN = max(0.5, latency + 1.0)   # always a full second past worst-case
     INPUT_GAIN = gain
 
 
 def play_and_record(audio: np.ndarray, tail: float = 0.6) -> np.ndarray:
-    """Play `audio` through the speaker while recording the mic. Returns the mic
-    recording (mono float32). Uses a raw input stream (no voice-processing).
-
-    Records for the full emission PLUS OUTPUT_LATENCY headroom, using independent
-    play + rec so buffered outputs (AirPlay) aren't clipped by a too-short window.
-    Applies INPUT_GAIN for quiet channels."""
+    """Play `audio` and record the mic over a GENEROUSLY long window, then let the
+    sync-chirp locate the message (find_message clips it). Recording long and
+    clipping afterward is robust to variable/buffered output latency (AirPlay),
+    which precise timing is not. Applies INPUT_GAIN for quiet channels."""
     sd = _sd()
-    # Single duplex stream (playrec) is the reliable path. To absorb output
-    # latency (AirPlay buffers ~2s before sound emerges) we LEAD with silence by
-    # OUTPUT_LATENCY so the played message lands inside the recording window.
     emission = np.concatenate([
-        np.zeros(int((LEAD_SIL + OUTPUT_LATENCY) * SR), dtype=np.float32),
+        np.zeros(int((LEAD_SIL + REC_MARGIN) * SR), dtype=np.float32),
         SYNC,
         np.zeros(int(0.08 * SR), dtype=np.float32),
         audio.astype(np.float32),
-        np.zeros(int((POST_SIL + tail + OUTPUT_LATENCY) * SR), dtype=np.float32),
+        np.zeros(int((POST_SIL + tail + REC_MARGIN) * SR), dtype=np.float32),
     ])
     rec = sd.playrec(emission, samplerate=SR, channels=1, dtype="float32")
     sd.wait()

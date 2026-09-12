@@ -71,10 +71,15 @@ def main():
                     help="tag for the current audio output (builtin / airplay_office / ...)")
     ap.add_argument("--limit", type=int, default=0, help="cap emissions (0 = all)")
     ap.add_argument("--seed", type=int, default=42)
+    ap.add_argument("--latency", type=float, default=0.0,
+                    help="output latency headroom in seconds (AirPlay ~2.2)")
+    ap.add_argument("--gain", type=float, default=1.0,
+                    help="software input gain for quiet channels")
     args = ap.parse_args()
 
     os.makedirs(REC_DIR, exist_ok=True)
     rng = np.random.default_rng(args.seed)
+    capture.set_channel_profile(latency=args.latency, gain=args.gain)
 
     print("=== self-test ===")
     if not capture.self_test():
@@ -93,14 +98,25 @@ def main():
     est_min = len(pending) * 2.5 / 60
     print(f"estimated ~{est_min:.0f} min")
 
-    n_ok = n_skip = 0
+    MIN_RMS = 0.006     # reject captures too quiet to be usable (transient channel
+                        # dips). Retry once before skipping — protects an unattended
+                        # long run from silently saving silence with a good label.
+    n_ok = n_skip = n_quiet = 0
     with open(MANIFEST, "a") as mf:
         for i, (msg, pname) in enumerate(pending):
             audio = codec.encode(msg, prmap[pname])
-            rec = capture.play_and_record(audio)
-            seg = capture.find_message(rec)
+            seg = None
+            for attempt in range(2):
+                rec = capture.play_and_record(audio)
+                cand = capture.find_message(rec)
+                if cand is not None and float(np.sqrt(np.mean(cand ** 2))) >= MIN_RMS:
+                    seg = cand
+                    break
             if seg is None:
-                n_skip += 1
+                if cand is None:
+                    n_skip += 1
+                else:
+                    n_quiet += 1     # captured but too quiet after a retry
                 continue
             fn = f"{args.channel}_{i:05d}.wav"
             wavfile.write(os.path.join(REC_DIR, fn), gen.SR,
@@ -110,9 +126,11 @@ def main():
             mf.flush()
             n_ok += 1
             if (i + 1) % 50 == 0:
-                print(f"  {i+1}/{len(pending)}  ok={n_ok} skip={n_skip}")
+                print(f"  {i+1}/{len(pending)}  ok={n_ok} skip={n_skip} quiet={n_quiet}",
+                      flush=True)
             time.sleep(0.05)
-    print(f"DONE: {n_ok} recorded, {n_skip} skipped (no sync). manifest -> {MANIFEST}")
+    print(f"DONE: {n_ok} recorded, {n_skip} no-sync, {n_quiet} too-quiet. "
+          f"manifest -> {MANIFEST}")
 
 
 if __name__ == "__main__":
