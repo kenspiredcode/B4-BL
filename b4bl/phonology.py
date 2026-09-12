@@ -114,8 +114,10 @@ class Phoneme:
         if self.contour == Contour.DIP:
             return [(0, c + s), (0.5, c - s), (1, c)]
         if self.contour == Contour.SCOOP:
-            # dip a little then rise past start — reads as questioning
-            return [(0, c), (0.3, c - s * 0.6), (1, c + s)]
+            # dip early then rise clearly past start — reads as questioning. Peak
+            # reached before the end so the defining upswing renders (and isn't
+            # lost to envelope decay / edge trimming), keeping it distinct from DIP.
+            return [(0, c), (0.2, c - s * 0.6), (0.8, c + s), (1, c + s)]
         if self.contour == Contour.DOUBLE:
             # two bumps within one gesture
             return [(0, c - s * 0.5), (0.25, c + s * 0.5), (0.5, c - s * 0.3),
@@ -210,12 +212,11 @@ def _gen_inventory():
     combos += [(Band.SUB, c, S, T) for c in (Contour.FLAT, Contour.RISE, Contour.FALL)]
     # VHIGH: SPARINGLY — only rise + double (alarm/surprise)
     combos += [(Band.VHIGH, Contour.RISE, S, T), (Band.VHIGH, Contour.DOUBLE, S, T)]
-    # WHISTLE class: a few long expressive whistles (mid/high arch, high rise-long)
-    combos += [(Band.MID, Contour.ARCH, L, SoundClass.WHISTLE),
-               (Band.HIGH, Contour.ARCH, L, SoundClass.WHISTLE)]
-    # TRILL class: fast flutter (mid/high)
-    combos += [(Band.MID, Contour.RISE, S, SoundClass.TRILL),
-               (Band.HIGH, Contour.RISE, S, SoundClass.TRILL)]
+    # NOTE: WHISTLE and TRILL are TONE sub-flavors (breathier / fluttered), not
+    # distinct meaning-bearing classes — a decoder can't reliably separate them
+    # from plain TONE, and no morpheme uses them. So they are NOT decodable
+    # phonemes; the sound-class meaning axis is the coarse TONE / GARGLE / RASP
+    # (talking vs texture). They remain available for expressive rendering.
     # GARGLE class textures
     combos += [(Band.MID, Contour.FLAT, S, SoundClass.GARGLE),
                (Band.MID, Contour.FLAT, L, SoundClass.GARGLE),

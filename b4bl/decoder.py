@@ -161,21 +161,25 @@ def _nearest_band(hz: float) -> ph.Band:
     best, bestd = None, 1e18
     for band, c in ph.BAND_CENTER.items():
         d = abs(np.log2((hz + 1e-6) / c))
+        # VHIGH is reserved/rare; bias against it so a bright HIGH sound doesn't
+        # get pulled up into it (a common error with neutral prosody's lift).
+        if band == ph.Band.VHIGH:
+            d += 0.25
         if d < bestd:
             best, bestd = band, d
     return best
 
 
-# normalized contour templates (start, mid, end-ish) sampled at 5 points, in
-# semitone-ish (log) space, zero-mean. Matched by correlation against the track.
+# normalized contour templates at 8 points in log-pitch space, zero-mean.
+# Calibrated against the actual rendered pitch tracks (synth and recognizer share
+# the model) so scoop/dip/arch/double don't collapse together.
 _CONTOUR_TEMPLATES = {
-    ph.Contour.FLAT:   np.array([0, 0, 0, 0, 0.0]),
-    ph.Contour.RISE:   np.array([-1, -0.5, 0, 0.5, 1.0]),
-    ph.Contour.FALL:   np.array([1, 0.5, 0, -0.5, -1.0]),
-    ph.Contour.ARCH:   np.array([-1, 0.2, 1, 0.2, -0.4]),
-    ph.Contour.DIP:    np.array([1, -0.2, -1, -0.2, 0.4]),
-    ph.Contour.SCOOP:  np.array([0.2, -0.6, -0.3, 0.4, 1.0]),
-    ph.Contour.DOUBLE: np.array([-0.8, 0.8, -0.5, 0.8, 0.0]),
+    ph.Contour.RISE:   np.array([-1.0, -0.7, -0.4, -0.1, 0.2, 0.5, 0.8, 1.0]),
+    ph.Contour.FALL:   np.array([1.0, 0.7, 0.4, 0.1, -0.2, -0.5, -0.8, -1.0]),
+    ph.Contour.ARCH:   np.array([-1.0, -0.2, 0.5, 1.0, 0.9, 0.5, 0.0, -0.4]),
+    ph.Contour.DIP:    np.array([1.0, 0.3, -0.5, -1.0, -0.8, -0.3, 0.1, 0.4]),
+    ph.Contour.SCOOP:  np.array([0.0, -0.5, -0.7, -0.5, -0.2, 0.3, 0.7, 1.0]),
+    ph.Contour.DOUBLE: np.array([-0.7, 0.6, -0.2, 0.9, -0.1, 0.7, 0.2, -0.3]),
 }
 
 
@@ -189,22 +193,15 @@ def _classify_contour(track: np.ndarray) -> ph.Contour:
         t = t[1:-1]
     logt = np.log(t)
     span = logt.max() - logt.min()
-    # a flat tone shows ~0.13 of tracker jitter; a real sweep (span ~0.33 center)
-    # is much larger. Gate between them.
     if span < 0.18:
         return ph.Contour.FLAT
-    # resample the track to 5 points, zero-mean, unit-scale
     xs = np.linspace(0, 1, len(logt))
-    samp = np.interp(np.linspace(0, 1, 5), xs, logt)
+    samp = np.interp(np.linspace(0, 1, 8), xs, logt)
     samp = samp - samp.mean()
     if np.max(np.abs(samp)) > 0:
         samp = samp / np.max(np.abs(samp))
-    # best-correlating template (FLAT already handled by the span gate above and
-    # excluded here — its zero template can't be correlated).
     best, bestscore = ph.Contour.RISE, -1e9
     for c, tmpl in _CONTOUR_TEMPLATES.items():
-        if c == ph.Contour.FLAT:
-            continue
         tm = tmpl - tmpl.mean()
         denom = np.linalg.norm(samp) * np.linalg.norm(tm) + 1e-9
         score = float(np.dot(samp, tm) / denom)
@@ -213,13 +210,36 @@ def _classify_contour(track: np.ndarray) -> ph.Contour:
     return best
 
 
+def _pitch_clarity(seg: np.ndarray) -> float:
+    """Strength of the autocorrelation fundamental peak (0..1). High for clean
+    pitched tones/gargle, low for broadband rasp noise."""
+    fmin, fmax = 120, 3200
+    lag_min, lag_max = int(SR / fmax), int(SR / fmin)
+    n = len(seg)
+    mid = seg[int(0.2 * n):int(0.8 * n)].astype(float)
+    if len(mid) < FRAME:
+        mid = seg.astype(float)
+    mid = mid - mid.mean()
+    if np.sqrt(np.mean(mid ** 2)) < 1e-6:
+        return 0.0
+    ac = np.correlate(mid, mid, "full")[len(mid) - 1:]
+    ac = ac / (ac[0] or 1.0)
+    window = ac[lag_min:lag_max]
+    return float(np.max(window)) if len(window) else 0.0
+
+
 def _classify_sound(seg: np.ndarray) -> ph.SoundClass:
+    """TONE / GARGLE / RASP — the coarse talking-vs-texture meaning axis, keyed on
+    spectral flatness, which separates them with wide margins:
+      TONE   ~0.00  (pure sine)
+      RASP   ~0.06  (filtered buzz)
+      GARGLE ~0.28  (hard AM gating spreads energy -> high flatness)
+    (whistle/trill collapse into TONE — they aren't decodable classes.)"""
     flat = _spectral_flatness(seg)
-    am = _am_depth(seg)
-    if flat > 0.15:               # broadband noise -> rasp
-        return ph.SoundClass.RASP
-    if am > 0.08:                 # periodic flutter -> gargle
+    if flat > 0.15:
         return ph.SoundClass.GARGLE
+    if flat > 0.03:
+        return ph.SoundClass.RASP
     return ph.SoundClass.TONE
 
 
@@ -232,6 +252,54 @@ def _band_anchor(track: np.ndarray) -> float:
     if len(t) == 0:
         return 0.0
     return float(np.exp(np.mean(np.log(t))))
+
+
+def _norm_shape(track: np.ndarray, k: int = 8) -> np.ndarray:
+    """Resample a pitch track to k points in log space, zero-mean, unit-scale —
+    a contour 'shape' fingerprint independent of absolute pitch and span."""
+    t = track[track > 0]
+    if len(t) < 2:
+        return np.zeros(k)
+    if len(t) >= 7:
+        t = t[1:-1]
+    logt = np.log(t)
+    samp = np.interp(np.linspace(0, 1, k), np.linspace(0, 1, len(logt)), logt)
+    samp = samp - samp.mean()
+    m = np.max(np.abs(samp))
+    return samp / m if m > 0 else samp
+
+
+# reference contour shapes, generated ONCE from the inventory's own rendering —
+# synth and recognizer share the model, so we match a segment against the real
+# rendered shapes rather than hand-written templates.
+_REF_SHAPES = {}
+
+
+def _ref_shapes():
+    if not _REF_SHAPES:
+        for p in ph.INVENTORY:
+            if p.cls == ph.SoundClass.TONE:
+                _REF_SHAPES[p.contour] = _norm_shape(_pitch_track(p.render()))
+    return _REF_SHAPES
+
+
+def _classify_contour_ref(track: np.ndarray) -> ph.Contour:
+    t = track[track > 0]
+    if len(t) < 2:
+        return ph.Contour.FLAT
+    logt = np.log(t if len(t) < 7 else t[1:-1])
+    if logt.max() - logt.min() < 0.18:
+        return ph.Contour.FLAT
+    shape = _norm_shape(track)
+    best, bestscore = ph.Contour.FLAT, -1e9
+    for contour, ref in _ref_shapes().items():
+        if contour == ph.Contour.FLAT:
+            continue
+        denom = np.linalg.norm(shape) * np.linalg.norm(ref) + 1e-9
+        score = float(np.dot(shape, ref) / denom)
+        if score > bestscore:
+            best, bestscore = contour, score
+    return best
 
 
 def classify_segment(seg: np.ndarray) -> Tuple[str, tuple]:
