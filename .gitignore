@@ -13,3 +13,4 @@ venv/
 audio_samples/scratch/
 *.tmp.wav
 recordings/
+.claude/
