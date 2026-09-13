@@ -82,11 +82,21 @@ def main():
     capture.set_channel_profile(latency=args.latency, gain=args.gain)
 
     print("=== self-test ===")
-    if not capture.self_test():
-        print("ABORT: channel not live. Check volume / output device / mic permission.")
+    # run the self-test in a subprocess too, so a dead channel can't hang startup.
+    import subprocess
+    emit = os.path.join(os.path.dirname(__file__), "_emit_one.py")
+    try:
+        st = subprocess.run(
+            [sys.executable, emit, "/tmp/b4bl_selftest.wav",
+             str(args.latency), str(args.gain), "__SELFTEST__"],
+            timeout=args.latency * 2 + 12)
+        if st.returncode != 0:
+            print("ABORT: channel not live (volume / output device / mic permission).")
+            sys.exit(1)
+    except subprocess.TimeoutExpired:
+        print("ABORT: self-test hung (output device wedged?). Re-select output & retry.")
         sys.exit(1)
 
-    prmap = dict(PROSODIES)
     items = build_message_set(rng)
     if args.limit:
         items = items[: args.limit]
@@ -108,58 +118,55 @@ def main():
     est_min = len(pending) * 2.5 / 60
     print(f"estimated ~{est_min:.0f} min")
 
-    MIN_RMS = 0.006     # reject captures too quiet to be usable (transient channel
-                        # dips). Retry once before skipping — protects an unattended
-                        # long run from silently saving silence with a good label.
+    # Each emission runs in a SUBPROCESS. A hung audio call (AirPlay drop wedging
+    # CoreAudio) can't be recovered in-process — a thread timeout leaves PortAudio
+    # wedged for the next call too. Killing a subprocess makes the OS reclaim the
+    # audio state, so the run truly continues. This is the robust fix after two
+    # in-process watchdog attempts stalled the run.
+    import subprocess, signal
+    emit = os.path.join(os.path.dirname(__file__), "_emit_one.py")
+    emission_timeout = args.latency * 2 + 12   # generous per-emission cap (seconds)
+
     n_ok = n_skip = n_quiet = n_hang = 0
     hang_streak = 0
     with open(MANIFEST, "a") as mf:
         for i, (msg, pname) in enumerate(pending):
-            audio = codec.encode(msg, prmap[pname])
-            seg = None
-            cand = None
-            for attempt in range(2):
-                rec = capture.play_and_record_safe(audio)   # watchdog: None if hung
-                if rec is None:
-                    n_hang += 1
-                    hang_streak += 1
-                    # if the channel keeps hanging, it has dropped — re-verify
-                    if hang_streak >= 3:
-                        print(f"  [warn] {hang_streak} hangs in a row at {i}; "
-                              f"re-checking channel...", flush=True)
-                        if not capture.self_test():
-                            print("  [abort] channel dead mid-run; stopping cleanly. "
-                                  "Fix output and re-run to resume.", flush=True)
-                            print(f"DONE(early): {n_ok} recorded, {n_skip} no-sync, "
-                                  f"{n_quiet} quiet, {n_hang} hangs.")
-                            return
-                        hang_streak = 0
-                    continue
-                hang_streak = 0
-                cand = capture.find_message(rec)
-                if cand is not None and float(np.sqrt(np.mean(cand ** 2))) >= MIN_RMS:
-                    seg = cand
-                    break
-            if seg is None:
-                if cand is None:
-                    n_skip += 1
-                else:
-                    n_quiet += 1     # captured but too quiet after a retry
-                continue
             fn = f"{args.channel}_{next_idx:05d}.wav"
-            next_idx += 1
-            wavfile.write(os.path.join(REC_DIR, fn), gen.SR,
-                          (np.clip(seg, -1, 1) * 32767).astype(np.int16))
-            mf.write(json.dumps({"file": fn, "concepts": msg,
-                                 "prosody": pname, "channel": args.channel}) + "\n")
-            mf.flush()
-            n_ok += 1
+            out = os.path.join(REC_DIR, fn)
+            env = dict(os.environ, B4BL_PROSODY=pname)
+            cmd = [sys.executable, emit, out, str(args.latency), str(args.gain)] + list(msg)
+            try:
+                p = subprocess.run(cmd, env=env, timeout=emission_timeout,
+                                   stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+                rc = p.returncode
+            except subprocess.TimeoutExpired:
+                rc = -1   # hung: subprocess killed by timeout, OS frees audio state
+
+            if rc == -1:
+                n_hang += 1
+                hang_streak += 1
+                if hang_streak >= 4:
+                    print(f"  [abort] {hang_streak} hangs in a row at {i}; channel "
+                          f"likely dropped. Stopping cleanly — fix output & re-run "
+                          f"to resume.", flush=True)
+                    break
+                continue
+            hang_streak = 0
+            if rc == 0 and os.path.exists(out):
+                mf.write(json.dumps({"file": fn, "concepts": msg,
+                                     "prosody": pname, "channel": args.channel}) + "\n")
+                mf.flush()
+                n_ok += 1
+                next_idx += 1
+            elif rc == 2:
+                n_skip += 1     # no sync or too quiet
+            else:
+                n_skip += 1
             if (i + 1) % 50 == 0:
-                print(f"  {i+1}/{len(pending)}  ok={n_ok} skip={n_skip} quiet={n_quiet}",
+                print(f"  {i+1}/{len(pending)}  ok={n_ok} skip={n_skip} hang={n_hang}",
                       flush=True)
-            time.sleep(0.05)
-    print(f"DONE: {n_ok} recorded, {n_skip} no-sync, {n_quiet} too-quiet, "
-          f"{n_hang} hangs. manifest -> {MANIFEST}")
+    print(f"DONE: {n_ok} recorded, {n_skip} no-sync/quiet, {n_hang} hangs. "
+          f"manifest -> {MANIFEST}")
 
 
 if __name__ == "__main__":
