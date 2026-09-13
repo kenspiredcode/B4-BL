@@ -55,11 +55,14 @@ def _rms_envelope(x: np.ndarray) -> Tuple[np.ndarray, np.ndarray]:
     return times, rms
 
 
-def _segments(x: np.ndarray):
-    """Yield (start_sample, end_sample, gap_before_sec) for each voiced run."""
-    x = x / (np.max(np.abs(x)) or 1.0)
-    times, rms = _rms_envelope(x)
-    voiced = rms > SILENCE_RMS
+# segment post-processing thresholds (seconds)
+MIN_SEG_DUR = 0.05      # drop fragments shorter than this (noise blips)
+MERGE_GAP = 0.05        # merge two segments separated by a gap shorter than this
+                        # (a phoneme's brief internal dip / reverb notch, not a
+                        #  real boundary)
+
+
+def _raw_segments(voiced, times):
     segs = []
     i = 0
     while i < len(voiced):
@@ -73,12 +76,32 @@ def _segments(x: np.ndarray):
             i = j
         else:
             i += 1
-    # compute gaps before each segment
+    return segs
+
+
+def _segments(x: np.ndarray):
+    """Segment into voiced runs, then CLEAN UP for real audio:
+      1. merge runs separated by a gap < MERGE_GAP (spurious internal dips), and
+      2. drop runs shorter than MIN_SEG_DUR (noise blips / reverb fragments).
+    Real recordings otherwise over-segment (noise creates false gaps and tiny
+    fragments) or split a phoneme on a brief internal amplitude notch."""
+    x = x / (np.max(np.abs(x)) or 1.0)
+    times, rms = _rms_envelope(x)
+    voiced = rms > SILENCE_RMS
+    segs = _raw_segments(voiced, times)
+
+    # Only DROP tiny fragments (noise blips) — do NOT merge on short gaps, because
+    # real within-morpheme phoneme gaps (~30ms) are the same size as noise gaps,
+    # so gap-based merging collapses distinct phonemes. Boundary detection needs a
+    # different signal than energy gaps (see _refine_boundaries / pitch-based).
+    kept = [list(seg) for seg in segs if (seg[1] - seg[0]) / SR >= MIN_SEG_DUR]
+    if not kept:                       # if all dropped, keep the loudest raw run
+        kept = [list(max(segs, key=lambda z: z[1] - z[0]))] if segs else []
+
     out = []
     prev_end = 0
-    for (s, e) in segs:
-        gap = (s - prev_end) / SR
-        out.append((s, e, gap))
+    for s, e in kept:
+        out.append((s, e, (s - prev_end) / SR))
         prev_end = e
     return out
 
