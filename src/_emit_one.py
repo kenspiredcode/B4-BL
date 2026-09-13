@@ -25,7 +25,8 @@ def main():
     gain = float(sys.argv[3])
     concepts = sys.argv[4:]
     pname = os.environ.get("B4BL_PROSODY", "neutral")
-    capture.set_channel_profile(latency=latency, gain=gain)
+    input_dev = os.environ.get("B4BL_INPUT_DEVICE") or None
+    capture.set_channel_profile(latency=latency, gain=gain, input_device=input_dev)
 
     if concepts[:1] == ["__SELFTEST__"]:
         sys.exit(0 if capture.self_test() else 3)

@@ -58,14 +58,35 @@ def _sd():
 # MARGIN comfortably above the worst-case output latency.
 REC_MARGIN = 0.5
 INPUT_GAIN = 1.0        # software boost for quiet channels (e.g. across-room AirPlay)
+INPUT_DEVICE = None     # explicit mic device (name substring or index). CRITICAL for
+                        # cross-device: pairing a BT/AirPlay SPEAKER often makes macOS
+                        # switch the INPUT to that device's own mic too, so we'd record
+                        # from the speaker's tinny mic instead of the Mac mic. Pin the
+                        # real mic here.
 
 
-def set_channel_profile(latency: float = 0.0, gain: float = 1.0):
+def _resolve_input_device(spec):
+    """Resolve a device name-substring or index to a sounddevice input index."""
+    if spec is None:
+        return None
+    sd = _sd()
+    if isinstance(spec, int):
+        return spec
+    for i, d in enumerate(sd.query_devices()):
+        if d["max_input_channels"] > 0 and spec.lower() in d["name"].lower():
+            return i
+    return None
+
+
+def set_channel_profile(latency: float = 0.0, gain: float = 1.0, input_device=None):
     """Tune capture for the current output path. `latency` sets the recording
-    margin (record long, clip later); `gain` boosts quiet channels."""
-    global REC_MARGIN, INPUT_GAIN
+    margin (record long, clip later); `gain` boosts quiet channels; `input_device`
+    pins the recording mic (name substring or index) so a paired speaker doesn't
+    hijack the input."""
+    global REC_MARGIN, INPUT_GAIN, INPUT_DEVICE
     REC_MARGIN = max(0.5, latency + 1.0)   # always a full second past worst-case
     INPUT_GAIN = gain
+    INPUT_DEVICE = _resolve_input_device(input_device)
 
 
 def play_and_record(audio: np.ndarray, tail: float = 0.6) -> np.ndarray:
@@ -81,7 +102,16 @@ def play_and_record(audio: np.ndarray, tail: float = 0.6) -> np.ndarray:
         audio.astype(np.float32),
         np.zeros(int((POST_SIL + tail + REC_MARGIN) * SR), dtype=np.float32),
     ])
-    rec = sd.playrec(emission, samplerate=SR, channels=1, dtype="float32")
+    # Use playrec (single reliable duplex call). To record from a DIFFERENT device
+    # than playback (pinned mic + separate speaker), pass device=(input, output);
+    # playrec then splits the duplex across the two devices.
+    if INPUT_DEVICE is not None:
+        out_dev = sd.default.device[1] if isinstance(sd.default.device, (list, tuple)) \
+            else sd.default.device
+        rec = sd.playrec(emission, samplerate=SR, channels=1, dtype="float32",
+                         device=(INPUT_DEVICE, out_dev))
+    else:
+        rec = sd.playrec(emission, samplerate=SR, channels=1, dtype="float32")
     sd.wait()
     out = rec[:, 0]
     if INPUT_GAIN != 1.0:

@@ -75,21 +75,29 @@ def main():
                     help="output latency headroom in seconds (AirPlay ~2.2)")
     ap.add_argument("--gain", type=float, default=1.0,
                     help="software input gain for quiet channels")
+    ap.add_argument("--input-device", default=None,
+                    help="pin the recording mic by name substring or index "
+                         "(e.g. 'MacBook Pro Microphone', 'AUKEY') so a paired "
+                         "speaker doesn't hijack the input")
     args = ap.parse_args()
 
     os.makedirs(REC_DIR, exist_ok=True)
     rng = np.random.default_rng(args.seed)
-    capture.set_channel_profile(latency=args.latency, gain=args.gain)
+    capture.set_channel_profile(latency=args.latency, gain=args.gain,
+                                input_device=args.input_device)
 
     print("=== self-test ===")
     # run the self-test in a subprocess too, so a dead channel can't hang startup.
     import subprocess
     emit = os.path.join(os.path.dirname(__file__), "_emit_one.py")
+    base_env = dict(os.environ)
+    if args.input_device:
+        base_env["B4BL_INPUT_DEVICE"] = args.input_device
     try:
         st = subprocess.run(
             [sys.executable, emit, "/tmp/b4bl_selftest.wav",
              str(args.latency), str(args.gain), "__SELFTEST__"],
-            timeout=args.latency * 2 + 12)
+            env=base_env, timeout=args.latency * 2 + 12)
         if st.returncode != 0:
             print("ABORT: channel not live (volume / output device / mic permission).")
             sys.exit(1)
@@ -133,7 +141,7 @@ def main():
         for i, (msg, pname) in enumerate(pending):
             fn = f"{args.channel}_{next_idx:05d}.wav"
             out = os.path.join(REC_DIR, fn)
-            env = dict(os.environ, B4BL_PROSODY=pname)
+            env = dict(base_env, B4BL_PROSODY=pname)
             cmd = [sys.executable, emit, out, str(args.latency), str(args.gain)] + list(msg)
             try:
                 p = subprocess.run(cmd, env=env, timeout=emission_timeout,
