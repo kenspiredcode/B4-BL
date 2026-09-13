@@ -65,28 +65,41 @@ INPUT_DEVICE = None     # explicit mic device (name substring or index). CRITICA
                         # real mic here.
 
 
-def _resolve_input_device(spec):
-    """Resolve a device name-substring or index to a sounddevice input index."""
+OUTPUT_DEVICE = None    # explicit playback device; lets a run pick the speaker
+                        # (e.g. MacBook Speakers) without the user changing system
+                        # settings — essential for unattended overnight runs.
+
+
+def _resolve_device(spec, kind):
+    """Resolve a device name-substring or index to a sounddevice index. kind is
+    'input' or 'output'."""
     if spec is None:
         return None
     sd = _sd()
     if isinstance(spec, int):
         return spec
+    key = "max_input_channels" if kind == "input" else "max_output_channels"
     for i, d in enumerate(sd.query_devices()):
-        if d["max_input_channels"] > 0 and spec.lower() in d["name"].lower():
+        if d[key] > 0 and spec.lower() in d["name"].lower():
             return i
     return None
 
 
-def set_channel_profile(latency: float = 0.0, gain: float = 1.0, input_device=None):
-    """Tune capture for the current output path. `latency` sets the recording
-    margin (record long, clip later); `gain` boosts quiet channels; `input_device`
-    pins the recording mic (name substring or index) so a paired speaker doesn't
-    hijack the input."""
-    global REC_MARGIN, INPUT_GAIN, INPUT_DEVICE
+def _resolve_input_device(spec):
+    return _resolve_device(spec, "input")
+
+
+def set_channel_profile(latency: float = 0.0, gain: float = 1.0,
+                        input_device=None, output_device=None):
+    """Tune capture. `latency` sets the recording margin (record long, clip later);
+    `gain` boosts quiet channels; `input_device` pins the recording mic so a paired
+    speaker doesn't hijack the input; `output_device` pins the playback speaker so
+    an unattended run can choose it without changing system settings."""
+    global REC_MARGIN, INPUT_GAIN, INPUT_DEVICE, OUTPUT_DEVICE
     REC_MARGIN = max(0.5, latency + 1.0)   # always a full second past worst-case
     INPUT_GAIN = gain
-    INPUT_DEVICE = _resolve_input_device(input_device)
+    INPUT_DEVICE = _resolve_device(input_device, "input")
+    OUTPUT_DEVICE = _resolve_device(output_device, "output")
 
 
 def play_and_record(audio: np.ndarray, tail: float = 0.6) -> np.ndarray:
@@ -105,11 +118,14 @@ def play_and_record(audio: np.ndarray, tail: float = 0.6) -> np.ndarray:
     # Use playrec (single reliable duplex call). To record from a DIFFERENT device
     # than playback (pinned mic + separate speaker), pass device=(input, output);
     # playrec then splits the duplex across the two devices.
-    if INPUT_DEVICE is not None:
-        out_dev = sd.default.device[1] if isinstance(sd.default.device, (list, tuple)) \
-            else sd.default.device
+    def _default(idx):
+        dd = sd.default.device
+        return dd[idx] if isinstance(dd, (list, tuple)) else dd
+    if INPUT_DEVICE is not None or OUTPUT_DEVICE is not None:
+        in_dev = INPUT_DEVICE if INPUT_DEVICE is not None else _default(0)
+        out_dev = OUTPUT_DEVICE if OUTPUT_DEVICE is not None else _default(1)
         rec = sd.playrec(emission, samplerate=SR, channels=1, dtype="float32",
-                         device=(INPUT_DEVICE, out_dev))
+                         device=(in_dev, out_dev))
     else:
         rec = sd.playrec(emission, samplerate=SR, channels=1, dtype="float32")
     sd.wait()

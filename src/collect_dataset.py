@@ -79,12 +79,17 @@ def main():
                     help="pin the recording mic by name substring or index "
                          "(e.g. 'MacBook Pro Microphone', 'AUKEY') so a paired "
                          "speaker doesn't hijack the input")
+    ap.add_argument("--output-device", default=None,
+                    help="pin the playback speaker by name substring or index "
+                         "(e.g. 'MacBook Pro Speakers') so an unattended run picks "
+                         "it without changing system settings")
     args = ap.parse_args()
 
     os.makedirs(REC_DIR, exist_ok=True)
     rng = np.random.default_rng(args.seed)
     capture.set_channel_profile(latency=args.latency, gain=args.gain,
-                                input_device=args.input_device)
+                                input_device=args.input_device,
+                                output_device=args.output_device)
 
     print("=== self-test ===")
     # run the self-test in a subprocess too, so a dead channel can't hang startup.
@@ -93,6 +98,8 @@ def main():
     base_env = dict(os.environ)
     if args.input_device:
         base_env["B4BL_INPUT_DEVICE"] = args.input_device
+    if args.output_device:
+        base_env["B4BL_OUTPUT_DEVICE"] = args.output_device
     try:
         st = subprocess.run(
             [sys.executable, emit, "/tmp/b4bl_selftest.wav",
