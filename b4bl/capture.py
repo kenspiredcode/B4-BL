@@ -89,6 +89,46 @@ def play_and_record(audio: np.ndarray, tail: float = 0.6) -> np.ndarray:
     return out
 
 
+def play_and_record_safe(audio: np.ndarray, tail: float = 0.6,
+                         timeout: Optional[float] = None) -> Optional[np.ndarray]:
+    """play_and_record with a WATCHDOG. sounddevice's playrec has no timeout, so a
+    dropped output (AirPlay disconnect) blocks forever. Run it in a thread; if it
+    doesn't finish within `timeout`, abort the audio subsystem and return None so
+    the caller can skip and continue instead of hanging the whole run.
+
+    Default timeout is generous relative to the emission length + margins."""
+    import threading
+    sd = _sd()
+    if timeout is None:
+        emission_len = (LEAD_SIL + REC_MARGIN + 0.26 + len(audio) / SR
+                        + POST_SIL + tail + REC_MARGIN)
+        timeout = emission_len + 5.0        # emission time + slack
+    result = {}
+
+    def worker():
+        try:
+            result["out"] = play_and_record(audio, tail=tail)
+        except Exception as e:  # device error -> treat as a miss
+            result["err"] = e
+
+    t = threading.Thread(target=worker, daemon=True)
+    t.start()
+    t.join(timeout)
+    if t.is_alive():
+        # the audio call hung (stream dropped). Force-reset PortAudio so the next
+        # emission can start fresh; the hung thread is a daemon and won't block exit.
+        try:
+            sd.stop()
+        except Exception:
+            pass
+        try:
+            sd._terminate(); sd._initialize()
+        except Exception:
+            pass
+        return None
+    return result.get("out")
+
+
 def find_message(rec: np.ndarray) -> Optional[np.ndarray]:
     """Locate the sync chirp by cross-correlation and return the audio after it
     (trimmed to the trailing silence)."""

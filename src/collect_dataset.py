@@ -93,6 +93,16 @@ def main():
     done = load_done(args.channel)
     pending = [(m, p) for (m, p) in items if (tuple(m), p, args.channel) not in done]
 
+    # start file numbering ABOVE any existing files for this channel, so a resume
+    # run never overwrites recordings from a previous run.
+    import glob, re
+    existing = glob.glob(os.path.join(REC_DIR, f"{args.channel}_*.wav"))
+    next_idx = 0
+    for p in existing:
+        m = re.search(rf"{re.escape(args.channel)}_(\d+)\.wav$", p)
+        if m:
+            next_idx = max(next_idx, int(m.group(1)) + 1)
+
     print(f"=== collecting {len(pending)} emissions on channel '{args.channel}' "
           f"({len(items) - len(pending)} already done) ===")
     est_min = len(pending) * 2.5 / 60
@@ -101,13 +111,31 @@ def main():
     MIN_RMS = 0.006     # reject captures too quiet to be usable (transient channel
                         # dips). Retry once before skipping — protects an unattended
                         # long run from silently saving silence with a good label.
-    n_ok = n_skip = n_quiet = 0
+    n_ok = n_skip = n_quiet = n_hang = 0
+    hang_streak = 0
     with open(MANIFEST, "a") as mf:
         for i, (msg, pname) in enumerate(pending):
             audio = codec.encode(msg, prmap[pname])
             seg = None
+            cand = None
             for attempt in range(2):
-                rec = capture.play_and_record(audio)
+                rec = capture.play_and_record_safe(audio)   # watchdog: None if hung
+                if rec is None:
+                    n_hang += 1
+                    hang_streak += 1
+                    # if the channel keeps hanging, it has dropped — re-verify
+                    if hang_streak >= 3:
+                        print(f"  [warn] {hang_streak} hangs in a row at {i}; "
+                              f"re-checking channel...", flush=True)
+                        if not capture.self_test():
+                            print("  [abort] channel dead mid-run; stopping cleanly. "
+                                  "Fix output and re-run to resume.", flush=True)
+                            print(f"DONE(early): {n_ok} recorded, {n_skip} no-sync, "
+                                  f"{n_quiet} quiet, {n_hang} hangs.")
+                            return
+                        hang_streak = 0
+                    continue
+                hang_streak = 0
                 cand = capture.find_message(rec)
                 if cand is not None and float(np.sqrt(np.mean(cand ** 2))) >= MIN_RMS:
                     seg = cand
@@ -118,7 +146,8 @@ def main():
                 else:
                     n_quiet += 1     # captured but too quiet after a retry
                 continue
-            fn = f"{args.channel}_{i:05d}.wav"
+            fn = f"{args.channel}_{next_idx:05d}.wav"
+            next_idx += 1
             wavfile.write(os.path.join(REC_DIR, fn), gen.SR,
                           (np.clip(seg, -1, 1) * 32767).astype(np.int16))
             mf.write(json.dumps({"file": fn, "concepts": msg,
@@ -129,8 +158,8 @@ def main():
                 print(f"  {i+1}/{len(pending)}  ok={n_ok} skip={n_skip} quiet={n_quiet}",
                       flush=True)
             time.sleep(0.05)
-    print(f"DONE: {n_ok} recorded, {n_skip} no-sync, {n_quiet} too-quiet. "
-          f"manifest -> {MANIFEST}")
+    print(f"DONE: {n_ok} recorded, {n_skip} no-sync, {n_quiet} too-quiet, "
+          f"{n_hang} hangs. manifest -> {MANIFEST}")
 
 
 if __name__ == "__main__":
