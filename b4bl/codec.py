@@ -281,6 +281,26 @@ def decode_to_concepts_frames(audio: np.ndarray, lexical: bool = True) -> List[s
     return [lex.phonemes_to_concept(w) for w in words]
 
 
+def decode_to_concepts_ctc(audio: np.ndarray, lexical: bool = True,
+                           beam_width: int = 24) -> List[str]:
+    """A1: CTC prefix-beam decode over the RF frame probabilities. CTC removes the
+    blank/silence, so word boundaries are lost here — this returns the whole
+    utterance as ONE phoneme sequence mapped to concept(s). Best evaluated on
+    single-morpheme utterances first; word-splitting comes with A2."""
+    from . import frame_decoder, ctc
+    probs, classes = frame_decoder.frame_probabilities(audio)
+    if probs is None:
+        return []
+    seq = ctc.ctc_beam_decode(probs, classes, blank=frame_decoder.SILENCE,
+                              beam_width=beam_width)
+    if not seq:
+        return []
+    if lexical:
+        return phoneme_words_to_concepts_lexical([seq])
+    c = lex.phonemes_to_concept(seq)
+    return [c] if c else ["?" + "-".join(seq)]
+
+
 def decode_to_concepts_nn(audio: np.ndarray, lexical: bool = True) -> List[str]:
     """Full acoustic decode via the neural-net frame classifier (Option 2), with
     optional lexicon correction."""

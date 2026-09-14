@@ -68,6 +68,23 @@ def _frames(audio: np.ndarray):
         yield i, audio[i:i + w]
 
 
+def frame_probabilities(audio: np.ndarray):
+    """Return (probs [T x C], classes) — per-frame class probabilities from the RF
+    frame model. Feeds the CTC beam decoder (which needs the full distribution, not
+    just the argmax the greedy collapse used)."""
+    m = load()
+    if m is None:
+        return None, None
+    model = m["model"]
+    a = audio.astype(np.float32)
+    if np.max(np.abs(a)) > 0:
+        a = a / np.max(np.abs(a))
+    feats = np.array([frame_features(w) for _, w in _frames(a)], dtype=np.float32)
+    if len(feats) == 0:
+        return None, None
+    return model.predict_proba(feats), list(model.classes_)
+
+
 def decode_frames(audio: np.ndarray) -> List[List[str]]:
     """Audio -> list of words, each a list of phoneme names. CTC-style greedy
     collapse. Requires the frame model; returns [] if unavailable."""
