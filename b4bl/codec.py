@@ -281,6 +281,16 @@ def decode_to_concepts_frames(audio: np.ndarray, lexical: bool = True) -> List[s
     return [lex.phonemes_to_concept(w) for w in words]
 
 
+def decode_to_concepts_nn(audio: np.ndarray, lexical: bool = True) -> List[str]:
+    """Full acoustic decode via the neural-net frame classifier (Option 2), with
+    optional lexicon correction."""
+    from . import nn_decoder
+    words = nn_decoder.decode_frames(audio)
+    if lexical:
+        return phoneme_words_to_concepts_lexical(words)
+    return [lex.phonemes_to_concept(w) for w in words]
+
+
 # ---------------------------------------------------------------------------
 # convenience round-trip used by tests
 # ---------------------------------------------------------------------------
