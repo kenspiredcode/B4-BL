@@ -170,9 +170,8 @@ def detect_words_by_register(audio: np.ndarray) -> List[Tuple[int, int]]:
     # contour swings (they stay within one register) and to smoothing blur.
     import math
     from . import codec
-    # register centers in log-Hz: cycle multipliers x a nominal mid center
-    mid = 1000.0
-    reg_logs = sorted(math.log(mid * m) for m in codec.REGISTER_CYCLE)
+    # register centers in log-Hz: the absolute transposition targets
+    reg_logs = sorted(math.log(t) for t in codec.REGISTER_TARGETS)
     def nearest_reg(lv):
         return int(np.argmin([abs(lv - r) for r in reg_logs]))
     labels = np.array([nearest_reg(track[k]) if track[k] > 0 else -1

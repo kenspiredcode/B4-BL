@@ -58,11 +58,22 @@ def _render_phoneme_seq(pnames: List[str], prosody: Prosody) -> List[np.ndarray]
     return clips
 
 
-# register-cycling word-boundary cue: consecutive words step through pitch
-# registers (low/mid/high) so a boundary = a register change (band recovers ~96%
-# on real audio). _REG_MULT is a 1-element mutable holder set per word by encode().
-REGISTER_CYCLE = [0.55, 1.0, 1.85]   # low / mid / high multipliers (mid = natural)
+# register-cycling word-boundary cue: consecutive words are TRANSPOSED so their
+# center lands on an ABSOLUTE target register (low/mid/high Hz), cycling. A
+# boundary is then a register jump regardless of the words' natural bands. (A plain
+# multiplier failed: a low-band word x1.85 is still lower than a high-band word x1,
+# so registers overlapped — we must transpose to absolute targets.)
+REGISTER_TARGETS = [450.0, 850.0, 1600.0]   # low / mid / high absolute centers (Hz)
 _REG_MULT = [1.0]
+
+
+def _word_natural_center(concept: str) -> float:
+    """Geometric-mean center pitch of a word's phonemes at natural register."""
+    import numpy as _np
+    names = (lex.concept_to_phonemes(concept) if lex.is_known(concept)
+             else [p for ch in concept.lower() for p in lex.CHAR_TO_PHONES.get(ch, [])])
+    centers = [ph.BY_NAME[n].center for n in names if n in ph.BY_NAME]
+    return float(_np.exp(_np.mean(_np.log(centers)))) if centers else 850.0
 
 
 def _render_rep(rep: "lex.Rep", prosody: Prosody) -> List[np.ndarray]:
@@ -109,7 +120,11 @@ def encode(concepts: List[str], prosody: Prosody = NEUTRAL,
     False to render all words at natural pitch (legacy)."""
     clips = []
     for ci, c in enumerate(concepts):
-        _REG_MULT[0] = REGISTER_CYCLE[ci % len(REGISTER_CYCLE)] if register_cycle else 1.0
+        if register_cycle:
+            target = REGISTER_TARGETS[ci % len(REGISTER_TARGETS)]
+            _REG_MULT[0] = target / _word_natural_center(c)   # transpose to target
+        else:
+            _REG_MULT[0] = 1.0
         clips += _render_concept(c, prosody)
         if ci != len(concepts) - 1:
             clips.append(_silence(WORD_GAP))
