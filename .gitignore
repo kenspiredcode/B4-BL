@@ -12,6 +12,10 @@ venv/
 # Keep a curated set in audio_samples/ but ignore scratch renders.
 audio_samples/scratch/
 *.tmp.wav
+# throwaway A/B comparison renders from decoder/encoding experiments
+audio_samples/boundary_*
+audio_samples/contour_*
+audio_samples/reg3_*
 recordings/
 .claude/
 b4bl/models/
