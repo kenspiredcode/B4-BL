@@ -223,6 +223,64 @@ def decode_to_concepts_lexical(audio: np.ndarray, k: int = 2) -> List[str]:
     return candidate_words_to_concepts(cand_words)
 
 
+def _phone_word_distance(got, seq) -> float:
+    """Edit-distance-like cost between two phoneme-name sequences (Levenshtein
+    with unit costs). Lower = closer."""
+    n, m = len(got), len(seq)
+    if n == 0:
+        return float(m)
+    dp = list(range(m + 1))
+    for i in range(1, n + 1):
+        prev = dp[0]
+        dp[0] = i
+        for j in range(1, m + 1):
+            cur = dp[j]
+            dp[j] = min(dp[j] + 1, dp[j - 1] + 1,
+                        prev + (0 if got[i - 1] == seq[j - 1] else 1))
+            prev = cur
+    return float(dp[m])
+
+
+def phoneme_words_to_concepts_lexical(words) -> List[str]:
+    """Lexicon-constrained decode for a plain phoneme-word list (e.g. from the
+    frame decoder, which emits one phoneme per position, not candidates). Snaps
+    each word to the nearest real morpheme by phoneme edit-distance — recovering
+    misheard phonemes when the correction forms a valid word (the same win the
+    segment path gets from lexicon decoding, now for frames)."""
+    global _LEX_INDEX
+    if _LEX_INDEX is None:
+        _LEX_INDEX = _lexicon_index()
+    out = []
+    for w in words:
+        w = [str(p) for p in w]
+        if not w:
+            continue
+        if w[:len(lex.SPELL_MARKER)] == lex.SPELL_MARKER:
+            out.append(phoneme_words_to_concepts([w])[0])
+            continue
+        best, best_d = None, 1e9
+        for concept, seq in _LEX_INDEX.items():
+            d = _phone_word_distance(w, list(seq))
+            if d < best_d:
+                best, best_d = concept, d
+        # only accept if reasonably close (avoid snapping garbage to a random word)
+        if best is not None and best_d <= max(1, len(w)):
+            out.append(best)
+        else:
+            out.append("?" + "-".join(w))
+    return out
+
+
+def decode_to_concepts_frames(audio: np.ndarray, lexical: bool = True) -> List[str]:
+    """Full acoustic decode via the CTC-style frame decoder, with optional
+    lexicon correction. This is the real-audio path."""
+    from . import frame_decoder
+    words = frame_decoder.decode_frames(audio)
+    if lexical:
+        return phoneme_words_to_concepts_lexical(words)
+    return [lex.phonemes_to_concept(w) for w in words]
+
+
 # ---------------------------------------------------------------------------
 # convenience round-trip used by tests
 # ---------------------------------------------------------------------------
