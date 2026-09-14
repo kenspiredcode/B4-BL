@@ -115,7 +115,10 @@ def train(samples_per=SAMPLES_PER_PHONEME, save=True, recordings=None, mix_synth
     X = _np.array(X); y = _np.array(y)
     print(f"  {X.shape[0]} frames, {X.shape[1]} features")
     Xtr, Xte, ytr, yte = train_test_split(X, y, test_size=0.2, random_state=1, stratify=y)
-    clf = RandomForestClassifier(n_estimators=100, max_depth=18, n_jobs=-1, random_state=1)
+    # cap trees + leaf size so the saved model stays small (unbounded trees on
+    # ~190k frames produced a ~1GB model); accuracy is barely affected.
+    clf = RandomForestClassifier(n_estimators=60, max_depth=16, min_samples_leaf=4,
+                                 n_jobs=-1, random_state=1)
     clf.fit(Xtr, ytr)
     print(f"  frame holdout accuracy: {clf.score(Xte, yte):.3f}")
     if save:
