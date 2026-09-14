@@ -222,7 +222,11 @@ def decode_search(audio: np.ndarray, max_words: int = 6,
     return list(reversed(words))
 
 
-def decode_grammar(audio: np.ndarray, max_words: int = 5) -> List[str]:
+SLOT_PENALTY = 8.0   # per-word cost so the template DP doesn't over-split
+
+
+def decode_grammar(audio: np.ndarray, max_words: int = 5,
+                   slot_penalty: float = None) -> List[str]:
     """Grammar/template-constrained decode. For each candidate word count N and each
     message TEMPLATE of length N, segment the frames into N spans (DP) and score
     span i only against slot i's CATEGORY words; keep the best template+fill overall.
@@ -230,6 +234,7 @@ def decode_grammar(audio: np.ndarray, max_words: int = 5) -> List[str]:
     Because each slot's candidate set is small and typed, this resolves word count,
     boundaries, and identity together — the structural fix for multi-word."""
     from . import grammar as gr
+    SLOT_PEN = SLOT_PENALTY if slot_penalty is None else slot_penalty
     probs, classes = fd.frame_probabilities(audio)
     if probs is None:
         return []
@@ -268,7 +273,10 @@ def decode_grammar(audio: np.ndarray, max_words: int = 5) -> List[str]:
                         concept, sc = _SCORER.best_in_set(logp[i:j], classes, cands)
                         if concept is None:
                             continue
-                        tot = dp[k - 1][bi] + sc
+                        # per-slot penalty: templates with more slots must earn
+                        # each extra word, else the DP over-splits (e.g. ACK LIGHT
+                        # -> ACK SCAN LIGHT). Comparable across template lengths.
+                        tot = dp[k - 1][bi] + sc - SLOT_PEN
                         if tot > dp[k][bj]:
                             dp[k][bj] = tot
                             bk[k][bj] = (bi, concept)
