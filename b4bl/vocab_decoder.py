@@ -83,16 +83,19 @@ class _Scorer:
             self.vocab = [(c, list(lex.concept_to_phonemes(c)))
                           for c in lex.MORPHEMES if c not in getattr(lex, "ALIASES", {})]
 
-    def best_concept(self, logp, classes) -> Tuple[Optional[str], float]:
-        """Score every morpheme against the frame log-probs; return the best."""
+    def best_concept(self, logp, classes, max_phonemes=None) -> Tuple[Optional[str], float]:
+        """Score morphemes against the frame log-probs; return the best. If
+        max_phonemes is given, only score morphemes with <= that many phonemes
+        (a short frame span can't be a long word) — a big speedup for the DP."""
         self.ensure_vocab()
         cls_idx = {c: i for i, c in enumerate(classes)}
         blank_idx = classes.index(fd.SILENCE)
         best, best_s = None, NEG_INF
         for concept, seq in self.vocab:
+            if max_phonemes is not None and len(seq) > max_phonemes:
+                continue
             s = ctc_score(logp, cls_idx, blank_idx, seq)
-            # length-normalize so short words aren't unfairly favored
-            s = s / max(1, len(seq))
+            s = s / max(1, len(seq))   # length-normalize
             if s > best_s:
                 best, best_s = concept, s
         return best, best_s
@@ -133,3 +136,65 @@ def decode(audio: np.ndarray) -> List[str]:
         if concept:
             out.append(concept)
     return out
+
+
+def decode_search(audio: np.ndarray, max_words: int = 6) -> List[str]:
+    """Vocabulary-driven word SEGMENTATION + decode via DP over the frame timeline.
+
+    Does NOT trust silence to find word boundaries (only ~29% right on real multi-
+    word). Instead: dp[j] = best (total score, word list) explaining frames [0..j).
+    A transition dp[i] -> dp[j] scores frames [i..j) as the single best-matching
+    morpheme. The DP finds the word segmentation that maximizes total vocabulary
+    match — the closed vocabulary decides where words are.
+    """
+    probs, classes = fd.frame_probabilities(audio)
+    if probs is None:
+        return []
+    logp = np.log(np.clip(probs, 1e-12, 1.0))
+    T = logp.shape[0]
+    if T == 0:
+        return []
+    # coarse boundary grid keeps the DP tractable
+    P_TARGET = 24
+    step = max(1, T // P_TARGET)
+    pts = list(range(0, T, step))
+    if pts[-1] != T:
+        pts.append(T)
+    P = len(pts)
+    NEG = NEG_INF
+    dp = [NEG] * P
+    dp[0] = 0.0
+    back = [(-1, None)] * P
+    hops_per_s = 1000 / fd.HOP_MS
+    min_frames = max(1, int(0.12 * hops_per_s))   # >=~120ms per word
+    max_frames = int(1.2 * hops_per_s)            # <=~1.2s per word
+    span_cache = {}
+    for bj in range(1, P):
+        j = pts[bj]
+        for bi in range(bj):
+            i = pts[bi]
+            if dp[bi] <= NEG:
+                continue
+            span = j - i
+            if span < min_frames or span > max_frames:
+                continue
+            key = (i, j)
+            if key not in span_cache:
+                # a span of `span` frames holds at most ~span/2 phonemes (each
+                # phoneme spans several frames) — prune long morphemes.
+                max_ph = max(1, span // 2 + 1)
+                span_cache[key] = _SCORER.best_concept(logp[i:j], classes, max_ph)
+            concept, sc = span_cache[key]
+            if concept is None:
+                continue
+            total = dp[bi] + sc - 2.0     # word-count penalty
+            if total > dp[bj]:
+                dp[bj] = total
+                back[bj] = (bi, concept)
+    words = []
+    bj = P - 1
+    while bj > 0 and back[bj][0] >= 0:
+        bi, concept = back[bj]
+        words.append(concept)
+        bj = bi
+    return list(reversed(words))
