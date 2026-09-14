@@ -142,7 +142,8 @@ def decode(audio: np.ndarray) -> List[str]:
     return out
 
 
-def decode_search(audio: np.ndarray, max_words: int = 6) -> List[str]:
+def decode_search(audio: np.ndarray, max_words: int = 6,
+                  word_penalty: float = 2.0) -> List[str]:
     """Vocabulary-driven word SEGMENTATION + decode via DP over the frame timeline.
 
     Does NOT trust silence to find word boundaries (only ~29% right on real multi-
@@ -191,7 +192,7 @@ def decode_search(audio: np.ndarray, max_words: int = 6) -> List[str]:
             concept, sc = span_cache[key]
             if concept is None:
                 continue
-            total = dp[bi] + sc - 2.0     # word-count penalty
+            total = dp[bi] + sc - word_penalty     # word-count penalty (tunable)
             if total > dp[bj]:
                 dp[bj] = total
                 back[bj] = (bi, concept)
