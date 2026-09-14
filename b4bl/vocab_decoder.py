@@ -94,8 +94,12 @@ class _Scorer:
         for concept, seq in self.vocab:
             if max_phonemes is not None and len(seq) > max_phonemes:
                 continue
-            s = ctc_score(logp, cls_idx, blank_idx, seq)
-            s = s / max(1, len(seq))   # length-normalize
+            # raw CTC log-prob is a sum over the SAME T frames for every candidate,
+            # so it's directly comparable across sequence lengths — do NOT divide by
+            # length (that over-rewarded longer words, e.g. GIVE[Lf,Lf] losing to
+            # STOP_V[Lf,Lf,Lf]). A tiny per-phoneme penalty breaks near-ties toward
+            # the shorter word when the audio doesn't support the extra phoneme.
+            s = ctc_score(logp, cls_idx, blank_idx, seq) - 0.5 * len(seq)
             if s > best_s:
                 best, best_s = concept, s
         return best, best_s
