@@ -83,6 +83,23 @@ class _Scorer:
             self.vocab = [(c, list(lex.concept_to_phonemes(c)))
                           for c in lex.MORPHEMES if c not in getattr(lex, "ALIASES", {})]
 
+    def best_in_set(self, logp, classes, concepts) -> Tuple[Optional[str], float]:
+        """Best-scoring concept restricted to a given candidate set (a grammar
+        slot's category). Same scoring as best_concept."""
+        self.ensure_vocab()
+        cls_idx = {c: i for i, c in enumerate(classes)}
+        blank_idx = classes.index(fd.SILENCE)
+        seqmap = dict(self.vocab)
+        best, best_s = None, NEG_INF
+        for concept in concepts:
+            seq = seqmap.get(concept)
+            if seq is None:
+                continue
+            s = ctc_score(logp, cls_idx, blank_idx, seq) - 0.5 * len(seq)
+            if s > best_s:
+                best, best_s = concept, s
+        return best, best_s
+
     def best_concept(self, logp, classes, max_phonemes=None) -> Tuple[Optional[str], float]:
         """Score morphemes against the frame log-probs; return the best. If
         max_phonemes is given, only score morphemes with <= that many phonemes
@@ -203,3 +220,69 @@ def decode_search(audio: np.ndarray, max_words: int = 6,
         words.append(concept)
         bj = bi
     return list(reversed(words))
+
+
+def decode_grammar(audio: np.ndarray, max_words: int = 5) -> List[str]:
+    """Grammar/template-constrained decode. For each candidate word count N and each
+    message TEMPLATE of length N, segment the frames into N spans (DP) and score
+    span i only against slot i's CATEGORY words; keep the best template+fill overall.
+
+    Because each slot's candidate set is small and typed, this resolves word count,
+    boundaries, and identity together — the structural fix for multi-word."""
+    from . import grammar as gr
+    probs, classes = fd.frame_probabilities(audio)
+    if probs is None:
+        return []
+    logp = np.log(np.clip(probs, 1e-12, 1.0))
+    T = logp.shape[0]
+    if T == 0:
+        return []
+    # coarse boundary grid
+    P_TARGET = 24
+    step = max(1, T // P_TARGET)
+    pts = list(range(0, T, step))
+    if pts[-1] != T:
+        pts.append(T)
+    P = len(pts)
+
+    best_overall, best_score = [], NEG_INF
+    for n in range(1, max_words + 1):
+        for slot_cats in gr.all_templates_for_length(n):
+            # DP: place n-1 interior boundaries among pts; slot k scored vs its category
+            # dp[k][bp] = best score filling first k slots ending at grid point bp
+            NEG = NEG_INF
+            dp = [[NEG] * P for _ in range(n + 1)]
+            bk = [[(-1, None)] * P for _ in range(n + 1)]
+            dp[0][0] = 0.0
+            for k in range(1, n + 1):
+                cands = gr.slot_candidates(slot_cats[k - 1])
+                if not cands:
+                    continue
+                for bj in range(1, P):
+                    for bi in range(bj):
+                        if dp[k - 1][bi] <= NEG:
+                            continue
+                        i, j = pts[bi], pts[bj]
+                        if j - i < step:      # min one grid cell
+                            continue
+                        concept, sc = _SCORER.best_in_set(logp[i:j], classes, cands)
+                        if concept is None:
+                            continue
+                        tot = dp[k - 1][bi] + sc
+                        if tot > dp[k][bj]:
+                            dp[k][bj] = tot
+                            bk[k][bj] = (bi, concept)
+            score = dp[n][P - 1]
+            if score > best_score:
+                # backtrack this template's fill
+                words = []
+                bj = P - 1
+                for k in range(n, 0, -1):
+                    bi, concept = bk[k][bj]
+                    if concept is None:
+                        words = None; break
+                    words.append(concept); bj = bi
+                if words:
+                    best_overall = list(reversed(words))
+                    best_score = score
+    return best_overall
