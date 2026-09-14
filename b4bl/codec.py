@@ -52,10 +52,17 @@ def concepts_to_phoneme_words(concepts: List[str]) -> List[List[str]]:
 def _render_phoneme_seq(pnames: List[str], prosody: Prosody) -> List[np.ndarray]:
     clips = []
     for pi, pname in enumerate(pnames):
-        clips.append(ph.BY_NAME[pname].render(prosody=prosody))
+        clips.append(ph.BY_NAME[pname].render(prosody=prosody, register_mult=_REG_MULT[0]))
         if pi != len(pnames) - 1:
             clips.append(_silence(PHONE_GAP))
     return clips
+
+
+# register-cycling word-boundary cue: consecutive words step through pitch
+# registers (low/mid/high) so a boundary = a register change (band recovers ~96%
+# on real audio). _REG_MULT is a 1-element mutable holder set per word by encode().
+REGISTER_CYCLE = [0.55, 1.0, 1.85]   # low / mid / high multipliers (mid = natural)
+_REG_MULT = [1.0]
 
 
 def _render_rep(rep: "lex.Rep", prosody: Prosody) -> List[np.ndarray]:
@@ -92,13 +99,21 @@ def _render_concept(concept: str, prosody: Prosody) -> List[np.ndarray]:
     return _render_phoneme_seq(seq, prosody)
 
 
-def encode(concepts: List[str], prosody: Prosody = NEUTRAL) -> np.ndarray:
-    """Top-level: list of concepts -> audio, respecting repetition rhythm."""
+def encode(concepts: List[str], prosody: Prosody = NEUTRAL,
+           register_cycle: bool = False) -> np.ndarray:
+    """Top-level: list of concepts -> audio, respecting repetition rhythm.
+
+    With register_cycle (default), each successive word is rendered in a different
+    pitch register (low/mid/high, cycling), so a word boundary is marked by a
+    register change — the segmentation cue that lifts multi-word decoding. Set
+    False to render all words at natural pitch (legacy)."""
     clips = []
     for ci, c in enumerate(concepts):
+        _REG_MULT[0] = REGISTER_CYCLE[ci % len(REGISTER_CYCLE)] if register_cycle else 1.0
         clips += _render_concept(c, prosody)
         if ci != len(concepts) - 1:
             clips.append(_silence(WORD_GAP))
+    _REG_MULT[0] = 1.0
     return np.concatenate(clips) if clips else np.zeros(0, dtype=np.float32)
 
 

@@ -124,11 +124,16 @@ class Phoneme:
                     (0.75, c + s * 0.5), (1, c)]
         return [(0, c), (1, c)]
 
-    def render(self, prosody=None) -> np.ndarray:
+    def render(self, prosody=None, register_mult: float = 1.0) -> np.ndarray:
         """Render this phoneme to audio. `prosody` (optional) may perturb the
-        expressive dimensions; see b4bl.prosody."""
+        expressive dimensions; see b4bl.prosody. `register_mult` shifts the whole
+        phoneme's pitch by a constant factor — used to place a WORD in a target
+        pitch register (register-cycling word-boundary cue), applied uniformly so
+        it doesn't disturb the contour/duration/class the decoder keys on."""
         dur = DUR_SEC[self.dur]
         pts = self._contour_points()
+        if register_mult != 1.0:
+            pts = [(f, hz * register_mult) for (f, hz) in pts]
         env = "stab" if self.dur == Dur.SHORT else "even"
         vib = (7, 0.03)
         # A long FLAT tone with vibrato reads as a cheap-sci-fi UFO warble. Keep it
@@ -150,11 +155,12 @@ class Phoneme:
         if self.cls == SoundClass.GARGLE:
             # low hum pulses want a gentler, slower flutter than the sharp default
             # gargle, so they read as humming rather than a buzzy roll.
-            if self.center < 400:
-                return gen.gargle(dur=dur, center=self.center, tremolo_hz=22, depth=0.5)
-            return gen.gargle(dur=dur, center=self.center)
+            gc = self.center * register_mult
+            if gc < 400:
+                return gen.gargle(dur=dur, center=gc, tremolo_hz=22, depth=0.5)
+            return gen.gargle(dur=dur, center=gc)
         if self.cls == SoundClass.RASP:
-            return gen.raspberry(dur=dur, center=max(250, self.center / 3))
+            return gen.raspberry(dur=dur, center=max(250, self.center * register_mult / 3))
         raise ValueError(self.cls)
 
 

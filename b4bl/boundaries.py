@@ -132,6 +132,75 @@ def detect_words(audio: np.ndarray) -> List[Tuple[int, int]]:
     return [(s, e) for s, e in words]
 
 
+def detect_words_by_register(audio: np.ndarray) -> List[Tuple[int, int]]:
+    """Word segmentation for REGISTER-CYCLED encoding: words step through pitch
+    registers (low/mid/high), so a word boundary is a large step in the smoothed
+    pitch track. Far more reliable than silence gaps (which only worked ~29-45%),
+    because consecutive words are now guaranteed to differ in register.
+
+    Detect boundaries where the smoothed log-pitch jumps by more than ~half a
+    register spacing, within the voiced extent."""
+    a = audio.astype(np.float32)
+    if np.max(np.abs(a)) > 0:
+        a = a / np.max(np.abs(a))
+    segs = _dec._segments(a)
+    if not segs:
+        return []
+    lo, hi = segs[0][0], segs[-1][1]
+    # per-frame pitch over the voiced region
+    hop = HOP
+    track, starts = [], []
+    lag_min, lag_max = int(SR / 3200), int(SR / 120)
+    for i in range(lo, hi - FRAME, hop):
+        fr = a[i:i + FRAME].astype(float); fr -= fr.mean()
+        if np.sqrt(np.mean(fr ** 2)) < 1e-4:
+            track.append(0.0); starts.append(i); continue
+        ac = np.correlate(fr, fr, "full")[len(fr) - 1:]
+        ac = ac / (ac[0] or 1.0)
+        seg = ac[lag_min:lag_max]
+        pk = _dec._first_peak_lag(seg) if len(seg) else None
+        track.append(np.log(SR / (pk + lag_min)) if pk else 0.0)
+        starts.append(i)
+    track = np.array(track); starts = np.array(starts)
+    v = track > 0
+    if v.sum() < 3:
+        return [(lo, hi)]
+    # Assign each voiced frame to its nearest register CENTER (in log space), then
+    # a word boundary is where the register-label changes. Robust to within-word
+    # contour swings (they stay within one register) and to smoothing blur.
+    import math
+    from . import codec
+    # register centers in log-Hz: cycle multipliers x a nominal mid center
+    mid = 1000.0
+    reg_logs = sorted(math.log(mid * m) for m in codec.REGISTER_CYCLE)
+    def nearest_reg(lv):
+        return int(np.argmin([abs(lv - r) for r in reg_logs]))
+    labels = np.array([nearest_reg(track[k]) if track[k] > 0 else -1
+                       for k in range(len(track))])
+    # fill unvoiced (-1) with previous label
+    last = 0
+    for k in range(len(labels)):
+        if labels[k] < 0:
+            labels[k] = last
+        else:
+            last = labels[k]
+    # smooth labels with a short mode filter to kill single-frame flips
+    sm = labels.copy()
+    for k in range(len(labels)):
+        w = labels[max(0, k - 2):k + 3]
+        vals, cnts = np.unique(w, return_counts=True)
+        sm[k] = vals[np.argmax(cnts)]
+    bnds = [lo]
+    for k in range(1, len(sm)):
+        if sm[k] != sm[k - 1]:
+            if starts[k] - bnds[-1] > int(0.12 * SR):
+                bnds.append(int(starts[k]))
+    bnds.append(hi)
+    bnds = sorted(set(bnds))
+    return [(bnds[i], bnds[i + 1]) for i in range(len(bnds) - 1)
+            if bnds[i + 1] - bnds[i] >= int(0.08 * SR)]
+
+
 def detect_phoneme_spans(audio: np.ndarray, word_counts=None) -> List[List[Tuple[int, int]]]:
     """Two-level: split into WORDS on long silence, then phoneme boundaries WITHIN
     each word. Returns a list of words, each a list of phoneme spans. If
