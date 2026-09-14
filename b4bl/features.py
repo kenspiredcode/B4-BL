@@ -18,6 +18,7 @@ from __future__ import annotations
 import numpy as np
 from . import generators as gen
 from . import decoder as _dec   # reuse pitch track / flatness / am
+from . import mfcc as _mfcc
 
 SR = gen.SR
 SHAPE_POINTS = 12   # resampled pitch-track shape length
@@ -58,7 +59,14 @@ def _spectral_summary(seg):
 
 
 def extract(seg: np.ndarray) -> np.ndarray:
-    """Return the feature vector for one audio segment."""
+    """Return the feature vector for one audio segment.
+
+    NOTE: appending MFCCs here was tried and REVERTED — it hurt end-to-end decode
+    (real test single 54%->42%). Over a short (~90ms) frame, per-frame MFCCs are
+    noisy and their 14 dims diluted the pitch-shape/contour features that carry the
+    actual meaning axes (band + contour), so the forest lost the real signal among
+    them. Kept the pitch/contour/spectral-cue set that worked. (MFCCs may still
+    help computed over a WHOLE phoneme rather than a frame — future work.)"""
     seg = seg.astype(float)
     if len(seg) < 64:
         seg = np.pad(seg, (0, 64 - len(seg)))
@@ -68,8 +76,8 @@ def extract(seg: np.ndarray) -> np.ndarray:
     dur = len(seg) / SR
     bands, centroid = _spectral_summary(seg)
     feats = np.concatenate([
-        shape,                                  # SHAPE_POINTS
-        [np.log(center + 1e-6), span, dur],     # pitch center / span / duration
+        shape,                                  # SHAPE_POINTS  (contour)
+        [np.log(center + 1e-6), span, dur],     # pitch center / span / duration (band)
         [flat, am],                             # sound-class cues
         bands,                                  # 5 spectral-band energies
         [np.log(centroid + 1e-6)],              # spectral centroid
