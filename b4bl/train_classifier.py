@@ -171,15 +171,75 @@ def build_dataset_from_recordings(manifest_path):
     return (np.array(X), np.array(yb), np.array(yc), np.array(yd), np.array(ycl))
 
 
+def build_dataset_from_slot_recordings(manifest_path, channel_substr=None):
+    """Real-audio training set for the SLOTTED encoding. Unlike the legacy loader,
+    this segments each recording with the SLOT decoder's own voiced-run + geminate
+    handling (so a geminate click and its implied repeat are aligned correctly),
+    and can filter to slotted channels by substring so legacy recordings in the same
+    manifest are not pulled in.
+
+    A recording is used only when its recovered segment count matches the expected
+    phoneme count (a clean alignment); the rest are skipped as unreliable labels."""
+    import json
+    from scipy.io import wavfile
+    from . import lexicon as lex, codec
+    from . import slot_decoder as _sd
+
+    rec_dir = os.path.dirname(manifest_path)
+    X, yb, yc, yd, ycl = [], [], [], [], []
+    used = skipped = 0
+    with open(manifest_path) as f:
+        for line in f:
+            line = line.strip()
+            if not line:
+                continue
+            r = json.loads(line)
+            if channel_substr and channel_substr not in r.get("channel", ""):
+                continue
+            # expected flat phoneme sequence (with geminate repeats expanded)
+            exp_words = codec.concepts_to_phoneme_words(r["concepts"])
+            exp = [p for w in exp_words for p in w]
+            path = os.path.join(rec_dir, r["file"])
+            if not os.path.exists(path):
+                continue
+            sr, data = wavfile.read(path)
+            audio = data.astype(np.float32) / 32768.0
+            if np.max(np.abs(audio)) > 0:
+                audio = audio / np.max(np.abs(audio))
+            # slot decoder's own segmentation: words -> [(seg, repeat_flag), ...]
+            words = _sd._segment_words(audio)
+            segs = [seg for w in words for (seg, _rep) in w]
+            if len(segs) != len(exp):
+                skipped += 1
+                continue
+            for seg, pname in zip(segs, exp):
+                p = ph.BY_NAME.get(pname)
+                if p is None:
+                    continue
+                X.append(F.extract(seg))
+                yb.append(p.band.value); yc.append(p.contour.value)
+                yd.append(p.dur.value); ycl.append(p.cls.value)
+            used += 1
+    print(f"  slot recordings used {used}, skipped {skipped} (alignment mismatch); "
+          f"{len(X)} phoneme samples")
+    return (np.array(X), np.array(yb), np.array(yc), np.array(yd), np.array(ycl))
+
+
 def train(samples_per=SAMPLES_PER_PHONEME, save=True, recordings=None, mix_synth=True,
-          slots=False):
+          slots=False, slot_channel=None):
     from sklearn.ensemble import RandomForestClassifier
     from sklearn.model_selection import train_test_split
     import joblib
 
     if recordings:
-        print(f"loading real recordings from {recordings} ...")
-        Xr, ybr, ycr, ydr, yclr = build_dataset_from_recordings(recordings)
+        if slots:
+            print(f"loading SLOTTED real recordings from {recordings} "
+                  f"(channel~{slot_channel}) ...")
+            Xr, ybr, ycr, ydr, yclr = build_dataset_from_slot_recordings(
+                recordings, channel_substr=slot_channel)
+        else:
+            print(f"loading real recordings from {recordings} ...")
+            Xr, ybr, ycr, ydr, yclr = build_dataset_from_recordings(recordings)
         if mix_synth:
             print(f"generating synthetic dataset ({len(ph.INVENTORY)} x {samples_per}) to mix in...")
             Xs, ybs, ycs, yds, ycls = build_dataset(samples_per, slots=slots)
@@ -226,6 +286,11 @@ if __name__ == "__main__":
     ap.add_argument("--slots", action="store_true",
                     help="mix in slotted-render samples so the model matches the "
                          "symbol-clock decoder's inference distribution")
+    ap.add_argument("--slot-channel", default=None,
+                    help="with --slots --recordings, only use recordings whose "
+                         "channel contains this substring (e.g. 'slots'), so legacy "
+                         "recordings in the same manifest are excluded")
     args = ap.parse_args()
     train(samples_per=args.samples, recordings=args.recordings,
-          mix_synth=not args.no_mix_synth, slots=args.slots)
+          mix_synth=not args.no_mix_synth, slots=args.slots,
+          slot_channel=args.slot_channel)
