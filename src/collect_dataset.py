@@ -83,6 +83,10 @@ def main():
                     help="pin the playback speaker by name substring or index "
                          "(e.g. 'MacBook Pro Speakers') so an unattended run picks "
                          "it without changing system settings")
+    ap.add_argument("--slots", action="store_true",
+                    help="emit SLOTTED (symbol-clock) audio for the new decoder. "
+                         "Tag the channel distinctly (e.g. --channel airplay_office_slots) "
+                         "so slotted recordings stay separate from the legacy set.")
     args = ap.parse_args()
 
     os.makedirs(REC_DIR, exist_ok=True)
@@ -100,6 +104,8 @@ def main():
         base_env["B4BL_INPUT_DEVICE"] = args.input_device
     if args.output_device:
         base_env["B4BL_OUTPUT_DEVICE"] = args.output_device
+    if args.slots:
+        base_env["B4BL_SLOTS"] = "1"
     try:
         st = subprocess.run(
             [sys.executable, emit, "/tmp/b4bl_selftest.wav",

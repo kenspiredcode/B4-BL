@@ -16,6 +16,7 @@ audio_samples/scratch/
 audio_samples/boundary_*
 audio_samples/contour_*
 audio_samples/reg3_*
+audio_samples/slot_ab/
 recordings/
 .claude/
 b4bl/models/

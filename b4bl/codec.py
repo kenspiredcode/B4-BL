@@ -29,6 +29,25 @@ from .prosody import Prosody, NEUTRAL
 WORD_GAP = 0.14      # gap between morphemes (groups phonemes into "words")
 PHONE_GAP = 0.04     # gap between phonemes within a morpheme
 
+# --- symbol-clock (slotted) rendering -------------------------------------
+# The decoder's whole bottleneck is finding phoneme boundaries. In slotted mode
+# every phoneme lands on a fixed time grid so boundaries are known a priori, and
+# the mandatory inter-phoneme gap is widened enough to survive a real room's
+# reverb/decay. See docs/symbol-clock-reset.md.
+# Per-CLASS slot widths. A single universal slot sized for the longest phoneme
+# padded every SHORT phoneme with dead air and sounded sluggish. Instead each
+# duration class gets its own slot width, each = the phoneme body + the mandatory
+# gap. The grid is still known to the decoder: SHORT vs LONG is itself a decodable
+# meaning axis, so once a slot's phoneme is classified its width is known too.
+# Widths = body duration (phonology.DUR_SEC) + SLOT_PHONE_GAP.
+SLOT_PHONE_GAP = 0.10  # mandatory gap after every phoneme in slotted mode
+SLOT_WORD_GAP = 0.20   # gap between morphemes in slotted mode (> phone gap)
+
+
+def _slot_width(dur) -> float:
+    """Slot width for a phoneme of the given Dur: its body length plus the gap."""
+    return ph.DUR_SEC[dur] + SLOT_PHONE_GAP
+
 
 # ---------------------------------------------------------------------------
 # ENCODE
@@ -58,6 +77,70 @@ def _render_phoneme_seq(pnames: List[str], prosody: Prosody) -> List[np.ndarray]
     return clips
 
 
+# --- geminate marker: a short reserved pip inserted ONLY between two adjacent,
+#     identical phonemes, so the decoder does not merge them into one long tone.
+#     It is not a lexical phoneme; no morpheme uses it. Kept short and pitched so
+#     it reads as a little R2 "tick" rather than a mechanical click. -------------
+# The geminate marker is a broadband CLICK, not a tone. A click can't be confused
+# for any phoneme because phonemes are tonal (energy at one pitch) while the click
+# is spectrally FLAT (energy everywhere) — a different axis (sound class), not a
+# pitch to dodge. It reads as a short mechanical "tk", on-aesthetic for R2.
+GEMINATE_DUR = 0.02          # very short — a tick, not a beep
+GEMINATE_HZ = 0              # unused (kept for any external reference); click is broadband
+
+
+def _render_geminate() -> np.ndarray:
+    """A short broadband click: a burst of noise with a fast decay. Spectrally flat,
+    so the decoder tells it from phonemes by flatness, never by pitch."""
+    n = int(gen.SR * GEMINATE_DUR)
+    noise = gen._rng.uniform(-1, 1, n).astype(np.float32)
+    env = np.exp(-np.linspace(0, 6, n)).astype(np.float32)   # sharp attack, fast decay
+    return (noise * env * 0.9).astype(np.float32)
+
+
+def _fit_slot(clip: np.ndarray, width_sec: float) -> np.ndarray:
+    """Place a rendered phoneme at the start of a width_sec-wide window, padding the
+    remainder with the mandatory inter-phoneme gap (silence). The phoneme body may
+    be shorter or longer than its nominal duration (prosody flexes it); we clamp to
+    the slot window and always leave at least SLOT_PHONE_GAP of trailing silence so
+    the boundary is recoverable."""
+    window = int(gen.SR * width_sec)
+    gap = int(gen.SR * SLOT_PHONE_GAP)
+    body_room = max(1, window - gap)
+    out = np.zeros(window, dtype=np.float32)
+    if len(clip) <= body_room:
+        out[:len(clip)] = clip
+    else:
+        # body longer than the slot allows (e.g. prosody stretched it): fade the
+        # last few ms instead of hard-cutting, so we never chop the waveform mid-
+        # cycle (which clicks / sounds clipped).
+        body = clip[:body_room].copy()
+        fade = min(len(body), int(0.02 * gen.SR))
+        body[-fade:] *= np.linspace(1.0, 0.0, fade, dtype=np.float32)
+        out[:len(body)] = body
+    return out
+
+
+def _render_phoneme_seq_slotted(pnames: List[str], prosody: Prosody) -> List[np.ndarray]:
+    """Slotted render: each phoneme fills a fixed 1- or 2-slot window (SHORT/LONG),
+    with a mandatory trailing gap. A geminate marker is inserted between adjacent
+    identical phonemes so they don't merge."""
+    clips = []
+    for pi, pname in enumerate(pnames):
+        p = ph.BY_NAME[pname]
+        body = p.render(prosody=prosody, register_mult=_REG_MULT[0])
+        clips.append(_fit_slot(body, _slot_width(p.dur)))
+        # geminate marker before the next phoneme if it is identical to this one.
+        # The slot already carries a trailing gap; add a leading gap before the
+        # next phoneme too, so the pip is flanked by silence on both sides and
+        # reads as its own separate "tick" rather than fusing with either tone.
+        if pi != len(pnames) - 1 and pnames[pi + 1] == pname:
+            clips.append(_silence(SLOT_PHONE_GAP))
+            clips.append(_render_geminate())
+            clips.append(_silence(SLOT_PHONE_GAP))
+    return clips
+
+
 # register-cycling word-boundary cue: consecutive words are TRANSPOSED so their
 # center lands on an ABSOLUTE target register (low/mid/high Hz), cycling. A
 # boundary is then a register jump regardless of the words' natural bands. (A plain
@@ -78,7 +161,11 @@ def _word_natural_center(concept: str) -> float:
 
 def _render_rep(rep: "lex.Rep", prosody: Prosody) -> List[np.ndarray]:
     """Render a repeated group at its lexical rhythm. The inter-pulse gap comes
-    from `rate`; prosody may scale intensity/timing but NEVER the count."""
+    from `rate`; prosody may scale intensity/timing but NEVER the count.
+
+    Rep morphemes (ALARM, WORKING) ARE the rhythmic-repetition axis of meaning, so
+    they keep their natural pulse timing even in slotted mode — the rhythm IS the
+    word. Slotting them would destroy the very cue that identifies them."""
     unit = list(rep.unit)
     # gap so that pulse_period = 1/rate; clamp so pulses don't overlap.
     period = 1.0 / max(rep.rate, 0.3)
@@ -96,38 +183,45 @@ def _render_rep(rep: "lex.Rep", prosody: Prosody) -> List[np.ndarray]:
     return clips
 
 
-def _render_concept(concept: str, prosody: Prosody) -> List[np.ndarray]:
+def _render_concept(concept: str, prosody: Prosody, slots: bool = False) -> List[np.ndarray]:
+    seq_fn = _render_phoneme_seq_slotted if slots else _render_phoneme_seq
     if lex.is_known(concept):
         body = lex.morpheme_body(concept)
         if isinstance(body, lex.Rep):
-            return _render_rep(body, prosody)
-        return _render_phoneme_seq(body, prosody)
+            return _render_rep(body, prosody)   # rhythm-defined; never slotted
+        return seq_fn(body, prosody)
     # spelling fallback
     seq = list(lex.SPELL_MARKER)
     for ch in concept.lower():
         if ch in lex.CHAR_TO_PHONES:
             seq += lex.CHAR_TO_PHONES[ch]
-    return _render_phoneme_seq(seq, prosody)
+    return seq_fn(seq, prosody)
 
 
 def encode(concepts: List[str], prosody: Prosody = NEUTRAL,
-           register_cycle: bool = False) -> np.ndarray:
+           register_cycle: bool = False, slots: bool = False) -> np.ndarray:
     """Top-level: list of concepts -> audio, respecting repetition rhythm.
 
-    With register_cycle (default), each successive word is rendered in a different
-    pitch register (low/mid/high, cycling), so a word boundary is marked by a
-    register change — the segmentation cue that lifts multi-word decoding. Set
-    False to render all words at natural pitch (legacy)."""
+    slots (symbol-clock mode): each phoneme lands on a fixed time grid (SHORT = 1
+    slot, LONG = 2 slots) with a widened mandatory inter-phoneme gap, and identical
+    adjacent phonemes are separated by a geminate marker. This makes phoneme
+    boundaries known a priori instead of detected — the segmentation fix. See
+    docs/symbol-clock-reset.md. Word gap is widened to SLOT_WORD_GAP.
+
+    register_cycle (legacy experiment): each successive word is transposed to a
+    cycling absolute register so a word boundary is a pitch jump. Superseded by
+    slotted mode; kept for comparison. Mutually exclusive with slots in practice."""
     clips = []
+    word_gap = SLOT_WORD_GAP if slots else WORD_GAP
     for ci, c in enumerate(concepts):
         if register_cycle:
             target = REGISTER_TARGETS[ci % len(REGISTER_TARGETS)]
             _REG_MULT[0] = target / _word_natural_center(c)   # transpose to target
         else:
             _REG_MULT[0] = 1.0
-        clips += _render_concept(c, prosody)
+        clips += _render_concept(c, prosody, slots=slots)
         if ci != len(concepts) - 1:
-            clips.append(_silence(WORD_GAP))
+            clips.append(_silence(word_gap))
     _REG_MULT[0] = 1.0
     return np.concatenate(clips) if clips else np.zeros(0, dtype=np.float32)
 

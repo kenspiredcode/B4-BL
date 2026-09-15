@@ -35,7 +35,8 @@ def main():
 
     prmap = {"neutral": prosody.NEUTRAL, "uncertain": prosody.UNCERTAIN,
              "urgent": prosody.URGENT, "calm": prosody.CALM}
-    audio = codec.encode(concepts, prmap.get(pname, prosody.NEUTRAL))
+    slots = os.environ.get("B4BL_SLOTS") == "1"   # symbol-clock encoding
+    audio = codec.encode(concepts, prmap.get(pname, prosody.NEUTRAL), slots=slots)
     rec = capture.play_and_record(audio)          # may block if device wedges;
     seg = capture.find_message(rec)               # parent kills us on timeout.
     if seg is None or float(np.sqrt(np.mean(seg ** 2))) < MIN_RMS:
