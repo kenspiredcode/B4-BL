@@ -128,10 +128,112 @@ def audio_to_candidate_words(audio: np.ndarray, k: int = 2):
     return out
 
 
-def decode(audio: np.ndarray, lexical: bool = True) -> List[str]:
-    """Slotted audio -> concept list. With lexical=True (default) uses the lexicon-
-    constrained repair (recovers a misheard phoneme when the correction forms a
-    valid morpheme); else plain top-1 lookup."""
+def audio_to_flat_candidates(audio: np.ndarray, k: int = 3):
+    """All phoneme segments across the WHOLE utterance as one flat list of N-best
+    candidates, IGNORING word grouping. Word boundaries are left for the vocabulary
+    DP to decide (see decode_vocab), because on a real channel the within-word and
+    between-word gap distributions overlap and no gap threshold separates them."""
+    a = audio.astype(np.float32)
+    if np.max(np.abs(a)) > 0:
+        a = a / np.max(np.abs(a))
+    flat = []
+    prev = None
+    for word in _segment_words(a):
+        for seg, repeat in word:
+            if repeat and prev is not None:
+                flat.append(list(prev))               # click: copy prev candidates
+            else:
+                prev = _clf.phoneme_candidates(seg, k=k)
+                flat.append(prev)
+    return flat
+
+
+_MORPH_INDEX = None
+
+
+def _morph_index():
+    global _MORPH_INDEX
+    if _MORPH_INDEX is None:
+        idx = []
+        for c in lex.MORPHEMES:
+            if c in lex.ALIASES:
+                continue                      # skip alias duplicates (same sound)
+            seq = tuple(lex.concept_to_phonemes(c))
+            if not seq:
+                continue                      # skip anything with no phonemes
+            idx.append((c, seq))
+        _MORPH_INDEX = idx
+    return _MORPH_INDEX
+
+
+def _score_seq(cands, seq) -> float:
+    """Log-score that the phoneme candidate slots `cands` (each [(name,prob),...])
+    spell exactly the morpheme phoneme-sequence `seq` (same length). Product of per-
+    position probabilities, with a floor for a phoneme not among the candidates."""
+    import math
+    s = 0.0
+    for slot, want in zip(cands, seq):
+        p = dict(slot).get(want, 0.02)
+        s += math.log(max(p, 1e-6))
+    return s
+
+
+def decode_vocab(audio: np.ndarray, k: int = 3, word_penalty: float = 1.0) -> List[str]:
+    """Vocabulary-driven decode: classify every phoneme (clean, thanks to slotting),
+    then DP over the flat phoneme sequence to find the split into VALID morphemes
+    that maximizes total score. The closed vocabulary decides word boundaries — no
+    gap threshold — so it is robust to the real channel's overlapping gap sizes.
+
+    word_penalty discourages over-splitting (each extra word must earn its score)."""
+    flat = audio_to_flat_candidates(audio, k=k)
+    N = len(flat)
+    if N == 0:
+        return []
+    index = _morph_index()
+    # group morphemes by phoneme length for a quick per-span lookup
+    by_len = {}
+    for c, seq in index:
+        by_len.setdefault(len(seq), []).append((c, seq))
+    maxlen = max(by_len) if by_len else 1
+
+    NEG = -1e30
+    dp = [NEG] * (N + 1)
+    dp[0] = 0.0
+    back = [(-1, None)] * (N + 1)
+    for j in range(1, N + 1):
+        for L in range(1, min(maxlen, j) + 1):
+            i = j - L
+            if dp[i] <= NEG:
+                continue
+            cands = flat[i:j]
+            best_c, best_s = None, NEG
+            for c, seq in by_len.get(L, ()):
+                s = _score_seq(cands, seq)
+                if s > best_s:
+                    best_c, best_s = c, s
+            if best_c is None:
+                continue
+            total = dp[i] + best_s - word_penalty
+            if total > dp[j]:
+                dp[j] = total
+                back[j] = (i, best_c)
+    # backtrack
+    words, j = [], N
+    while j > 0 and back[j][0] >= 0:
+        i, c = back[j]
+        words.append(c)
+        j = i
+    return list(reversed(words))
+
+
+def decode(audio: np.ndarray, lexical: bool = True, vocab: bool = False) -> List[str]:
+    """Slotted audio -> concept list.
+
+    vocab=True: vocabulary-driven word segmentation (robust on a real channel where
+    gap sizes overlap). lexical=True (default, vocab=False): trust word gaps, then
+    lexicon-repair each word. Plain top-1 if neither."""
+    if vocab and _clf.available():
+        return decode_vocab(audio)
     if lexical and _clf.available():
         return codec.candidate_words_to_concepts(audio_to_candidate_words(audio))
     return codec.phoneme_words_to_concepts(audio_to_phoneme_words(audio))
