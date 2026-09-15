@@ -178,7 +178,7 @@ def _score_seq(cands, seq) -> float:
     return s
 
 
-def decode_vocab(audio: np.ndarray, k: int = 3, word_penalty: float = 1.0) -> List[str]:
+def decode_vocab(audio: np.ndarray, k: int = 3, word_penalty: float = 2.0) -> List[str]:
     """Vocabulary-driven decode: classify every phoneme (clean, thanks to slotting),
     then DP over the flat phoneme sequence to find the split into VALID morphemes
     that maximizes total score. The closed vocabulary decides word boundaries — no
