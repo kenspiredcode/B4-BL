@@ -86,13 +86,37 @@ def _segmented_render(p, pr):
     return sig
 
 
-def build_dataset(samples_per=SAMPLES_PER_PHONEME):
+def _slotted_render(p, pr):
+    """Render a phoneme through the SLOTTED encode path, then extract it with the
+    SAME voiced-run segmentation the slot decoder uses at inference. This matches
+    training features to what the slot decoder actually sees (the slot's mandatory
+    trailing gap and per-class width), fixing the legacy-vs-slotted distribution
+    mismatch. Falls back to the raw render if segmentation finds nothing."""
+    from . import codec as _codec
+    from . import slot_decoder as _sd
+    clips = _codec._render_phoneme_seq_slotted([p.name], pr)
+    utt = np.concatenate(clips).astype(np.float32)
+    words = _sd._segment_words(utt)
+    if words and words[0]:
+        return words[0][0][0]          # first phoneme segment of the first word
+    return p.render(pr)
+
+
+def build_dataset(samples_per=SAMPLES_PER_PHONEME, slots=False):
     """Mix CLEAN and AUGMENTED samples so the model is good on both quiet
-    close-mic audio and noisy/reverberant audio. ~40% clean, 60% augmented."""
+    close-mic audio and noisy/reverberant audio. ~40% clean, 60% augmented.
+
+    slots: when True, HALF the samples are rendered through the slotted encode +
+    slot-decoder segmentation path (the rest via the legacy segmented render), so
+    the model covers both encodings. Augmentation (noise/reverb) still applies."""
     X, y_band, y_contour, y_dur, y_cls = [], [], [], [], []
     for p in ph.INVENTORY:
         for i in range(samples_per):
-            seg = _segmented_render(p, _random_prosody())
+            pr = _random_prosody()
+            if slots and i % 2 == 0:
+                seg = _slotted_render(p, pr)
+            else:
+                seg = _segmented_render(p, pr)
             if i % 5 >= 2:            # 60% augmented, 40% clean
                 seg = _augment(seg)
             X.append(F.extract(seg))
@@ -147,7 +171,8 @@ def build_dataset_from_recordings(manifest_path):
     return (np.array(X), np.array(yb), np.array(yc), np.array(yd), np.array(ycl))
 
 
-def train(samples_per=SAMPLES_PER_PHONEME, save=True, recordings=None, mix_synth=True):
+def train(samples_per=SAMPLES_PER_PHONEME, save=True, recordings=None, mix_synth=True,
+          slots=False):
     from sklearn.ensemble import RandomForestClassifier
     from sklearn.model_selection import train_test_split
     import joblib
@@ -157,15 +182,16 @@ def train(samples_per=SAMPLES_PER_PHONEME, save=True, recordings=None, mix_synth
         Xr, ybr, ycr, ydr, yclr = build_dataset_from_recordings(recordings)
         if mix_synth:
             print(f"generating synthetic dataset ({len(ph.INVENTORY)} x {samples_per}) to mix in...")
-            Xs, ybs, ycs, yds, ycls = build_dataset(samples_per)
+            Xs, ybs, ycs, yds, ycls = build_dataset(samples_per, slots=slots)
             X = np.vstack([Xr, Xs]); yb = np.concatenate([ybr, ybs])
             yc = np.concatenate([ycr, ycs]); yd = np.concatenate([ydr, yds])
             ycl = np.concatenate([yclr, ycls])
         else:
             X, yb, yc, yd, ycl = Xr, ybr, ycr, ydr, yclr
     else:
-        print(f"generating dataset ({len(ph.INVENTORY)} phonemes x {samples_per})...")
-        X, yb, yc, yd, ycl = build_dataset(samples_per)
+        print(f"generating dataset ({len(ph.INVENTORY)} phonemes x {samples_per})"
+              f"{' [slotted mix]' if slots else ''}...")
+        X, yb, yc, yd, ycl = build_dataset(samples_per, slots=slots)
     print(f"  {X.shape[0]} samples, {X.shape[1]} features each")
 
     models = {}
@@ -197,6 +223,9 @@ if __name__ == "__main__":
     ap.add_argument("--no-mix-synth", action="store_true",
                     help="train ONLY on recordings (default mixes in synthetic)")
     ap.add_argument("--samples", type=int, default=SAMPLES_PER_PHONEME)
+    ap.add_argument("--slots", action="store_true",
+                    help="mix in slotted-render samples so the model matches the "
+                         "symbol-clock decoder's inference distribution")
     args = ap.parse_args()
     train(samples_per=args.samples, recordings=args.recordings,
-          mix_synth=not args.no_mix_synth)
+          mix_synth=not args.no_mix_synth, slots=args.slots)
