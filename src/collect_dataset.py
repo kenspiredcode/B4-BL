@@ -87,6 +87,12 @@ def main():
                     help="emit SLOTTED (symbol-clock) audio for the new decoder. "
                          "Tag the channel distinctly (e.g. --channel airplay_office_slots) "
                          "so slotted recordings stay separate from the legacy set.")
+    ap.add_argument("--max-hang-streak", type=int, default=4,
+                    help="abort after this many consecutive hangs (raise for flaky "
+                         "Bluetooth links that hang intermittently but recover).")
+    ap.add_argument("--hang-pause", type=float, default=0.0,
+                    help="seconds to wait after a hang before the next emission, so "
+                         "a wedged audio link can settle (e.g. 3.0 for Bluetooth).")
     args = ap.parse_args()
 
     os.makedirs(REC_DIR, exist_ok=True)
@@ -166,11 +172,15 @@ def main():
             if rc == -1:
                 n_hang += 1
                 hang_streak += 1
-                if hang_streak >= 4:
+                if hang_streak >= args.max_hang_streak:
                     print(f"  [abort] {hang_streak} hangs in a row at {i}; channel "
                           f"likely dropped. Stopping cleanly — fix output & re-run "
                           f"to resume.", flush=True)
                     break
+                # brief pause so a wedged CoreAudio/Bluetooth link can settle before
+                # the next attempt — a transient hang often clears on its own, so we
+                # ride it out instead of aborting a whole run over a blip.
+                time.sleep(args.hang_pause)
                 continue
             hang_streak = 0
             if rc == 0 and os.path.exists(out):
