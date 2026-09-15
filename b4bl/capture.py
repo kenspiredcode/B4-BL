@@ -43,7 +43,12 @@ def _sync_chirp(dur=0.18):
 
 SYNC = _sync_chirp()
 LEAD_SIL = 0.25       # silence before the chirp
-POST_SIL = 0.35       # silence after the message (marks its end)
+# End-of-message silence must be clearly LONGER than any gap WITHIN the message,
+# or the trailing-silence trimmer ends the message at the first internal gap. The
+# slotted encoding's inter-word gap is ~0.20s, but phoneme decay tails drop below
+# the trim threshold early, so an internal gap READS as ~0.36s of quiet. POST_SIL
+# is set well above that (quiet_needed = POST_SIL*0.7 ≈ 0.63s of quiet to end).
+POST_SIL = 0.90       # silence after the message (marks its end)
 
 
 def _sd():
@@ -197,20 +202,35 @@ def find_message(rec: np.ndarray) -> Optional[np.ndarray]:
     if len(env) == 0:
         return None
     thr = 0.06 * (np.max(env) or 1.0)
-    # walk forward; stop at the first run of >= POST_SIL*0.7 quiet windows
+    # walk forward; stop at the first run of >= POST_SIL*0.7 quiet windows.
     quiet_needed = int((POST_SIL * 0.7) * SR / win)
+    # Do NOT start looking for the end until the message has actually BEGUN: after
+    # the sync chirp there is a leading gap (and possible sync-tail bleed), and the
+    # slotted encoding starts with a phoneme preceded by silence. If we count quiet
+    # from the start, the pre-message gap looks like an end and truncates the whole
+    # message. So skip to the first loud window, then look for the trailing silence.
+    # A brief blip (sync-chirp tail bleeding past the cut) is not the message. Require
+    # a SUSTAINED onset: the first window that begins a run of >= 2 loud windows.
+    onset = None
+    for i in range(len(env) - 1):
+        if env[i] >= thr and env[i + 1] >= thr:
+            onset = i
+            break
+    if onset is None:
+        return None
     end_win = len(env)
     quiet = 0
-    for i, e in enumerate(env):
-        if e < thr:
+    for i in range(onset, len(env)):
+        if env[i] < thr:
             quiet += 1
             if quiet >= quiet_needed:
                 end_win = i - quiet + 1
                 break
         else:
             quiet = 0
+    start_samp = onset * win
     end = max(win, end_win * win + win)
-    return seg[:end]
+    return seg[start_samp:end]
 
 
 def self_test() -> bool:
