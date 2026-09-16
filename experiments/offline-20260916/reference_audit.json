@@ -1,0 +1,379 @@
+{
+  "status": "reference-assisted diagnostic, NOT verified oracle boundaries",
+  "selection": "up to N per channel/length/prosody; held-out rows only; Rep words excluded",
+  "n": 63,
+  "per_axis_accuracy": {
+    "band": 0.9725557461406518,
+    "contour": 0.7632933104631218,
+    "dur": 0.9982847341337907,
+    "cls": 0.9897084048027445
+  },
+  "joint_phoneme_accuracy": 0.7409948542024014,
+  "all_alignments": {
+    "all": {
+      "n": 63,
+      "exact": 17,
+      "exact_rate": 0.2698412698412698,
+      "exact_95ci": [
+        0.17583701687980413,
+        0.39030143582031074
+      ],
+      "reference_words": 219,
+      "substitutions": 89,
+      "deletions": 7,
+      "insertions": 0,
+      "word_error_rate": 0.4383561643835616,
+      "empty_outputs": 2,
+      "correct_phoneme_count": 61
+    },
+    "channel/bt_aukey_slots/length/2": {
+      "n": 8,
+      "exact": 4,
+      "exact_rate": 0.5,
+      "exact_95ci": [
+        0.21521252682444186,
+        0.7847874731755582
+      ],
+      "reference_words": 16,
+      "substitutions": 4,
+      "deletions": 2,
+      "insertions": 0,
+      "word_error_rate": 0.375,
+      "empty_outputs": 1,
+      "correct_phoneme_count": 7
+    },
+    "channel/bt_aukey_slots/length/3": {
+      "n": 8,
+      "exact": 4,
+      "exact_rate": 0.5,
+      "exact_95ci": [
+        0.21521252682444186,
+        0.7847874731755582
+      ],
+      "reference_words": 24,
+      "substitutions": 5,
+      "deletions": 0,
+      "insertions": 0,
+      "word_error_rate": 0.20833333333333334,
+      "empty_outputs": 0,
+      "correct_phoneme_count": 8
+    },
+    "channel/bt_aukey_slots/length/4": {
+      "n": 8,
+      "exact": 5,
+      "exact_rate": 0.625,
+      "exact_95ci": [
+        0.30573785458380187,
+        0.863158240538479
+      ],
+      "reference_words": 32,
+      "substitutions": 6,
+      "deletions": 0,
+      "insertions": 0,
+      "word_error_rate": 0.1875,
+      "empty_outputs": 0,
+      "correct_phoneme_count": 8
+    },
+    "channel/bt_aukey_slots/length/5": {
+      "n": 7,
+      "exact": 2,
+      "exact_rate": 0.2857142857142857,
+      "exact_95ci": [
+        0.0822171657090155,
+        0.6410709098517873
+      ],
+      "reference_words": 35,
+      "substitutions": 6,
+      "deletions": 0,
+      "insertions": 0,
+      "word_error_rate": 0.17142857142857143,
+      "empty_outputs": 0,
+      "correct_phoneme_count": 7
+    },
+    "channel/bt_aukey_slots/multi": {
+      "n": 31,
+      "exact": 15,
+      "exact_rate": 0.4838709677419355,
+      "exact_95ci": [
+        0.3196998603127883,
+        0.6515988171302683
+      ],
+      "reference_words": 107,
+      "substitutions": 21,
+      "deletions": 2,
+      "insertions": 0,
+      "word_error_rate": 0.21495327102803738,
+      "empty_outputs": 1,
+      "correct_phoneme_count": 30
+    },
+    "channel/bt_aukey_slots_r2/length/2": {
+      "n": 8,
+      "exact": 2,
+      "exact_rate": 0.25,
+      "exact_95ci": [
+        0.07147768885802763,
+        0.5907301208974108
+      ],
+      "reference_words": 16,
+      "substitutions": 8,
+      "deletions": 0,
+      "insertions": 0,
+      "word_error_rate": 0.5,
+      "empty_outputs": 0,
+      "correct_phoneme_count": 8
+    },
+    "channel/bt_aukey_slots_r2/length/3": {
+      "n": 8,
+      "exact": 0,
+      "exact_rate": 0.0,
+      "exact_95ci": [
+        0.0,
+        0.3244156195108769
+      ],
+      "reference_words": 24,
+      "substitutions": 16,
+      "deletions": 0,
+      "insertions": 0,
+      "word_error_rate": 0.6666666666666666,
+      "empty_outputs": 0,
+      "correct_phoneme_count": 8
+    },
+    "channel/bt_aukey_slots_r2/length/4": {
+      "n": 8,
+      "exact": 0,
+      "exact_rate": 0.0,
+      "exact_95ci": [
+        0.0,
+        0.3244156195108769
+      ],
+      "reference_words": 32,
+      "substitutions": 23,
+      "deletions": 0,
+      "insertions": 0,
+      "word_error_rate": 0.71875,
+      "empty_outputs": 0,
+      "correct_phoneme_count": 8
+    },
+    "channel/bt_aukey_slots_r2/length/5": {
+      "n": 8,
+      "exact": 0,
+      "exact_rate": 0.0,
+      "exact_95ci": [
+        0.0,
+        0.3244156195108769
+      ],
+      "reference_words": 40,
+      "substitutions": 21,
+      "deletions": 5,
+      "insertions": 0,
+      "word_error_rate": 0.65,
+      "empty_outputs": 1,
+      "correct_phoneme_count": 7
+    },
+    "channel/bt_aukey_slots_r2/multi": {
+      "n": 32,
+      "exact": 2,
+      "exact_rate": 0.0625,
+      "exact_95ci": [
+        0.017310203195157234,
+        0.2014746724800358
+      ],
+      "reference_words": 112,
+      "substitutions": 68,
+      "deletions": 5,
+      "insertions": 0,
+      "word_error_rate": 0.6517857142857143,
+      "empty_outputs": 1,
+      "correct_phoneme_count": 31
+    },
+    "composition/seen": {
+      "n": 23,
+      "exact": 2,
+      "exact_rate": 0.08695652173913043,
+      "exact_95ci": [
+        0.02417949540723341,
+        0.2679640429809402
+      ],
+      "reference_words": 78,
+      "substitutions": 44,
+      "deletions": 5,
+      "insertions": 0,
+      "word_error_rate": 0.6282051282051282,
+      "empty_outputs": 1,
+      "correct_phoneme_count": 22
+    },
+    "composition/unseen": {
+      "n": 40,
+      "exact": 15,
+      "exact_rate": 0.375,
+      "exact_95ci": [
+        0.2422277353579172,
+        0.529678399454681
+      ],
+      "reference_words": 141,
+      "substitutions": 45,
+      "deletions": 2,
+      "insertions": 0,
+      "word_error_rate": 0.3333333333333333,
+      "empty_outputs": 1,
+      "correct_phoneme_count": 39
+    },
+    "length/2": {
+      "n": 16,
+      "exact": 6,
+      "exact_rate": 0.375,
+      "exact_95ci": [
+        0.18480982554752806,
+        0.613593529020652
+      ],
+      "reference_words": 32,
+      "substitutions": 12,
+      "deletions": 2,
+      "insertions": 0,
+      "word_error_rate": 0.4375,
+      "empty_outputs": 1,
+      "correct_phoneme_count": 15
+    },
+    "length/3": {
+      "n": 16,
+      "exact": 4,
+      "exact_rate": 0.25,
+      "exact_95ci": [
+        0.10181901984237346,
+        0.49498768929398645
+      ],
+      "reference_words": 48,
+      "substitutions": 21,
+      "deletions": 0,
+      "insertions": 0,
+      "word_error_rate": 0.4375,
+      "empty_outputs": 0,
+      "correct_phoneme_count": 16
+    },
+    "length/4": {
+      "n": 16,
+      "exact": 5,
+      "exact_rate": 0.3125,
+      "exact_95ci": [
+        0.14164435051961052,
+        0.5559606813326594
+      ],
+      "reference_words": 64,
+      "substitutions": 29,
+      "deletions": 0,
+      "insertions": 0,
+      "word_error_rate": 0.453125,
+      "empty_outputs": 0,
+      "correct_phoneme_count": 16
+    },
+    "length/5": {
+      "n": 15,
+      "exact": 2,
+      "exact_rate": 0.13333333333333333,
+      "exact_95ci": [
+        0.0373604698913593,
+        0.3788249920651624
+      ],
+      "reference_words": 75,
+      "substitutions": 27,
+      "deletions": 5,
+      "insertions": 0,
+      "word_error_rate": 0.4266666666666667,
+      "empty_outputs": 1,
+      "correct_phoneme_count": 14
+    },
+    "multiword": {
+      "n": 63,
+      "exact": 17,
+      "exact_rate": 0.2698412698412698,
+      "exact_95ci": [
+        0.17583701687980413,
+        0.39030143582031074
+      ],
+      "reference_words": 219,
+      "substitutions": 89,
+      "deletions": 7,
+      "insertions": 0,
+      "word_error_rate": 0.4383561643835616,
+      "empty_outputs": 2,
+      "correct_phoneme_count": 61
+    },
+    "prosody/calm": {
+      "n": 16,
+      "exact": 7,
+      "exact_rate": 0.4375,
+      "exact_95ci": [
+        0.2309836333518552,
+        0.6682180439322347
+      ],
+      "reference_words": 56,
+      "substitutions": 17,
+      "deletions": 0,
+      "insertions": 0,
+      "word_error_rate": 0.30357142857142855,
+      "empty_outputs": 0,
+      "correct_phoneme_count": 16
+    },
+    "prosody/neutral": {
+      "n": 16,
+      "exact": 6,
+      "exact_rate": 0.375,
+      "exact_95ci": [
+        0.18480982554752806,
+        0.613593529020652
+      ],
+      "reference_words": 56,
+      "substitutions": 19,
+      "deletions": 0,
+      "insertions": 0,
+      "word_error_rate": 0.3392857142857143,
+      "empty_outputs": 0,
+      "correct_phoneme_count": 16
+    },
+    "prosody/uncertain": {
+      "n": 16,
+      "exact": 3,
+      "exact_rate": 0.1875,
+      "exact_95ci": [
+        0.06591478773586765,
+        0.4300935986845823
+      ],
+      "reference_words": 56,
+      "substitutions": 24,
+      "deletions": 0,
+      "insertions": 0,
+      "word_error_rate": 0.42857142857142855,
+      "empty_outputs": 0,
+      "correct_phoneme_count": 16
+    },
+    "prosody/urgent": {
+      "n": 15,
+      "exact": 1,
+      "exact_rate": 0.06666666666666667,
+      "exact_95ci": [
+        0.011866588606194856,
+        0.2981707755242399
+      ],
+      "reference_words": 51,
+      "substitutions": 29,
+      "deletions": 7,
+      "insertions": 0,
+      "word_error_rate": 0.7058823529411765,
+      "empty_outputs": 2,
+      "correct_phoneme_count": 13
+    }
+  },
+  "correlation_quantiles": [
+    0.13297620562823076,
+    0.19767552301352084,
+    0.26182604267893533,
+    0.33898684237840704,
+    0.5253615343207699
+  ],
+  "limitations": [
+    "Cross-correlation chooses strongest path; echo can shift boundaries.",
+    "Whole-body windows differ from energy-trimmed classifier training.",
+    "No sample-clock drift fit; source reconstruction assumes historical current palette.",
+    "All selected alignments reported, including weak correlations; no cherry-picking."
+  ]
+}

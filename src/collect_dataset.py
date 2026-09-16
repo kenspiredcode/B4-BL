@@ -26,32 +26,44 @@ MANIFEST = os.path.join(REC_DIR, "manifest.jsonl")
 
 # prosody spread the runtime actually produces
 PROSODIES = [
-    ("neutral",   prosody.Prosody(0.8, 0.3)),
-    ("uncertain", prosody.Prosody(0.3, 0.2)),
-    ("urgent",    prosody.Prosody(0.9, 0.9)),
-    ("calm",      prosody.Prosody(0.9, 0.05)),
+    ("neutral",   prosody.NEUTRAL),
+    ("uncertain", prosody.UNCERTAIN),
+    ("urgent",    prosody.URGENT),
+    ("calm",      prosody.CALM),
 ]
 
 
-def build_message_set(rng):
+def build_message_set(rng, clocked=False):
     """List of (concepts, prosody_name) to emit."""
     allc = [c for c in lex.MORPHEMES if c not in lex.ALIASES]
+    if clocked:
+        from b4bl.clocked import vocabulary
+        allc = list(vocabulary())
     items = []
-    # every morpheme, each prosody
+    # Historical corpus: every morpheme in every prosody. Clocked corpus: one
+    # rotating prosody per singleton, leaving the majority of cases multi-word.
     for c in allc:
-        for pname, _ in PROSODIES:
+        for pname, _ in (PROSODIES if not clocked else [PROSODIES[len(items) % 4]]):
             items.append(([c], pname))
     # multi-morpheme messages (2-5 words), varied prosody
-    for _ in range(300):
+    for _ in range(400 if clocked else 300):
         L = rng.integers(2, 6)
-        msg = list(rng.choice(allc, size=L, replace=False))
+        msg = list(rng.choice(allc, size=L, replace=clocked))
         pname = PROSODIES[rng.integers(0, len(PROSODIES))][0]
         items.append((msg, pname))
+    if clocked:
+        # Include natural messages, numbers, and adversarial boundary pairs.
+        phrases = [msg for _, msg in lex.example_sentences() if all(c in allc for c in msg)]
+        phrases += [["SELF", "SELF"], ["GIVE"], ["DENY", "IT"], ["SEARCH"],
+                    ["NUM", "D4", "D2"], ["ACK", "ACK", "ACK"]]
+        for msg in phrases:
+            for pname, _ in PROSODIES:
+                items.append((msg, pname))
     rng.shuffle(items)
     return items
 
 
-def load_done(channel):
+def load_done(channel, encoding=None):
     """Set of (concepts-tuple, prosody, channel) already recorded, for resume."""
     done = set()
     if os.path.exists(MANIFEST):
@@ -59,7 +71,8 @@ def load_done(channel):
             for line in f:
                 try:
                     r = json.loads(line)
-                    done.add((tuple(r["concepts"]), r["prosody"], r["channel"]))
+                    if encoding is None or r.get("encoding") == encoding:
+                        done.add((tuple(r["concepts"]), r["prosody"], r["channel"]))
                 except Exception:
                     pass
     return done
@@ -84,7 +97,7 @@ def main():
                          "(e.g. 'MacBook Pro Speakers') so an unattended run picks "
                          "it without changing system settings")
     ap.add_argument("--slots", action="store_true",
-                    help="emit SLOTTED (symbol-clock) audio for the new decoder. "
+                    help="emit historical widened-gap slotted audio. "
                          "Tag the channel distinctly (e.g. --channel airplay_office_slots) "
                          "so slotted recordings stay separate from the legacy set.")
     ap.add_argument("--max-hang-streak", type=int, default=4,
@@ -93,10 +106,40 @@ def main():
     ap.add_argument("--hang-pause", type=float, default=0.0,
                     help="seconds to wait after a hang before the next emission, so "
                          "a wedged audio link can settle (e.g. 3.0 for Bluetooth).")
+    ap.add_argument("--clocked", action="store_true", help="experimental synchronized format; use a new channel tag")
+    ap.add_argument("--dry-run", action="store_true", help="print corpus/format summary; no audio-device access or playback")
+    ap.add_argument("--session-id", help="capture session ID; defaults to a new UUID per run")
     args = ap.parse_args()
+    if args.clocked and args.slots:
+        ap.error("--clocked and --slots select different formats")
+    import uuid, hashlib
+    from datetime import datetime, timezone
+    from b4bl import clocked as clock_format
+    encoding = clock_format.PROFILE if args.clocked else ("slots-complete-contours-v2" if args.slots else "legacy-v1")
+    session_id = args.session_id or str(uuid.uuid4())
+    source_hash = hashlib.sha256()
+    for module in ("codec", "phonology", "prosody", "generators", "lexicon", "clocked"):
+        with open(os.path.join(os.path.dirname(__file__), "..", "b4bl", module+".py"), "rb") as source:
+            source_hash.update(source.read())
+    rng = np.random.default_rng(args.seed)
+    items = build_message_set(rng, clocked=args.clocked)
+    if args.limit:
+        items = items[:args.limit]
+    if args.dry_run:
+        from collections import Counter
+        print(json.dumps({"encoding": encoding, "session_id": session_id,
+                          "messages": len(items), "lengths": dict(Counter(len(m) for m, _ in items)),
+                          "seed": args.seed, "source_sha256": source_hash.hexdigest(),
+                          "raw_recordings": args.clocked, "playback": False}, indent=2))
+        return
+    # Never silently mix a new wire format into a historical channel tag.
+    if os.path.exists(MANIFEST):
+        for line in open(MANIFEST):
+            r = json.loads(line)
+            if r.get("channel") == args.channel and r.get("encoding") != encoding:
+                ap.error("channel contains another/unversioned encoding; choose a fresh --channel tag")
 
     os.makedirs(REC_DIR, exist_ok=True)
-    rng = np.random.default_rng(args.seed)
     capture.set_channel_profile(latency=args.latency, gain=args.gain,
                                 input_device=args.input_device,
                                 output_device=args.output_device)
@@ -110,8 +153,9 @@ def main():
         base_env["B4BL_INPUT_DEVICE"] = args.input_device
     if args.output_device:
         base_env["B4BL_OUTPUT_DEVICE"] = args.output_device
-    if args.slots:
-        base_env["B4BL_SLOTS"] = "1"
+    base_env["B4BL_SLOTS"] = "1" if args.slots else "0"
+    base_env["B4BL_CLOCKED"] = "1" if args.clocked else "0"
+    base_env["B4BL_KEEP_RAW"] = "1" if args.clocked else "0"
     try:
         st = subprocess.run(
             [sys.executable, emit, "/tmp/b4bl_selftest.wav",
@@ -124,10 +168,7 @@ def main():
         print("ABORT: self-test hung (output device wedged?). Re-select output & retry.")
         sys.exit(1)
 
-    items = build_message_set(rng)
-    if args.limit:
-        items = items[: args.limit]
-    done = load_done(args.channel)
+    done = load_done(args.channel, encoding)
     pending = [(m, p) for (m, p) in items if (tuple(m), p, args.channel) not in done]
 
     # start file numbering ABOVE any existing files for this channel, so a resume
@@ -136,7 +177,7 @@ def main():
     existing = glob.glob(os.path.join(REC_DIR, f"{args.channel}_*.wav"))
     next_idx = 0
     for p in existing:
-        m = re.search(rf"{re.escape(args.channel)}_(\d+)\.wav$", p)
+        m = re.search(rf"{re.escape(args.channel)}_(\d+)(?:\.raw)?\.wav$", p)
         if m:
             next_idx = max(next_idx, int(m.group(1)) + 1)
 
@@ -159,16 +200,30 @@ def main():
     with open(MANIFEST, "a") as mf:
         for i, (msg, pname) in enumerate(pending):
             fn = f"{args.channel}_{next_idx:05d}.wav"
+            next_idx += 1  # reserve even failed attempts; retain raw/timing evidence
             out = os.path.join(REC_DIR, fn)
             env = dict(base_env, B4BL_PROSODY=pname)
             cmd = [sys.executable, emit, out, str(args.latency), str(args.gain)] + list(msg)
+            # Timeout scales with the actual waveform, including long clocked
+            # words, instead of assuming every message fits in twelve seconds.
+            from b4bl import clocked as clock_format
+            prmap = {"neutral": prosody.NEUTRAL, "uncertain": prosody.UNCERTAIN,
+                     "urgent": prosody.URGENT, "calm": prosody.CALM}
+            preview = (clock_format.encode(msg, prmap[pname]) if args.clocked else
+                       codec.encode(msg, prmap[pname], slots=args.slots))
+            message_timeout = emission_timeout + len(preview)/gen.SR
             try:
-                p = subprocess.run(cmd, env=env, timeout=emission_timeout,
+                p = subprocess.run(cmd, env=env, timeout=message_timeout,
                                    stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
                 rc = p.returncode
             except subprocess.TimeoutExpired:
                 rc = -1   # hung: subprocess killed by timeout, OS frees audio state
 
+            with open(os.path.join(REC_DIR, "attempts.jsonl"), "a") as attempts:
+                attempts.write(json.dumps({"file": fn, "session_id": session_id,
+                                           "encoding": encoding, "channel": args.channel,
+                                           "concepts": msg, "prosody": pname, "returncode": rc,
+                                           "recorded_at": datetime.now(timezone.utc).isoformat()}) + "\n")
             if rc == -1:
                 n_hang += 1
                 hang_streak += 1
@@ -185,10 +240,16 @@ def main():
             hang_streak = 0
             if rc == 0 and os.path.exists(out):
                 mf.write(json.dumps({"file": fn, "concepts": msg,
-                                     "prosody": pname, "channel": args.channel}) + "\n")
+                                     "prosody": pname, "channel": args.channel,
+                                     "session_id": session_id, "encoding": encoding,
+                                     "source_sha256": source_hash.hexdigest(),
+                                     "recorded_at": datetime.now(timezone.utc).isoformat(),
+                                     "input_device": args.input_device, "output_device": args.output_device,
+                                     "gain": args.gain, "seed": args.seed,
+                                     "timing_file": fn.replace(".wav", ".timing.json") if args.clocked else None,
+                                     "raw_file": fn.replace(".wav", ".raw.wav") if args.clocked else None}) + "\n")
                 mf.flush()
                 n_ok += 1
-                next_idx += 1
             elif rc == 2:
                 n_skip += 1     # no sync or too quiet
             else:

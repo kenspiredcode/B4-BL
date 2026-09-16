@@ -20,3 +20,10 @@ audio_samples/slot_ab/
 recordings/
 .claude/
 b4bl/models/
+
+# Offline experiment caches/models are local; compact summaries are retained.
+experiments/**/*.npz
+experiments/**/*.joblib
+experiments/**/*.jsonl
+experiments/**/recordings.json
+experiments/**/reference_boundaries.json

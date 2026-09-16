@@ -134,7 +134,8 @@ class Phoneme:
                     (0.75, c + s * 0.5), (1, c)]
         return [(0, c), (1, c)]
 
-    def render(self, prosody=None, register_mult: float = 1.0) -> np.ndarray:
+    def render(self, prosody=None, register_mult: float = 1.0,
+               duration_sec: float = None) -> np.ndarray:
         """Render this phoneme to audio. `prosody` (optional) may perturb the
         expressive dimensions; see b4bl.prosody. `register_mult` shifts the whole
         phoneme's pitch by a constant factor — used to place a WORD in a target
@@ -152,6 +153,12 @@ class Phoneme:
             vib = None
         if prosody is not None:
             pts, dur, env, vib = prosody.apply(self, pts, dur, env, vib)
+        # Framed transports own duration. Override BEFORE synthesis so the full
+        # contour is performed, rather than cutting its identifying tail off.
+        if duration_sec is not None:
+            if duration_sec <= 0:
+                raise ValueError("duration_sec must be positive")
+            dur = duration_sec
 
         if self.cls == SoundClass.TONE:
             return gen.tonal(gen.Gesture(pts, dur, env, vib))
@@ -290,6 +297,11 @@ _BY_FEATURES = {(p.band, p.contour, p.dur, p.cls): p for p in INVENTORY}
 for _alias_name, _feat in _ALIAS.items():
     if _alias_name not in BY_NAME and _feat in _BY_FEATURES:
         BY_NAME[_alias_name] = _BY_FEATURES[_feat]
+
+
+def canonical(name: str) -> str:
+    """Resolve historical spellings without changing the vocabulary's wire codes."""
+    return BY_NAME[name].name
 
 
 def render_inventory_montage():

@@ -1,0 +1,517 @@
+{
+  "profile": "clocked-v1-fixed-300ms",
+  "evaluation": "synthetic only; no playback or capture",
+  "seed": 731203,
+  "training_seed": 20260916,
+  "summary": {
+    "all": {
+      "n": 336,
+      "exact": 175,
+      "exact_rate": 0.5208333333333334,
+      "exact_95ci": [
+        0.4674831287080109,
+        0.5737125342125969
+      ],
+      "reference_words": 1152,
+      "substitutions": 84,
+      "deletions": 407,
+      "insertions": 0,
+      "word_error_rate": 0.4262152777777778,
+      "empty_outputs": 105,
+      "correct_phoneme_count": null
+    },
+    "channel/clean/length/2": {
+      "n": 24,
+      "exact": 24,
+      "exact_rate": 1.0,
+      "exact_95ci": [
+        0.8620194241710247,
+        1.0
+      ],
+      "reference_words": 48,
+      "substitutions": 0,
+      "deletions": 0,
+      "insertions": 0,
+      "word_error_rate": 0.0,
+      "empty_outputs": 0,
+      "correct_phoneme_count": null
+    },
+    "channel/clean/length/3": {
+      "n": 20,
+      "exact": 20,
+      "exact_rate": 1.0,
+      "exact_95ci": [
+        0.8388698745050667,
+        1.0
+      ],
+      "reference_words": 60,
+      "substitutions": 0,
+      "deletions": 0,
+      "insertions": 0,
+      "word_error_rate": 0.0,
+      "empty_outputs": 0,
+      "correct_phoneme_count": null
+    },
+    "channel/clean/length/4": {
+      "n": 20,
+      "exact": 20,
+      "exact_rate": 1.0,
+      "exact_95ci": [
+        0.8388698745050667,
+        1.0
+      ],
+      "reference_words": 80,
+      "substitutions": 0,
+      "deletions": 0,
+      "insertions": 0,
+      "word_error_rate": 0.0,
+      "empty_outputs": 0,
+      "correct_phoneme_count": null
+    },
+    "channel/clean/length/5": {
+      "n": 20,
+      "exact": 20,
+      "exact_rate": 1.0,
+      "exact_95ci": [
+        0.8388698745050667,
+        1.0
+      ],
+      "reference_words": 100,
+      "substitutions": 0,
+      "deletions": 0,
+      "insertions": 0,
+      "word_error_rate": 0.0,
+      "empty_outputs": 0,
+      "correct_phoneme_count": null
+    },
+    "channel/clean/multi": {
+      "n": 84,
+      "exact": 84,
+      "exact_rate": 1.0,
+      "exact_95ci": [
+        0.9562667346678565,
+        0.9999999999999999
+      ],
+      "reference_words": 288,
+      "substitutions": 0,
+      "deletions": 0,
+      "insertions": 0,
+      "word_error_rate": 0.0,
+      "empty_outputs": 0,
+      "correct_phoneme_count": null
+    },
+    "channel/clock_skew_0.1pct/length/2": {
+      "n": 24,
+      "exact": 22,
+      "exact_rate": 0.9166666666666666,
+      "exact_95ci": [
+        0.741507847985494,
+        0.9768416721570266
+      ],
+      "reference_words": 48,
+      "substitutions": 0,
+      "deletions": 4,
+      "insertions": 0,
+      "word_error_rate": 0.08333333333333333,
+      "empty_outputs": 2,
+      "correct_phoneme_count": null
+    },
+    "channel/clock_skew_0.1pct/length/3": {
+      "n": 20,
+      "exact": 19,
+      "exact_rate": 0.95,
+      "exact_95ci": [
+        0.7638641064874331,
+        0.9911187805671268
+      ],
+      "reference_words": 60,
+      "substitutions": 0,
+      "deletions": 3,
+      "insertions": 0,
+      "word_error_rate": 0.05,
+      "empty_outputs": 1,
+      "correct_phoneme_count": null
+    },
+    "channel/clock_skew_0.1pct/length/4": {
+      "n": 20,
+      "exact": 20,
+      "exact_rate": 1.0,
+      "exact_95ci": [
+        0.8388698745050667,
+        1.0
+      ],
+      "reference_words": 80,
+      "substitutions": 0,
+      "deletions": 0,
+      "insertions": 0,
+      "word_error_rate": 0.0,
+      "empty_outputs": 0,
+      "correct_phoneme_count": null
+    },
+    "channel/clock_skew_0.1pct/length/5": {
+      "n": 20,
+      "exact": 17,
+      "exact_rate": 0.85,
+      "exact_95ci": [
+        0.6395767041130426,
+        0.9476322080405041
+      ],
+      "reference_words": 100,
+      "substitutions": 0,
+      "deletions": 15,
+      "insertions": 0,
+      "word_error_rate": 0.15,
+      "empty_outputs": 3,
+      "correct_phoneme_count": null
+    },
+    "channel/clock_skew_0.1pct/multi": {
+      "n": 84,
+      "exact": 78,
+      "exact_rate": 0.9285714285714286,
+      "exact_95ci": [
+        0.8528025594745215,
+        0.9668546416693556
+      ],
+      "reference_words": 288,
+      "substitutions": 0,
+      "deletions": 22,
+      "insertions": 0,
+      "word_error_rate": 0.0763888888888889,
+      "empty_outputs": 6,
+      "correct_phoneme_count": null
+    },
+    "channel/echo_noise_15db/length/2": {
+      "n": 24,
+      "exact": 3,
+      "exact_rate": 0.125,
+      "exact_95ci": [
+        0.04344255039315584,
+        0.3100428814785757
+      ],
+      "reference_words": 48,
+      "substitutions": 18,
+      "deletions": 10,
+      "insertions": 0,
+      "word_error_rate": 0.5833333333333334,
+      "empty_outputs": 5,
+      "correct_phoneme_count": null
+    },
+    "channel/echo_noise_15db/length/3": {
+      "n": 20,
+      "exact": 6,
+      "exact_rate": 0.3,
+      "exact_95ci": [
+        0.14547527396899385,
+        0.5189767762289793
+      ],
+      "reference_words": 60,
+      "substitutions": 11,
+      "deletions": 12,
+      "insertions": 0,
+      "word_error_rate": 0.38333333333333336,
+      "empty_outputs": 4,
+      "correct_phoneme_count": null
+    },
+    "channel/echo_noise_15db/length/4": {
+      "n": 20,
+      "exact": 1,
+      "exact_rate": 0.05,
+      "exact_95ci": [
+        0.008881219432873136,
+        0.23613589351256675
+      ],
+      "reference_words": 80,
+      "substitutions": 5,
+      "deletions": 68,
+      "insertions": 0,
+      "word_error_rate": 0.9125,
+      "empty_outputs": 17,
+      "correct_phoneme_count": null
+    },
+    "channel/echo_noise_15db/length/5": {
+      "n": 20,
+      "exact": 0,
+      "exact_rate": 0.0,
+      "exact_95ci": [
+        -1.3877787807814457e-17,
+        0.16113012549493322
+      ],
+      "reference_words": 100,
+      "substitutions": 9,
+      "deletions": 85,
+      "insertions": 0,
+      "word_error_rate": 0.94,
+      "empty_outputs": 17,
+      "correct_phoneme_count": null
+    },
+    "channel/echo_noise_15db/multi": {
+      "n": 84,
+      "exact": 10,
+      "exact_rate": 0.11904761904761904,
+      "exact_95ci": [
+        0.065964782536511,
+        0.2054510386689315
+      ],
+      "reference_words": 288,
+      "substitutions": 43,
+      "deletions": 175,
+      "insertions": 0,
+      "word_error_rate": 0.7569444444444444,
+      "empty_outputs": 43,
+      "correct_phoneme_count": null
+    },
+    "channel/echo_noise_5db/length/2": {
+      "n": 24,
+      "exact": 3,
+      "exact_rate": 0.125,
+      "exact_95ci": [
+        0.04344255039315584,
+        0.3100428814785757
+      ],
+      "reference_words": 48,
+      "substitutions": 13,
+      "deletions": 22,
+      "insertions": 0,
+      "word_error_rate": 0.7291666666666666,
+      "empty_outputs": 11,
+      "correct_phoneme_count": null
+    },
+    "channel/echo_noise_5db/length/3": {
+      "n": 20,
+      "exact": 0,
+      "exact_rate": 0.0,
+      "exact_95ci": [
+        -1.3877787807814457e-17,
+        0.16113012549493322
+      ],
+      "reference_words": 60,
+      "substitutions": 12,
+      "deletions": 33,
+      "insertions": 0,
+      "word_error_rate": 0.75,
+      "empty_outputs": 11,
+      "correct_phoneme_count": null
+    },
+    "channel/echo_noise_5db/length/4": {
+      "n": 20,
+      "exact": 0,
+      "exact_rate": 0.0,
+      "exact_95ci": [
+        -1.3877787807814457e-17,
+        0.16113012549493322
+      ],
+      "reference_words": 80,
+      "substitutions": 12,
+      "deletions": 60,
+      "insertions": 0,
+      "word_error_rate": 0.9,
+      "empty_outputs": 15,
+      "correct_phoneme_count": null
+    },
+    "channel/echo_noise_5db/length/5": {
+      "n": 20,
+      "exact": 0,
+      "exact_rate": 0.0,
+      "exact_95ci": [
+        -1.3877787807814457e-17,
+        0.16113012549493322
+      ],
+      "reference_words": 100,
+      "substitutions": 4,
+      "deletions": 95,
+      "insertions": 0,
+      "word_error_rate": 0.99,
+      "empty_outputs": 19,
+      "correct_phoneme_count": null
+    },
+    "channel/echo_noise_5db/multi": {
+      "n": 84,
+      "exact": 3,
+      "exact_rate": 0.03571428571428571,
+      "exact_95ci": [
+        0.01221944777306612,
+        0.09981858432106694
+      ],
+      "reference_words": 288,
+      "substitutions": 41,
+      "deletions": 210,
+      "insertions": 0,
+      "word_error_rate": 0.8715277777777778,
+      "empty_outputs": 56,
+      "correct_phoneme_count": null
+    },
+    "composition/unseen": {
+      "n": 336,
+      "exact": 175,
+      "exact_rate": 0.5208333333333334,
+      "exact_95ci": [
+        0.4674831287080109,
+        0.5737125342125969
+      ],
+      "reference_words": 1152,
+      "substitutions": 84,
+      "deletions": 407,
+      "insertions": 0,
+      "word_error_rate": 0.4262152777777778,
+      "empty_outputs": 105,
+      "correct_phoneme_count": null
+    },
+    "length/2": {
+      "n": 96,
+      "exact": 52,
+      "exact_rate": 0.5416666666666666,
+      "exact_95ci": [
+        0.4423137449970821,
+        0.6378131760458498
+      ],
+      "reference_words": 192,
+      "substitutions": 31,
+      "deletions": 36,
+      "insertions": 0,
+      "word_error_rate": 0.3489583333333333,
+      "empty_outputs": 18,
+      "correct_phoneme_count": null
+    },
+    "length/3": {
+      "n": 80,
+      "exact": 45,
+      "exact_rate": 0.5625,
+      "exact_95ci": [
+        0.4534093786865696,
+        0.6658631542803586
+      ],
+      "reference_words": 240,
+      "substitutions": 23,
+      "deletions": 48,
+      "insertions": 0,
+      "word_error_rate": 0.29583333333333334,
+      "empty_outputs": 16,
+      "correct_phoneme_count": null
+    },
+    "length/4": {
+      "n": 80,
+      "exact": 41,
+      "exact_rate": 0.5125,
+      "exact_95ci": [
+        0.4049314460370689,
+        0.6189230605563166
+      ],
+      "reference_words": 320,
+      "substitutions": 17,
+      "deletions": 128,
+      "insertions": 0,
+      "word_error_rate": 0.453125,
+      "empty_outputs": 32,
+      "correct_phoneme_count": null
+    },
+    "length/5": {
+      "n": 80,
+      "exact": 37,
+      "exact_rate": 0.4625,
+      "exact_95ci": [
+        0.3574781238878701,
+        0.5709583563319731
+      ],
+      "reference_words": 400,
+      "substitutions": 13,
+      "deletions": 195,
+      "insertions": 0,
+      "word_error_rate": 0.52,
+      "empty_outputs": 39,
+      "correct_phoneme_count": null
+    },
+    "multiword": {
+      "n": 336,
+      "exact": 175,
+      "exact_rate": 0.5208333333333334,
+      "exact_95ci": [
+        0.4674831287080109,
+        0.5737125342125969
+      ],
+      "reference_words": 1152,
+      "substitutions": 84,
+      "deletions": 407,
+      "insertions": 0,
+      "word_error_rate": 0.4262152777777778,
+      "empty_outputs": 105,
+      "correct_phoneme_count": null
+    },
+    "prosody/calm": {
+      "n": 80,
+      "exact": 37,
+      "exact_rate": 0.4625,
+      "exact_95ci": [
+        0.3574781238878701,
+        0.5709583563319731
+      ],
+      "reference_words": 400,
+      "substitutions": 13,
+      "deletions": 195,
+      "insertions": 0,
+      "word_error_rate": 0.52,
+      "empty_outputs": 39,
+      "correct_phoneme_count": null
+    },
+    "prosody/neutral": {
+      "n": 88,
+      "exact": 46,
+      "exact_rate": 0.5227272727272727,
+      "exact_95ci": [
+        0.4196177626380677,
+        0.6239354855631831
+      ],
+      "reference_words": 176,
+      "substitutions": 31,
+      "deletions": 32,
+      "insertions": 0,
+      "word_error_rate": 0.35795454545454547,
+      "empty_outputs": 16,
+      "correct_phoneme_count": null
+    },
+    "prosody/uncertain": {
+      "n": 88,
+      "exact": 51,
+      "exact_rate": 0.5795454545454546,
+      "exact_95ci": [
+        0.4752056286962684,
+        0.6772307400081098
+      ],
+      "reference_words": 256,
+      "substitutions": 23,
+      "deletions": 52,
+      "insertions": 0,
+      "word_error_rate": 0.29296875,
+      "empty_outputs": 18,
+      "correct_phoneme_count": null
+    },
+    "prosody/urgent": {
+      "n": 80,
+      "exact": 41,
+      "exact_rate": 0.5125,
+      "exact_95ci": [
+        0.4049314460370689,
+        0.6189230605563166
+      ],
+      "reference_words": 320,
+      "substitutions": 17,
+      "deletions": 128,
+      "insertions": 0,
+      "word_error_rate": 0.453125,
+      "empty_outputs": 32,
+      "correct_phoneme_count": null
+    }
+  },
+  "negative_controls": {
+    "n": 30,
+    "accepted": 0
+  },
+  "mean_duration_seconds": 4.397142857142858,
+  "elapsed_seconds": 79.14309158399999,
+  "limitations": [
+    "No music, motor, AGC, codec or microphone validation.",
+    "Fixed tempo; rhythm morphemes and spelling excluded.",
+    "Acoustic acceptance is not CRC-verified delivery.",
+    "Nominal input SNR, not calibrated room SNR."
+  ],
+  "metric_note": "Phoneme counts are not measured by this synthetic word-framing benchmark."
+}

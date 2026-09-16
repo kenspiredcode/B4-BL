@@ -128,7 +128,7 @@ def build_dataset(samples_per=SAMPLES_PER_PHONEME, slots=False):
             np.array(y_dur), np.array(y_cls))
 
 
-def build_dataset_from_recordings(manifest_path):
+def build_dataset_from_recordings(manifest_path, return_groups=False):
     """Load real recordings and derive per-PHONEME labeled features by segmenting
     each recording and aligning segments to its known phoneme sequence.
 
@@ -142,6 +142,7 @@ def build_dataset_from_recordings(manifest_path):
     rec_dir = os.path.dirname(manifest_path)
     X, yb, yc, yd, ycl = [], [], [], [], []
     used = skipped = 0
+    groups = []
     with open(manifest_path) as f:
         for line in f:
             line = line.strip()
@@ -162,16 +163,18 @@ def build_dataset_from_recordings(manifest_path):
                 p = ph.BY_NAME.get(pname)
                 if p is None:
                     continue
+                groups.append(r["file"])
                 X.append(F.extract(audio[s:e]))
                 yb.append(p.band.value); yc.append(p.contour.value)
                 yd.append(p.dur.value); ycl.append(p.cls.value)
             used += 1
     print(f"  recordings used {used}, skipped {skipped} (alignment mismatch); "
           f"{len(X)} phoneme samples")
-    return (np.array(X), np.array(yb), np.array(yc), np.array(yd), np.array(ycl))
+    result = (np.array(X), np.array(yb), np.array(yc), np.array(yd), np.array(ycl))
+    return result + (np.asarray(groups),) if return_groups else result
 
 
-def build_dataset_from_slot_recordings(manifest_path, channel_substr=None):
+def build_dataset_from_slot_recordings(manifest_path, channel_substr=None, return_groups=False):
     """Real-audio training set for the SLOTTED encoding. Unlike the legacy loader,
     this segments each recording with the SLOT decoder's own voiced-run + geminate
     handling (so a geminate click and its implied repeat are aligned correctly),
@@ -188,6 +191,7 @@ def build_dataset_from_slot_recordings(manifest_path, channel_substr=None):
     rec_dir = os.path.dirname(manifest_path)
     X, yb, yc, yd, ycl = [], [], [], [], []
     used = skipped = 0
+    groups = []
     with open(manifest_path) as f:
         for line in f:
             line = line.strip()
@@ -216,48 +220,55 @@ def build_dataset_from_slot_recordings(manifest_path, channel_substr=None):
                 p = ph.BY_NAME.get(pname)
                 if p is None:
                     continue
+                groups.append(r["file"])
                 X.append(F.extract(seg))
                 yb.append(p.band.value); yc.append(p.contour.value)
                 yd.append(p.dur.value); ycl.append(p.cls.value)
             used += 1
     print(f"  slot recordings used {used}, skipped {skipped} (alignment mismatch); "
           f"{len(X)} phoneme samples")
-    return (np.array(X), np.array(yb), np.array(yc), np.array(yd), np.array(ycl))
+    result = (np.array(X), np.array(yb), np.array(yc), np.array(yd), np.array(ycl))
+    return result + (np.asarray(groups),) if return_groups else result
 
 
 def train(samples_per=SAMPLES_PER_PHONEME, save=True, recordings=None, mix_synth=True,
-          slots=False, slot_channel=None):
+          slots=False, slot_channel=None, output=MODEL_PATH):
     from sklearn.ensemble import RandomForestClassifier
-    from sklearn.model_selection import train_test_split
+    from sklearn.model_selection import GroupShuffleSplit
     import joblib
 
     if recordings:
         if slots:
             print(f"loading SLOTTED real recordings from {recordings} "
                   f"(channel~{slot_channel}) ...")
-            Xr, ybr, ycr, ydr, yclr = build_dataset_from_slot_recordings(
-                recordings, channel_substr=slot_channel)
+            Xr, ybr, ycr, ydr, yclr, real_groups = build_dataset_from_slot_recordings(
+                recordings, channel_substr=slot_channel, return_groups=True)
         else:
             print(f"loading real recordings from {recordings} ...")
-            Xr, ybr, ycr, ydr, yclr = build_dataset_from_recordings(recordings)
+            Xr, ybr, ycr, ydr, yclr, real_groups = build_dataset_from_recordings(recordings, return_groups=True)
         if mix_synth:
             print(f"generating synthetic dataset ({len(ph.INVENTORY)} x {samples_per}) to mix in...")
             Xs, ybs, ycs, yds, ycls = build_dataset(samples_per, slots=slots)
             X = np.vstack([Xr, Xs]); yb = np.concatenate([ybr, ybs])
             yc = np.concatenate([ycr, ycs]); yd = np.concatenate([ydr, yds])
             ycl = np.concatenate([yclr, ycls])
+            groups = np.concatenate([real_groups, [f"synth:{i}" for i in range(len(Xs))]])
         else:
             X, yb, yc, yd, ycl = Xr, ybr, ycr, ydr, yclr
+            groups = real_groups
     else:
         print(f"generating dataset ({len(ph.INVENTORY)} phonemes x {samples_per})"
               f"{' [slotted mix]' if slots else ''}...")
         X, yb, yc, yd, ycl = build_dataset(samples_per, slots=slots)
+        groups = np.asarray([f"synth:{i}" for i in range(len(X))])
     print(f"  {X.shape[0]} samples, {X.shape[1]} features each")
 
+    splitter = GroupShuffleSplit(n_splits=1, test_size=0.2, random_state=1)
+    train_idx, test_idx = next(splitter.split(X, groups=groups))
     models = {}
     reports = {}
     for name, y in [("band", yb), ("contour", yc), ("dur", yd), ("cls", ycl)]:
-        Xtr, Xte, ytr, yte = train_test_split(X, y, test_size=0.2, random_state=1, stratify=y)
+        Xtr, Xte, ytr, yte = X[train_idx], X[test_idx], y[train_idx], y[test_idx]
         # capped depth + fewer trees keeps the saved model small (committable)
         # with negligible accuracy loss on this well-separated problem.
         clf = RandomForestClassifier(n_estimators=80, max_depth=16, n_jobs=-1,
@@ -269,9 +280,13 @@ def train(samples_per=SAMPLES_PER_PHONEME, save=True, recordings=None, mix_synth
         print(f"  {name:8} holdout accuracy: {acc:.3f}")
 
     if save:
-        os.makedirs(os.path.dirname(MODEL_PATH), exist_ok=True)
-        joblib.dump({"models": models, "feature_len": X.shape[1]}, MODEL_PATH)
-        print(f"saved -> {MODEL_PATH}")
+        os.makedirs(os.path.dirname(os.path.abspath(output)), exist_ok=True)
+        joblib.dump({"models": models, "feature_len": X.shape[1],
+                     "validation": "recording-group split, shared across dimensions",
+                     "train_groups": sorted(set(groups[train_idx])),
+                     "validation_groups": sorted(set(groups[test_idx])),
+                     "recordings_manifest": os.path.abspath(recordings) if recordings else None}, output)
+        print(f"saved -> {output}")
     return models, reports
 
 
@@ -290,7 +305,8 @@ if __name__ == "__main__":
                     help="with --slots --recordings, only use recordings whose "
                          "channel contains this substring (e.g. 'slots'), so legacy "
                          "recordings in the same manifest are excluded")
+    ap.add_argument("--output", default=MODEL_PATH, help="model destination; use a new path to preserve baseline")
     args = ap.parse_args()
     train(samples_per=args.samples, recordings=args.recordings,
           mix_synth=not args.no_mix_synth, slots=args.slots,
-          slot_channel=args.slot_channel)
+          slot_channel=args.slot_channel, output=args.output)

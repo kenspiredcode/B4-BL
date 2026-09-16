@@ -176,9 +176,10 @@ def _alloc_pool():
 
 # Minimum Hamming distance between morpheme codes of the SAME length. With
 # min-distance >= 2, no single misheard phoneme can turn one word into another —
-# a single slip always yields a non-word, which the lexicon layer detects and
-# corrects to the intended morpheme. (Error-correcting codes: sparser codebook,
-# far more robust. We have the vocabulary headroom to spend on it.)
+# a single substitution yields a non-word within the protected equal-length set.
+# Distance 2 DETECTS one substitution; it does not guarantee correction (distance
+# 3 is needed). Hand words/singletons are exempt; insertions/deletions and ambiguous
+# concatenations are not covered by this constraint.
 MIN_CODE_DISTANCE = 2
 
 

@@ -90,20 +90,37 @@ def phoneme_candidates(seg: np.ndarray, k: int = 2):
     if m is None:
         name, _ = _dec.classify_segment(seg)
         return [(name, 1.0)]
-    feats = F.extract(seg).reshape(1, -1)
-    models = m["models"]
-    bands = _topk(models["band"], feats, k)
-    contours = _topk(models["contour"], feats, k)
-    durs = _topk(models["dur"], feats, 1)      # duration is ~perfect, no need for k
-    classes = _topk(models["cls"], feats, 1)   # class is ~perfect too
-    cands = {}
-    for b, pb in bands:
-        for c, pc in contours:
-            for d, pd in durs:
-                for cl, pcl in classes:
-                    name = _nearest_by_features(b, c, d, cl)
-                    score = pb * pc * pd * pcl
-                    # keep the best score per resulting phoneme name
-                    if name not in cands or score > cands[name]:
-                        cands[name] = score
-    return sorted(cands.items(), key=lambda kv: kv[1], reverse=True)
+    return candidates_from_features(F.extract(seg).reshape(1, -1), k=k)[0]
+
+
+def candidates_from_features(features, k=3):
+    """Batch the same per-dimension N-best calculation used at runtime.
+
+    Offline evaluation can score thousands of segments without thousands of RF
+    thread-pool launches. This does not alter probabilities or candidate pruning.
+    """
+    m = load()
+    if m is None:
+        raise RuntimeError("batch scoring requires a trained classifier")
+    if not len(features):
+        return []
+    dimensions = ("band", "contour", "dur", "cls")
+    probabilities = {d: m["models"][d].predict_proba(features) for d in dimensions}
+    labels = {d: m["models"][d].classes_ for d in dimensions}
+    out = []
+    for r in range(len(features)):
+        choices = []
+        for dim, count in zip(dimensions, (k, k, 1, 1)):
+            ps = probabilities[dim][r]
+            choices.append([(labels[dim][i], float(ps[i]))
+                            for i in np.argsort(ps)[::-1][:count]])
+        cands = {}
+        for b, pb in choices[0]:
+            for c, pc in choices[1]:
+                for d, pd in choices[2]:
+                    for cl, pcl in choices[3]:
+                        name = _nearest_by_features(b, c, d, cl)
+                        score = pb * pc * pd * pcl
+                        cands[name] = max(cands.get(name, 0.0), score)
+        out.append(sorted(cands.items(), key=lambda kv: kv[1], reverse=True))
+    return out

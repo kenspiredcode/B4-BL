@@ -1,0 +1,164 @@
+"""Regression tests for deterministic metrics, symbol contracts, and framing."""
+import json
+import numpy as np
+import pytest
+from b4bl import benchmark, classifier, codec, phonology as ph, prosody, slot_decoder
+from b4bl import clocked, protocol, verified_clocked
+
+
+def test_word_error_counts_include_insertions_and_deletions():
+    assert benchmark.edit_counts(['SELF', 'MOVE'], ['SELF', 'MOVE', 'FRONT']) == (0, 0, 1)
+    assert benchmark.edit_counts(['SELF', 'MOVE'], ['MOVE']) == (0, 1, 0)
+    assert benchmark.edit_counts(['SELF', 'MOVE'], ['SELF', 'STOP']) == (1, 0, 0)
+    result = benchmark.metrics([dict(expected=['SELF'], decoded=['SELF', 'MOVE'], segments=2, expected_segments=1)])
+    assert result['exact_rate'] == 0 and result['word_error_rate'] == 1
+
+
+def test_composition_split_is_stable_and_keeps_all_prosodies_together():
+    assert benchmark.sequence_holdout(['SELF', 'MOVE']) == benchmark.sequence_holdout(json.loads('["SELF","MOVE"]'))
+    assert {benchmark.sequence_holdout([f'WORD{i}']) for i in range(100)} == {True, False}
+
+
+@pytest.mark.parametrize('concept', ['CONFIRM', 'DONE', 'ERROR'])
+def test_acoustic_indexes_resolve_historical_aliases(concept):
+    seq = codec.concepts_to_phoneme_words([concept])[0]
+    candidates = [[(ph.canonical(n), 1.0)] for n in seq]
+    assert codec.candidate_words_to_concepts([candidates]) == [concept]
+    canonical = dict(slot_decoder._morph_index())[concept]
+    assert slot_decoder._score_seq(candidates, canonical) == 0
+
+
+def test_ambiguous_flat_code_remains_visible_in_audit():
+    assert ['SELF', 'SELF', 'GIVE'] in benchmark.inventory_audit()['one_vs_two_word_collisions']
+    assert ['DENY', 'IT', 'SEARCH'] in benchmark.inventory_audit()['one_vs_two_word_collisions']
+
+
+def test_uncertain_slot_preserves_complete_contour():
+    p = ph.BY_NAME['Mc']
+    original = p.render(prosody.UNCERTAIN)
+    assert len(original) > int(.16*codec.gen.SR)
+    rendered = codec._render_phoneme_seq_slotted(['Mc'], prosody.UNCERTAIN)[0]
+    expected = p.render(prosody.UNCERTAIN, duration_sec=.16)
+    np.testing.assert_allclose(rendered[:len(expected)], expected)
+    assert np.count_nonzero(rendered[len(expected):]) == 0
+    assert not np.allclose(expected, original[:len(expected)])
+    with pytest.raises(ValueError):
+        codec._fit_slot(original, .26)
+
+
+def test_markers_recover_word_boundaries_without_energy_gaps():
+    two = clocked.encode(['SELF', 'SELF'])
+    one = clocked.encode(['GIVE'])
+    assert len(clocked.marker_positions(two)) == 3
+    assert len(clocked.marker_positions(one)) == 2
+    rng = np.random.default_rng(31)
+    noisy = two + rng.normal(0, .06, len(two))
+    starts = clocked.marker_positions(noisy)
+    assert len(starts) == 3
+    assert abs(starts[1]-starts[0]-clocked.PREFIX-clocked.TICK) < 20
+
+
+def test_clocked_rejects_unsupported_words_and_model():
+    for words in ([], ['WORKING'], ['ALARM'], ['R2D2']):
+        with pytest.raises(ValueError):
+            clocked.encode(words)
+    with pytest.raises(ValueError):
+        clocked.decode(np.zeros(100), {'models': {}})
+
+
+def test_complete_duration_for_all_prosodies():
+    for pr in (prosody.NEUTRAL, prosody.UNCERTAIN, prosody.URGENT, prosody.CALM):
+        for name in ('Lf', 'LiL'):
+            assert len(clocked.body(name, pr)) == clocked.ticks(name)*clocked.TICK-clocked.GUARD
+
+
+def test_crc_protects_header_payload_order_and_trailing_data():
+    frame = protocol.Frame(1, 2, 'MSG_TELL', 3, ['SELF', 'MOVE', 'FRONT'])
+    wire = verified_clocked.to_concepts(frame)
+    decoded = verified_clocked.parse_concepts(wire)
+    assert decoded.ok and decoded.checksum_ok and decoded.frame == frame
+    for index in range(len(wire)):
+        corrupted = wire.copy()
+        corrupted[index] = 'D9' if wire[index] != 'D9' else 'D8'
+        assert not verified_clocked.parse_concepts(corrupted).checksum_ok
+    assert not verified_clocked.parse_concepts(wire+['ACK']).ok
+    assert not verified_clocked.parse_concepts(wire[:-1]).ok
+
+
+def test_packet_numeric_payload_and_d_initial_words():
+    for payload in (['DONE'], ['DENY'], ['NUM', 'D4', 'D2']):
+        f = protocol.Frame(12, 99, 'MSG_WARN', 42, payload)
+        parsed = verified_clocked.parse_concepts(verified_clocked.to_concepts(f))
+        assert parsed.ok and parsed.frame == f
+    with pytest.raises(ValueError):
+        verified_clocked.to_concepts(protocol.Frame(1, 2, 'MSG_TELL', 0, ['D4']))
+
+
+def test_legacy_packet_payload_deny_not_consumed_as_sequence_digits():
+    parsed = protocol.parse_concepts(protocol.make_frame(1, 2, 'MSG_TELL', 0, ['DENY', 'DONE']))
+    assert parsed.ok and parsed.checksum_ok and parsed.frame.payload == ['DENY', 'DONE']
+
+
+def test_training_holdout_groups_entire_recordings(tmp_path, monkeypatch):
+    import joblib
+    from b4bl import train_classifier as trainer
+    rng = np.random.default_rng(5)
+    X = rng.normal(size=(60, 23))
+    labels = np.array(['low', 'high']*30)
+    groups = np.repeat([f'recording-{i}' for i in range(20)], 3)
+    monkeypatch.setattr(trainer, 'build_dataset_from_recordings',
+                        lambda *args, **kwargs: (X, labels, labels, labels, labels, groups))
+    dest = str(tmp_path/'model.joblib')
+    trainer.train(recordings='test-only-manifest', mix_synth=False, output=dest)
+    saved = joblib.load(dest)
+    assert not set(saved['train_groups']) & set(saved['validation_groups'])
+    assert set(saved['train_groups']) | set(saved['validation_groups']) == set(groups)
+
+
+@pytest.fixture(scope='module')
+def tiny_clock_model():
+    return clocked.train(samples_per=32, seed=13)
+
+
+def test_clocked_decode_distinguishes_flat_stream_collision(tiny_clock_model):
+    for words in (['SELF', 'SELF'], ['GIVE'], ['DENY', 'IT'], ['SEARCH']):
+        result = clocked.decode(clocked.encode(words), tiny_clock_model)
+        assert result.accepted and result.words == words, (words, result)
+
+
+def test_majority_repairs_one_wrong_word(tiny_clock_model):
+    result = clocked.decode(clocked.encode(['SELF', 'GIVE', 'SELF']), tiny_clock_model, repetition=3)
+    assert result.accepted and result.words == ['SELF']
+    truncated_block = clocked.decode(clocked.encode(['SELF', 'SELF']), tiny_clock_model, repetition=3)
+    assert not truncated_block.accepted
+
+
+def test_clocked_packet_acoustic_loopback(tiny_clock_model):
+    frame = protocol.Frame(1, 2, 'MSG_TELL', 3, ['SELF', 'MOVE', 'FRONT'])
+    result = verified_clocked.decode(verified_clocked.encode(frame), tiny_clock_model)
+    assert result.accepted and result.parsed.frame == frame
+
+
+def test_silent_capture_plan_never_opens_devices(monkeypatch, capsys):
+    from src import collect_dataset
+    monkeypatch.setattr(collect_dataset.capture, 'set_channel_profile',
+                        lambda **kw: pytest.fail('dry run touched the audio channel'))
+    monkeypatch.setattr('sys.argv', ['collect_dataset', '--clocked', '--dry-run', '--limit', '12'])
+    collect_dataset.main()
+    plan = json.loads(capsys.readouterr().out)
+    assert plan['messages'] == 12 and plan['playback'] is False
+    assert plan['encoding'] == clocked.PROFILE
+
+
+def test_transmitter_spans_match_audio_and_clock():
+    audio, spans = clocked.encode(['SELF', 'IT', 'GIVE'], return_spans=True)
+    assert len(spans) == 4
+    for span in spans:
+        expected = clocked.body(span['phoneme'], prosody.NEUTRAL)
+        np.testing.assert_allclose(audio[span['start']:span['end']], expected)
+        assert span['slot_end']-span['start'] == clocked.ticks(span['phoneme'])*clocked.TICK
+    assert [s['word_index'] for s in spans] == [0, 1, 2, 2]
+
+
+def test_empty_recording_has_no_words():
+    assert slot_decoder.decode_vocab(np.array([], dtype=np.float32)) == []

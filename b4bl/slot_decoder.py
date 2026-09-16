@@ -1,21 +1,9 @@
-"""B4-BL — slot-grid (symbol-clock) decoder.
+"""Historical widened-gap decoder for codec.encode(slots=True).
 
-The counterpart to codec.encode(slots=True). Because the slotted encoder puts a
-mandatory, room-survivable gap after every phoneme, boundaries are no longer
-something we must *infer* from a continuous stream — every phoneme is a cleanly
-silence-delimited voiced run. So decoding collapses to the thing the classifier is
-already good at (93-99%): classify each isolated segment.
-
-Pipeline:
-  1. voiced-run segmentation (decoder._segments) — now reliable, gaps are wide
-  2. drop geminate-marker runs (the reserved high pip) — record them as "the next
-     phoneme repeats the previous", so identical adjacent phonemes are recovered
-  3. group runs into words on the wider word gap
-  4. classify each phoneme run with the trained segment classifier
-  5. lexicon: phoneme words -> concepts (with N-best repair, as today)
-
-No frame model, no boundary detector, no CTC. Those existed only to fight the
-segmentation problem this encoding removes.
+This format still segments PHONEMES by energy; it does not recover a symbol
+clock. Vocabulary DP removes reliance on word gaps but discards timing and
+cannot uniquely interpret every concatenation of the existing variable-length
+codes. See clocked.py for the separate experimental synchronized format.
 """
 
 from __future__ import annotations
@@ -26,7 +14,7 @@ from . import generators as gen
 from . import decoder as _dec
 from . import classifier as _clf
 from . import lexicon as lex
-from . import codec
+from . import codec, phonology as ph
 
 SR = gen.SR
 
@@ -95,6 +83,8 @@ def _segment_words(a: np.ndarray):
 def audio_to_phoneme_words(audio: np.ndarray) -> List[List[str]]:
     """Slotted audio -> list of words, each a list of phoneme names (top-1)."""
     a = audio.astype(np.float32)
+    if not len(a):
+        return []
     if np.max(np.abs(a)) > 0:
         a = a / np.max(np.abs(a))
     out = []
@@ -114,6 +104,8 @@ def audio_to_candidate_words(audio: np.ndarray, k: int = 2):
     [(name, prob), ...]. This is what the lexicon-constrained decoder consumes to
     repair a misheard phoneme by snapping to the nearest valid morpheme."""
     a = audio.astype(np.float32)
+    if not len(a):
+        return []
     if np.max(np.abs(a)) > 0:
         a = a / np.max(np.abs(a))
     out = []
@@ -134,6 +126,8 @@ def audio_to_flat_candidates(audio: np.ndarray, k: int = 3):
     DP to decide (see decode_vocab), because on a real channel the within-word and
     between-word gap distributions overlap and no gap threshold separates them."""
     a = audio.astype(np.float32)
+    if not len(a):
+        return []
     if np.max(np.abs(a)) > 0:
         a = a / np.max(np.abs(a))
     flat = []
@@ -158,7 +152,7 @@ def _morph_index():
         for c in lex.MORPHEMES:
             if c in lex.ALIASES:
                 continue                      # skip alias duplicates (same sound)
-            seq = tuple(lex.concept_to_phonemes(c))
+            seq = tuple(ph.canonical(n) for n in lex.concept_to_phonemes(c))
             if not seq:
                 continue                      # skip anything with no phonemes
             idx.append((c, seq))
@@ -179,13 +173,20 @@ def _score_seq(cands, seq) -> float:
 
 
 def decode_vocab(audio: np.ndarray, k: int = 3, word_penalty: float = 2.0) -> List[str]:
-    """Vocabulary-driven decode: classify every phoneme (clean, thanks to slotting),
+    """Vocabulary-driven decode: classify detected phoneme segments,
     then DP over the flat phoneme sequence to find the split into VALID morphemes
     that maximizes total score. The closed vocabulary decides word boundaries — no
     gap threshold — so it is robust to the real channel's overlapping gap sizes.
 
     word_penalty discourages over-splitting (each extra word must earn its score)."""
     flat = audio_to_flat_candidates(audio, k=k)
+    return decode_candidates(flat, word_penalty=word_penalty)
+
+
+def decode_candidates(flat, word_penalty: float = 2.0) -> List[str]:
+    """Decode a flat candidate stream. Timing has been discarded: ambiguous
+    concatenations are resolved by the prior, NOT by additional acoustic evidence.
+    Exposed separately for reproducible offline and oracle diagnostics."""
     N = len(flat)
     if N == 0:
         return []

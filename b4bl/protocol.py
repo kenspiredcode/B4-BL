@@ -108,7 +108,7 @@ def parse_concepts(concepts: List[str]) -> ParseResult:
         if num is None:
             return None, i
         k = j + 1
-        while k < len(c) and c[k].startswith("D"):
+        while k < len(c) and (c[k].startswith("D") and c[k][1:].isdigit()):
             k += 1
         return num, k
 
@@ -124,7 +124,7 @@ def parse_concepts(concepts: List[str]) -> ParseResult:
     if seq is None:
         return ParseResult(None, False, "bad seq")
     i += 1
-    while i < len(c) and c[i].startswith("D"):
+    while i < len(c) and (c[i].startswith("D") and c[i][1:].isdigit()):
         i += 1
     # payload up to CHECKSUM_MARK
     if CHECKSUM_MARK not in c[i:]:

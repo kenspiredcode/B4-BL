@@ -100,10 +100,9 @@ def _render_geminate() -> np.ndarray:
 
 def _fit_slot(clip: np.ndarray, width_sec: float) -> np.ndarray:
     """Place a rendered phoneme at the start of a width_sec-wide window, padding the
-    remainder with the mandatory inter-phoneme gap (silence). The phoneme body may
-    be shorter or longer than its nominal duration (prosody flexes it); we clamp to
-    the slot window and always leave at least SLOT_PHONE_GAP of trailing silence so
-    the boundary is recoverable."""
+    remainder with the mandatory inter-phoneme gap (silence). Oversized bodies
+    are rejected: callers must synthesize a complete gesture at the allowed
+    duration, not truncate away lexical contour information."""
     window = int(gen.SR * width_sec)
     gap = int(gen.SR * SLOT_PHONE_GAP)
     body_room = max(1, window - gap)
@@ -111,24 +110,21 @@ def _fit_slot(clip: np.ndarray, width_sec: float) -> np.ndarray:
     if len(clip) <= body_room:
         out[:len(clip)] = clip
     else:
-        # body longer than the slot allows (e.g. prosody stretched it): fade the
-        # last few ms instead of hard-cutting, so we never chop the waveform mid-
-        # cycle (which clicks / sounds clipped).
-        body = clip[:body_room].copy()
-        fade = min(len(body), int(0.02 * gen.SR))
-        body[-fade:] *= np.linspace(1.0, 0.0, fade, dtype=np.float32)
-        out[:len(body)] = body
+        raise ValueError("phoneme exceeds slot body; render its complete contour at slot duration")
     return out
 
 
 def _render_phoneme_seq_slotted(pnames: List[str], prosody: Prosody) -> List[np.ndarray]:
-    """Slotted render: each phoneme fills a fixed 1- or 2-slot window (SHORT/LONG),
+    """Historical slotted render: SHORT/LONG use 260/600 ms windows,
     with a mandatory trailing gap. A geminate marker is inserted between adjacent
     identical phonemes so they don't merge."""
     clips = []
     for pi, pname in enumerate(pnames):
         p = ph.BY_NAME[pname]
         body = p.render(prosody=prosody, register_mult=_REG_MULT[0])
+        if len(body) > int(gen.SR * ph.DUR_SEC[p.dur]):
+            body = p.render(prosody=prosody, register_mult=_REG_MULT[0],
+                            duration_sec=ph.DUR_SEC[p.dur])
         clips.append(_fit_slot(body, _slot_width(p.dur)))
         # geminate marker before the next phoneme if it is identical to this one.
         # The slot already carries a trailing gap; add a leading gap before the
@@ -292,7 +288,7 @@ def _lexicon_index():
     """concept -> flat phoneme sequence, for all morphemes (repetition expanded)."""
     idx = {}
     for concept in lex.MORPHEMES:
-        idx[concept] = tuple(lex.concept_to_phonemes(concept))
+        idx[concept] = tuple(ph.canonical(n) for n in lex.concept_to_phonemes(concept))
     return idx
 
 

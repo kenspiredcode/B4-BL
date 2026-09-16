@@ -10,7 +10,7 @@ Usage:
   (special: if the first concept is '__SELFTEST__', run the self-test instead)
 Exit: 0 = wrote a good segment, 2 = no sync / too quiet, 3 = self-test fail.
 """
-import sys, os
+import sys, os, json
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 import numpy as np
 from scipy.io import wavfile
@@ -36,8 +36,19 @@ def main():
     prmap = {"neutral": prosody.NEUTRAL, "uncertain": prosody.UNCERTAIN,
              "urgent": prosody.URGENT, "calm": prosody.CALM}
     slots = os.environ.get("B4BL_SLOTS") == "1"   # symbol-clock encoding
-    audio = codec.encode(concepts, prmap.get(pname, prosody.NEUTRAL), slots=slots)
+    if os.environ.get("B4BL_CLOCKED") == "1":
+        from b4bl import clocked
+        audio, spans = clocked.encode(concepts, prmap.get(pname, prosody.NEUTRAL), return_spans=True)
+        with open(os.path.splitext(out_wav)[0] + ".timing.json", "w") as f:
+            json.dump({"encoding": clocked.PROFILE, "sample_rate": gen.SR,
+                       "origin": "synthesized message start; align to raw capture separately",
+                       "concepts": concepts, "prosody": pname, "spans": spans}, f)
+    else:
+        audio = codec.encode(concepts, prmap.get(pname, prosody.NEUTRAL), slots=slots)
     rec = capture.play_and_record(audio)          # may block if device wedges;
+    if os.environ.get("B4BL_KEEP_RAW") == "1":
+        raw_path = os.path.splitext(out_wav)[0] + ".raw.wav"
+        wavfile.write(raw_path, gen.SR, (np.clip(rec, -1, 1)*32767).astype(np.int16))
     seg = capture.find_message(rec)               # parent kills us on timeout.
     if seg is None or float(np.sqrt(np.mean(seg ** 2))) < MIN_RMS:
         sys.exit(2)
