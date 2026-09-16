@@ -85,11 +85,30 @@ Random forests now validate with one shared split grouping entire recordings,
 not separate phoneme-row splits for each output dimension. That internal split
 still does not replace a held-out capture session/channel benchmark.
 
+The clocked receiver estimates one affine sample-rate scale from all detected
+marker intervals (within a fixed ±4% search range), then decodes windows on that
+received clock. This handles cumulative drift such as a 0.1% sample-rate mismatch;
+the estimate and residual are returned on `DecodeResult`. It remains conservative
+about missing or extra markers.
+
 Future `--clocked` capture runs record session IDs, format/source fingerprints,
 raw audio, transmitter timing labels, device settings, and failed-attempt logs.
 Actual capture must be started separately for an overnight burst. Keep room/session
 test sets out of training before any decoder tuning. Source-derived alignment of
 old recordings is diagnostic only; it is not verified oracle segmentation.
+
+The prepared overnight command is intentionally explicit and loudness-controlled;
+run it only when ready, with a fresh channel tag:
+
+```bash
+python3 src/collect_dataset.py --clocked --channel clocked_office_v1 \
+  --limit 500 --input-device AUKEY --output-device "<speaker>" \
+  --gain 2 --max-hang-streak 8 --hang-pause 3
+```
+
+The collector self-tests first, refuses to mix formats in a channel, logs every
+attempt, saves raw capture plus transmitter timing, and can resume after hangs.
+Use `--dry-run` to inspect the corpus without touching audio devices.
 
 ## Layout
 

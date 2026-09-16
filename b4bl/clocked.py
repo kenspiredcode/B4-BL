@@ -110,6 +110,33 @@ def marker_positions(audio, threshold=.45):
     return [int(p-1) for p in peaks]
 
 
+def estimate_clock(starts):
+    """Estimate received samples per nominal tick from marker intervals.
+
+    The transmitter puts a word marker before every word and one closing marker
+    after it. Each interval is therefore ``PREFIX + integer_ticks*TICK``. A
+    receiver clock can run slightly fast or slow, so fitting one affine scale to
+    all intervals is safer than requiring every interval to equal the nominal
+    duration. The small integer search is deterministic and needs no labels.
+    Returns ``(scale, residual_samples)``; scale=1 is the nominal clock.
+    """
+    starts = np.asarray(starts, dtype=float)
+    if len(starts) < 2:
+        return 1.0, float("inf")
+    intervals = np.diff(starts)
+    best = (1.0, float("inf"))
+    for scale in np.linspace(.96, 1.04, 321):
+        ticks_est = np.rint((intervals - PREFIX * scale) / (TICK * scale))
+        valid = (ticks_est >= 1) & (ticks_est <= 64)
+        if not np.any(valid):
+            continue
+        residual = float(np.median(np.abs(intervals[valid] -
+                                          scale * (PREFIX + ticks_est[valid] * TICK))))
+        if residual < best[1]:
+            best = (float(scale), residual)
+    return best
+
+
 @dataclass
 class DecodeResult:
     words: list[str] = field(default_factory=list)
@@ -118,6 +145,8 @@ class DecodeResult:
     marker_count: int = 0
     word_margins: list[float] = field(default_factory=list)
     hypothesis: list[str] = field(default_factory=list)
+    clock_scale: float = 1.0
+    clock_residual_samples: float = float("inf")
     # This acceptance means acoustic framing passed, NOT checksum verification.
 
 
@@ -133,14 +162,18 @@ def decode(audio, model, repetition=1, min_margin=.5):
         result.reason = 'no complete marker pair'
         return result
     vocab = vocabulary()
+    clock_scale, clock_residual = estimate_clock(starts)
+    result.clock_scale = clock_scale
+    result.clock_residual_samples = clock_residual
     # Build exactly bounded windows for the timing paths of candidate WORDS.
     # Never use a whole-phoneme classifier on arbitrary sliding fragments.
     windows, keys, regions = [], {}, []
     for wi, (left, right) in enumerate(zip(starts, starts[1:])):
-        begin = left + PREFIX
+        begin = left + int(round(PREFIX * clock_scale))
         span = right - begin
-        count = round(span/TICK)
-        if count < 1 or abs(span-count*TICK) > int(.025*SR):
+        tick_samples = TICK * clock_scale
+        count = round(span/tick_samples)
+        if count < 1 or abs(span-count*tick_samples) > int(.045*SR):
             result.reason = 'word marker is off the symbol grid'
             return result
         candidates = {c: seq for c, seq in vocab.items() if sum(map(ticks, seq)) == count}
@@ -153,8 +186,8 @@ def decode(audio, model, repetition=1, min_margin=.5):
                 width = ticks(name)
                 key = (wi, pos, width)
                 if key not in keys:
-                    lo = begin + pos*TICK
-                    hi = lo + width*TICK-GUARD
+                    lo = begin + int(round(pos*tick_samples))
+                    hi = lo + int(round(width*tick_samples))-int(round(GUARD*clock_scale))
                     if hi > len(a):
                         result.reason = 'truncated phoneme'
                         return result

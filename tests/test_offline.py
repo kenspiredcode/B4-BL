@@ -58,6 +58,19 @@ def test_markers_recover_word_boundaries_without_energy_gaps():
     assert abs(starts[1]-starts[0]-clocked.PREFIX-clocked.TICK) < 20
 
 
+def test_clock_estimator_recovers_small_sample_rate_drift():
+    audio = clocked.encode(['SELF', 'ENERGY', 'LOW'])
+    from scipy.signal import resample_poly
+    received = resample_poly(audio, 1001, 1000)
+    starts = clocked.marker_positions(received)
+    scale, residual = clocked.estimate_clock(starts)
+    assert abs(scale - 1.001) < 0.0005
+    assert residual < 5
+    model = clocked.train(samples_per=24, seed=17)
+    result = clocked.decode(received, model)
+    assert result.accepted and result.words == ['SELF', 'ENERGY', 'LOW']
+
+
 def test_clocked_rejects_unsupported_words_and_model():
     for words in ([], ['WORKING'], ['ALARM'], ['R2D2']):
         with pytest.raises(ValueError):
