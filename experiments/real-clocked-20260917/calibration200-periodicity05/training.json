@@ -1,0 +1,46 @@
+{
+  "evaluation_note": "Repeated runs on this frozen split are development comparisons, not fresh unseen tests.",
+  "feature_profile": "pitch-envelope-periodicity-v2-0.5",
+  "augmentation_copies": 0,
+  "estimator": "random_forest",
+  "training": {
+    "used": 1388,
+    "attempted": 1396,
+    "exclusions": {
+      "missing": 3,
+      "alignment_rejected": 5
+    },
+    "real_label_counts": {
+      "Lc": 602,
+      "__invalid__": 2791,
+      "Hf": 348,
+      "MiL": 347,
+      "Ld": 656,
+      "Sf": 263,
+      "Sd": 257,
+      "Lr": 761,
+      "HaL": 263,
+      "Hc": 212,
+      "Lf": 758,
+      "Mf": 524,
+      "LiL": 660,
+      "Hd": 272,
+      "Hw": 244,
+      "Hr": 241,
+      "LdL": 659,
+      "MdL": 296,
+      "Sr": 247,
+      "MaL": 330,
+      "Mr": 252,
+      "Mw": 268,
+      "Md": 257,
+      "Mc": 292,
+      "MrL": 311,
+      "MfL": 15,
+      "LdR": 6
+    },
+    "total_windows": 14212
+  },
+  "split_sha256": "0d0626a6c6d85ec51763012185cd4b8c16157b30422afdc1cc520ce8d14e7b0b",
+  "results": {}
+}

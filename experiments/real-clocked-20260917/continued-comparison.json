@@ -1,0 +1,28 @@
+{
+  "status": "development comparison; room3 was reused after the first frozen evaluation",
+  "metric": "accepted-exact multi-word messages; missing captures count as failures",
+  "room3_attempts": 328,
+  "leave_one_room_out": {
+    "baseline_real_model": {"exact": 232, "best_exact": 259, "accepted_wrong": 23, "rejected": 72, "missing": 1},
+    "broad_augmentation_once": {"exact": 223, "best_exact": 260, "accepted_wrong": 25, "rejected": 79, "missing": 1},
+    "periodicity_0_4": {"exact": 277, "best_exact": 301, "accepted_wrong": 10, "rejected": 40, "missing": 1},
+    "periodicity_0_5": {"exact": 282, "best_exact": 300, "accepted_wrong": 11, "rejected": 34, "missing": 1},
+    "periodicity_0_6": {"exact": 284, "best_exact": 299, "accepted_wrong": 12, "rejected": 31, "missing": 1},
+    "extra_trees_periodicity_0_5": {"exact": 258, "best_exact": 302, "accepted_wrong": 7, "rejected": 62, "missing": 1}
+  },
+  "periodicity_0_5_candidate_oracle": {
+    "top1_complete_message": 300,
+    "top2_per_word_complete_message": 320,
+    "top3_per_word_complete_message": 325,
+    "top5_per_word_complete_message": 326,
+    "note": "oracle membership only; receiver does not know the expected words"
+  },
+  "represented_room3_reserved_compositions": {
+    "attempts": 68,
+    "calibration_20": {"exact": 54, "best_exact": 59, "accepted_wrong": 4, "rejected": 9, "missing": 1},
+    "calibration_50": {"exact": 67, "best_exact": 67, "accepted_wrong": 0, "rejected": 0, "missing": 1},
+    "calibration_100": {"exact": 67, "best_exact": 67, "accepted_wrong": 0, "rejected": 0, "missing": 1},
+    "calibration_200": {"exact": 67, "best_exact": 67, "accepted_wrong": 0, "rejected": 0, "missing": 1},
+    "all_available_nonholdout": {"exact": 67, "best_exact": 67, "accepted_wrong": 0, "rejected": 0, "missing": 1}
+  }
+}

@@ -1,0 +1,195 @@
+{
+  "evaluation_note": "Repeated runs on this frozen split are development comparisons, not fresh unseen tests.",
+  "feature_profile": "pitch-envelope-periodicity-v2-0.5",
+  "augmentation_copies": 0,
+  "estimator": "random_forest",
+  "training": {
+    "used": 1288,
+    "attempted": 1296,
+    "exclusions": {
+      "missing": 3,
+      "alignment_rejected": 5
+    },
+    "real_label_counts": {
+      "Lc": 560,
+      "__invalid__": 2574,
+      "Hf": 320,
+      "MiL": 321,
+      "Ld": 605,
+      "Sf": 246,
+      "Sd": 239,
+      "Lr": 703,
+      "HaL": 240,
+      "Hc": 192,
+      "Lf": 693,
+      "Mf": 486,
+      "LiL": 607,
+      "Hd": 250,
+      "Hw": 225,
+      "Hr": 227,
+      "LdL": 608,
+      "MdL": 277,
+      "Sr": 233,
+      "MaL": 296,
+      "Mr": 230,
+      "Mw": 243,
+      "Md": 232,
+      "Mc": 272,
+      "MrL": 286,
+      "MfL": 12,
+      "LdR": 6
+    },
+    "total_windows": 13263
+  },
+  "split_sha256": "0d0626a6c6d85ec51763012185cd4b8c16157b30422afdc1cc520ce8d14e7b0b",
+  "results": {
+    "composition_test|clocked_macbook_aukey_near_v1|all|real_trained": {
+      "attempts": 101,
+      "markers_count_ok": 101,
+      "exact": 100,
+      "best_exact": 100,
+      "accepted_wrong": 0,
+      "rejected": 1
+    },
+    "composition_test|clocked_macbook_aukey_near_v1|single|real_trained": {
+      "attempts": 33,
+      "markers_count_ok": 33,
+      "exact": 33,
+      "best_exact": 33,
+      "accepted_wrong": 0,
+      "rejected": 0
+    },
+    "composition_test|clocked_macbook_aukey_near_v1|multi|real_trained": {
+      "attempts": 68,
+      "markers_count_ok": 68,
+      "exact": 67,
+      "best_exact": 67,
+      "accepted_wrong": 0,
+      "rejected": 1
+    },
+    "composition_test|clocked_bluetooth_aukey_far_v1|all|real_trained": {
+      "attempts": 101,
+      "markers_count_ok": 101,
+      "exact": 101,
+      "best_exact": 101,
+      "accepted_wrong": 0,
+      "rejected": 0
+    },
+    "composition_test|clocked_bluetooth_aukey_far_v1|single|real_trained": {
+      "attempts": 33,
+      "markers_count_ok": 33,
+      "exact": 33,
+      "best_exact": 33,
+      "accepted_wrong": 0,
+      "rejected": 0
+    },
+    "composition_test|clocked_bluetooth_aukey_far_v1|multi|real_trained": {
+      "attempts": 68,
+      "markers_count_ok": 68,
+      "exact": 68,
+      "best_exact": 68,
+      "accepted_wrong": 0,
+      "rejected": 0
+    },
+    "composition_test|clocked_bluetooth_macmic_room2_verified_v1|all|real_trained": {
+      "attempts": 101,
+      "markers_count_ok": 100,
+      "exact": 99,
+      "best_exact": 99,
+      "accepted_wrong": 0,
+      "rejected": 1,
+      "missing": 1
+    },
+    "composition_test|clocked_bluetooth_macmic_room2_verified_v1|single|real_trained": {
+      "attempts": 33,
+      "markers_count_ok": 32,
+      "exact": 32,
+      "best_exact": 32,
+      "accepted_wrong": 0,
+      "rejected": 0,
+      "missing": 1
+    },
+    "composition_test|clocked_bluetooth_macmic_room2_verified_v1|multi|real_trained": {
+      "attempts": 68,
+      "markers_count_ok": 68,
+      "exact": 67,
+      "best_exact": 67,
+      "accepted_wrong": 0,
+      "rejected": 1
+    },
+    "room3_test|clocked_bluetooth_macmic_room3_v1|all|real_trained": {
+      "attempts": 5,
+      "markers_count_ok": 5,
+      "exact": 5,
+      "best_exact": 5,
+      "accepted_wrong": 0,
+      "rejected": 0
+    },
+    "room3_test|clocked_bluetooth_macmic_room3_v1|single|real_trained": {
+      "attempts": 2,
+      "markers_count_ok": 2,
+      "exact": 2,
+      "best_exact": 2,
+      "accepted_wrong": 0,
+      "rejected": 0
+    },
+    "room3_test|clocked_bluetooth_macmic_room3_v1|multi|real_trained": {
+      "attempts": 3,
+      "markers_count_ok": 3,
+      "exact": 3,
+      "best_exact": 3,
+      "accepted_wrong": 0,
+      "rejected": 0
+    },
+    "room3_test|clocked_bluetooth_macmic_room3_near_v1|all|real_trained": {
+      "attempts": 4,
+      "markers_count_ok": 4,
+      "exact": 4,
+      "best_exact": 4,
+      "accepted_wrong": 0,
+      "rejected": 0
+    },
+    "room3_test|clocked_bluetooth_macmic_room3_near_v1|single|real_trained": {
+      "attempts": 2,
+      "markers_count_ok": 2,
+      "exact": 2,
+      "best_exact": 2,
+      "accepted_wrong": 0,
+      "rejected": 0
+    },
+    "room3_test|clocked_bluetooth_macmic_room3_near_v1|multi|real_trained": {
+      "attempts": 2,
+      "markers_count_ok": 2,
+      "exact": 2,
+      "best_exact": 2,
+      "accepted_wrong": 0,
+      "rejected": 0
+    },
+    "room3_test|clocked_bluetooth_macmic_room3_verified_v1|all|real_trained": {
+      "attempts": 101,
+      "markers_count_ok": 100,
+      "exact": 100,
+      "best_exact": 100,
+      "accepted_wrong": 0,
+      "rejected": 0,
+      "missing": 1
+    },
+    "room3_test|clocked_bluetooth_macmic_room3_verified_v1|single|real_trained": {
+      "attempts": 33,
+      "markers_count_ok": 33,
+      "exact": 33,
+      "best_exact": 33,
+      "accepted_wrong": 0,
+      "rejected": 0
+    },
+    "room3_test|clocked_bluetooth_macmic_room3_verified_v1|multi|real_trained": {
+      "attempts": 68,
+      "markers_count_ok": 67,
+      "exact": 67,
+      "best_exact": 67,
+      "accepted_wrong": 0,
+      "rejected": 0,
+      "missing": 1
+    }
+  }
+}

@@ -31,16 +31,18 @@ MARKER = gen.tonal(gen.Gesture([(0, 1400), (.35, 3100), (.55, 1800), (1, 2800)],
 PREFIX = len(MARKER) + MARK_GAP
 PROFILE = 'clocked-v1-fixed-300ms'
 FEATURE_PROFILE = 'pitch-envelope-v1'
+CONFIDENT_FEATURE_PREFIX = 'pitch-envelope-periodicity-v2-'
+LEGACY_CONFIDENT_FEATURE_PROFILE = 'pitch-envelope-periodicity05-v2'
 
 
-def window_features(audio):
+def window_features(audio, min_periodicity=0.0):
     """Pitch features plus normalized envelope shape, preserving evidence for a
     missing guard interval when a proposed LONG window actually spans two SHORTs.
     """
     chunks = np.array_split(np.asarray(audio, dtype=float), 12)
     rms = np.asarray([np.sqrt(np.mean(c*c)) if len(c) else 0 for c in chunks])
     rms /= max(float(rms.max()), 1e-9)
-    return np.concatenate([features.extract(audio), rms]).astype(np.float32)
+    return np.concatenate([features.extract(audio, min_periodicity=min_periodicity), rms]).astype(np.float32)
 
 
 def vocabulary():
@@ -144,6 +146,7 @@ class DecodeResult:
     reason: str = ''
     marker_count: int = 0
     word_margins: list[float] = field(default_factory=list)
+    word_candidates: list[list[tuple[str, float]]] = field(default_factory=list)
     hypothesis: list[str] = field(default_factory=list)
     clock_scale: float = 1.0
     clock_residual_samples: float = float("inf")
@@ -153,7 +156,10 @@ class DecodeResult:
 def decode(audio, model, repetition=1, min_margin=.5, marker_detector=None):
     if repetition not in (1, 3):
         raise ValueError('repetition must be 1 or 3')
-    if model.get('profile') != PROFILE or model.get('features') != FEATURE_PROFILE:
+    feature_profile = model.get('features', '')
+    if (model.get('profile') != PROFILE or
+            (feature_profile not in (FEATURE_PROFILE, LEGACY_CONFIDENT_FEATURE_PROFILE)
+             and not feature_profile.startswith(CONFIDENT_FEATURE_PREFIX))):
         raise ValueError('requires a clocked-v1 model, not the historical segment model')
     a = np.asarray(audio, dtype=np.float32)
     starts = (marker_detector or marker_positions)(a)
@@ -192,7 +198,9 @@ def decode(audio, model, repetition=1, min_margin=.5, marker_detector=None):
                         result.reason = 'truncated phoneme'
                         return result
                     keys[key] = len(windows)
-                    windows.append(window_features(a[lo:hi]))
+                    windows.append(window_features(
+                        a[lo:hi], min_periodicity=float(model.get(
+                            'min_periodicity', .5 if feature_profile == LEGACY_CONFIDENT_FEATURE_PROFILE else 0.0))))
                 pos += width
         regions.append(candidates)
     X = np.asarray(windows)
@@ -212,6 +220,8 @@ def decode(audio, model, repetition=1, min_margin=.5, marker_detector=None):
             # a heuristic, measured separately from CRC-verified acceptance.
             scored.append((score, concept))
         scored.sort(reverse=True)
+        result.word_candidates.append([(concept, float(score))
+                                       for score, concept in scored[:5]])
         margin = scored[0][0]-scored[1][0] if len(scored) > 1 else 100.0
         result.word_margins.append(float(margin))
         result.hypothesis.append(scored[0][1])

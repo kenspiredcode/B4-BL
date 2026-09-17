@@ -25,5 +25,9 @@ b4bl/models/
 experiments/**/*.npz
 experiments/**/*.joblib
 experiments/**/*.jsonl
+experiments/**/*.log
+experiments/**/*.wav
 experiments/**/recordings.json
 experiments/**/reference_boundaries.json
+experiments/**/room3-errors.json
+experiments/**/phoneme-diagnostic.json

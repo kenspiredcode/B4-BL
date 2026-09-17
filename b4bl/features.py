@@ -24,8 +24,8 @@ SR = gen.SR
 SHAPE_POINTS = 12   # resampled pitch-track shape length
 
 
-def _pitch_shape_and_center(seg):
-    track = _dec._pitch_track(seg)
+def _pitch_shape_and_center(seg, min_periodicity=0.0):
+    track = _dec._pitch_track(seg, min_periodicity=min_periodicity)
     t = track[track > 0]
     if len(t) < 2:
         return np.zeros(SHAPE_POINTS), 0.0, 0.0
@@ -58,7 +58,7 @@ def _spectral_summary(seg):
     return bands, centroid
 
 
-def extract(seg: np.ndarray) -> np.ndarray:
+def extract(seg: np.ndarray, min_periodicity: float = 0.0) -> np.ndarray:
     """Return the feature vector for one audio segment.
 
     NOTE: appending MFCCs here was tried and REVERTED — it hurt end-to-end decode
@@ -70,7 +70,7 @@ def extract(seg: np.ndarray) -> np.ndarray:
     seg = seg.astype(float)
     if len(seg) < 64:
         seg = np.pad(seg, (0, 64 - len(seg)))
-    shape, center, span = _pitch_shape_and_center(seg)
+    shape, center, span = _pitch_shape_and_center(seg, min_periodicity=min_periodicity)
     flat = _dec._spectral_flatness(seg)
     am = _dec._am_depth(seg)
     dur = len(seg) / SR

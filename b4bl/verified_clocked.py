@@ -59,16 +59,53 @@ def encode(frame, prosody=NEUTRAL, repetition=1):
 class PacketResult:
     acoustic: clocked.DecodeResult
     parsed: protocol.ParseResult
+    candidate_paths_checked: int = 1
+    selected_by_validation: bool = False
 
     @property
     def accepted(self):
         return self.acoustic.accepted and self.parsed.ok and self.parsed.checksum_ok
 
 
-def decode(audio, model, repetition=1):
+def _validated_candidate(acoustic, top_k=3, beam_width=10000):
+    """Return the highest-scoring CRC-valid path from bounded word candidates.
+
+    CRC is used only as a final integrity constraint. The beam cap prevents an
+    adversarial or very long packet from causing unbounded Cartesian expansion.
+    """
+    if not acoustic.word_candidates:
+        return None, 0
+    beam = [([], 0.0)]
+    for candidates in acoustic.word_candidates:
+        expanded = [(words+[word], score+candidate_score)
+                    for words, score in beam
+                    for word, candidate_score in candidates[:top_k]]
+        expanded.sort(key=lambda item: item[1], reverse=True)
+        beam = expanded[:beam_width]
+    checked = 0
+    for words, _ in beam:
+        checked += 1
+        parsed = parse_concepts(words)
+        if parsed.ok and parsed.checksum_ok:
+            return (words, parsed), checked
+    return None, checked
+
+
+def decode(audio, model, repetition=1, acoustic_decoder=clocked.decode,
+           top_k=3, beam_width=10000):
     # CRC is the acceptance gate. Do not discard a correct whole-packet candidate
     # merely because an individual word has a low heuristic RF margin.
-    acoustic = clocked.decode(audio, model, repetition, min_margin=0.0)
+    acoustic = acoustic_decoder(audio, model, repetition=repetition, min_margin=0.0)
     parsed = (parse_concepts(acoustic.words) if acoustic.accepted else
               protocol.ParseResult(None, False, acoustic.reason, False))
-    return PacketResult(acoustic, parsed)
+    checked = 1
+    selected = False
+    if repetition == 1 and not (parsed.ok and parsed.checksum_ok):
+        candidate, checked = _validated_candidate(acoustic, top_k, beam_width)
+        if candidate is not None:
+            words, parsed = candidate
+            selected = words != acoustic.words
+            acoustic.words = words
+            acoustic.accepted = True
+            acoustic.reason = ''
+    return PacketResult(acoustic, parsed, checked, selected)

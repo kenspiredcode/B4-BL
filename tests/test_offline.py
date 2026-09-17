@@ -3,7 +3,7 @@ import json
 import numpy as np
 import pytest
 from b4bl import benchmark, classifier, codec, phonology as ph, prosody, slot_decoder
-from b4bl import clocked, protocol, verified_clocked
+from b4bl import clocked, clocked_receiver, protocol, verified_clocked
 
 
 def test_word_error_counts_include_insertions_and_deletions():
@@ -150,6 +150,43 @@ def test_clocked_packet_acoustic_loopback(tiny_clock_model):
     frame = protocol.Frame(1, 2, 'MSG_TELL', 3, ['SELF', 'MOVE', 'FRONT'])
     result = verified_clocked.decode(verified_clocked.encode(frame), tiny_clock_model)
     assert result.accepted and result.parsed.frame == frame
+    spectral = verified_clocked.decode(verified_clocked.encode(frame), tiny_clock_model,
+                                       acoustic_decoder=clocked_receiver.decode)
+    assert spectral.accepted and spectral.parsed.frame == frame
+
+
+def test_crc_list_decode_recovers_second_choice_without_lowering_integrity():
+    frame = protocol.Frame(1, 2, 'MSG_TELL', 3, ['SELF', 'MOVE', 'FRONT'])
+    wire = verified_clocked.to_concepts(frame)
+    wrong = wire.copy(); wrong[wire.index('SELF')] = 'TAKE'
+
+    def fake_decoder(audio, model, repetition=1, min_margin=0):
+        candidates = [[(word, 0.0)] for word in wrong]
+        index = wire.index('SELF')
+        candidates[index].append(('SELF', -0.2))
+        return clocked.DecodeResult(words=wrong.copy(), accepted=True,
+                                    hypothesis=wrong.copy(),
+                                    word_candidates=candidates)
+
+    result = verified_clocked.decode(np.zeros(1), {}, acoustic_decoder=fake_decoder)
+    assert result.accepted and result.parsed.frame == frame
+    assert result.selected_by_validation
+    assert result.acoustic.words == wire
+    assert result.acoustic.hypothesis == wrong
+
+
+def test_crc_list_decode_does_not_accept_when_correct_word_is_absent():
+    frame = protocol.Frame(1, 2, 'MSG_TELL', 3, ['SELF', 'MOVE', 'FRONT'])
+    wire = verified_clocked.to_concepts(frame)
+    wrong = wire.copy(); wrong[wire.index('SELF')] = 'TAKE'
+
+    def fake_decoder(audio, model, repetition=1, min_margin=0):
+        return clocked.DecodeResult(words=wrong.copy(), accepted=True,
+                                    hypothesis=wrong.copy(),
+                                    word_candidates=[[(word, 0.0)] for word in wrong])
+
+    result = verified_clocked.decode(np.zeros(1), {}, acoustic_decoder=fake_decoder)
+    assert not result.accepted and not result.selected_by_validation
 
 
 def test_silent_capture_plan_never_opens_devices(monkeypatch, capsys):

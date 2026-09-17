@@ -109,7 +109,7 @@ def _segments(x: np.ndarray):
 # ---------------------------------------------------------------------------
 # pitch tracking (autocorrelation)
 # ---------------------------------------------------------------------------
-def _pitch_track(seg: np.ndarray) -> np.ndarray:
+def _pitch_track(seg: np.ndarray, min_periodicity: float = 0.0) -> np.ndarray:
     fmin, fmax = 120, 3200
     lag_min, lag_max = int(SR / fmax), int(SR / fmin)
     pitches = []
@@ -123,6 +123,8 @@ def _pitch_track(seg: np.ndarray) -> np.ndarray:
         ac = ac / ac0                       # normalize so ac[0] == 1
         seg_ac = ac[lag_min:lag_max]
         if len(seg_ac) == 0:
+            continue
+        if np.max(seg_ac) < min_periodicity:
             continue
         # find the FIRST strong local peak (the fundamental), not the global max —
         # avoids picking a short-lag harmonic and reporting an octave too high.

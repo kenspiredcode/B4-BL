@@ -148,6 +148,26 @@ available multi-word raw recordings all had the expected marker count, but 23
 messages were wrongly accepted and 72 rejected. This is strong same-environment
 recognition, not 90% generalization to new rooms. No waveform redesign was needed.
 
+Continued development found that the pitch tracker was treating low-periodicity
+reverb/noise after a tone release as additional pitch. A versioned feature profile
+that ignores frames below 0.5 periodicity raises the training-excluded room 3
+multi-word result to 282/328 accepted-exact (86.0%), with 11 wrong acceptances,
+34 rejections, and one missing capture. Its best hypotheses are correct on 300/328
+(91.5%). The correct whole message is within the top two candidates per word in
+320/328 (97.6%) and within the top three in 325/328 (99.1%); those are diagnostic
+oracle bounds, not delivered accuracy.
+
+`verified_clocked.decode` now supports bounded candidate-list search. An alternate
+path is accepted only when the complete packet is canonical and its CRC validates.
+This mechanism is tested symbolically; the project still needs real captures of
+protected packets before claiming the oracle bounds as verified delivery.
+
+When room 3 non-holdout recordings are included in training, its reserved
+multi-word compositions score 67/68 (98.5% including one missing capture; 67/67
+available), with no wrong acceptances. Other represented channels remain at
+98.5–100%. This is the practical calibrated-environment path above 90%; the 86.0%
+leave-one-room-out result remains the honest cross-room development figure.
+
 ## Layout
 
 ```
