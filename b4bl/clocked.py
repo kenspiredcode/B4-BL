@@ -150,13 +150,13 @@ class DecodeResult:
     # This acceptance means acoustic framing passed, NOT checksum verification.
 
 
-def decode(audio, model, repetition=1, min_margin=.5):
+def decode(audio, model, repetition=1, min_margin=.5, marker_detector=None):
     if repetition not in (1, 3):
         raise ValueError('repetition must be 1 or 3')
     if model.get('profile') != PROFILE or model.get('features') != FEATURE_PROFILE:
         raise ValueError('requires a clocked-v1 model, not the historical segment model')
     a = np.asarray(audio, dtype=np.float32)
-    starts = marker_positions(a)
+    starts = (marker_detector or marker_positions)(a)
     result = DecodeResult(marker_count=len(starts))
     if len(starts) < 2:
         result.reason = 'no complete marker pair'

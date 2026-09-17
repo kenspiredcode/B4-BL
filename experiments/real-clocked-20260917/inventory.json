@@ -1,0 +1,44 @@
+{
+  "clocked_bluetooth_aukey_far_v1": {
+    "attempts": 500,
+    "raw": 500,
+    "collector_accepted": 500,
+    "timeouts": 0
+  },
+  "clocked_bluetooth_macmic_room2_v1": {
+    "attempts": 20,
+    "raw": 20,
+    "collector_accepted": 20,
+    "timeouts": 0
+  },
+  "clocked_bluetooth_macmic_room2_verified_v1": {
+    "attempts": 500,
+    "raw": 499,
+    "collector_accepted": 499,
+    "timeouts": 1
+  },
+  "clocked_bluetooth_macmic_room3_near_v1": {
+    "attempts": 10,
+    "raw": 10,
+    "collector_accepted": 10,
+    "timeouts": 0
+  },
+  "clocked_bluetooth_macmic_room3_v1": {
+    "attempts": 20,
+    "raw": 20,
+    "collector_accepted": 8,
+    "timeouts": 0
+  },
+  "clocked_bluetooth_macmic_room3_verified_v1": {
+    "attempts": 500,
+    "raw": 499,
+    "collector_accepted": 435,
+    "timeouts": 1
+  },
+  "clocked_macbook_aukey_near_v1": {
+    "attempts": 499,
+    "raw": 496,
+    "collector_accepted": 496,
+    "timeouts": 3
+  }
+}

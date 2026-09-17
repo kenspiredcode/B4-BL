@@ -13,7 +13,7 @@ Two acoustic layers travel together:
 The goal: a human who lives around the droids gradually learns roughly *what is
 going on*, while a droid recovers the *exact packet*.
 
-## Status (2026-09-16)
+## Status (2026-09-17)
 
 The sound palette, vocabulary, synthesis, and acoustic decoder exist. Reliable
 multi-word room communication is **not solved**. Older 95% figures were small
@@ -40,7 +40,8 @@ must use a distinct channel/version, and the historical model may need retrainin
 
 `b4bl.clocked` is a **separate experimental format**: tonal word markers, a real
 300 ms clock (SHORT=1 tick, LONG=2), complete contours, and optional repetition.
-It has no microphone validation or listening approval. On 132 fresh synthetic
+Its timing samples have listening approval, and real recordings now cover MacBook
+and AUKEY microphones, Bluetooth playback, and multiple rooms. On 132 fresh synthetic
 cases crossing lengths 2–5 with all four prosodies, accepted exact decoding is 99.2%
 clean, 84.8% with moderate echo and 15 dB nominal noise, 9.1% under the harsher 5 dB
 condition, and 86.4% at 0.1% sample-clock skew. Best hypotheses reach 91.7% in the
@@ -57,8 +58,9 @@ ALARM/WORKING, spelling support, compact protection, and realistic noisy-room
 performance remain open. Rhythm-defined words/spelling are explicitly unsupported
 by the new transport, not silently changed.
 
-No audio was played or recorded during the offline work. Full findings and the
-next capture plan live in the canonical vault document
+The initial offline work used no new captures; subsequent collection was explicitly
+authorized and includes preserved raw audio even for trim-rejected attempts.
+Initial findings live in the canonical vault document
 `~/CollabHarnessVault/projects/B4-BL/docs/offline-validation-2026-09-16.md`.
 
 ## Silent evaluation
@@ -103,12 +105,48 @@ run it only when ready, with a fresh channel tag:
 ```bash
 python3 src/collect_dataset.py --clocked --channel clocked_office_v1 \
   --limit 500 --input-device AUKEY --output-device "<speaker>" \
-  --gain 2 --max-hang-streak 8 --hang-pause 3
+  --gain 1 --max-hang-streak 8 --hang-pause 3
 ```
 
 The collector self-tests first, refuses to mix formats in a channel, logs every
 attempt, saves raw capture plus transmitter timing, and can resume after hangs.
 Use `--dry-run` to inspect the corpus without touching audio devices.
+Explicit device selectors now reject unknown/ambiguous names; numeric device IDs
+are supported. The self-test locates a sustained 1 kHz tone instead of assuming
+the loudest captured sound is the test signal.
+
+### Real clocked recordings
+
+`b4bl.clocked_receiver` is an experimental frontend that detects the marker's
+spectral sweep rather than waveform phase and filters low-frequency microphone
+noise before phoneme classification. It does not change transmitted sounds and
+does not replace the historical/default decoder.
+
+The frozen attempt-level split retains capture failures, groups identical concept
+sequences across prosodies/channels, and excludes all room 3 audio from training:
+
+```bash
+python3 -m b4bl.real_clocked_experiment \
+  --split experiments/real-clocked-20260917/split.json \
+  --output experiments/my-real-clocked-run
+```
+
+This silent experiment saves a separate model and compares the original receiver,
+the new frontend alone, and real-data training on held-out recordings. Load its
+model with `joblib.load` and use `b4bl.clocked_receiver.decode(audio, model)`;
+`read_audio(path)` handles both integer and floating-point WAVs. Earlier room 3
+diagnostic pilots are reported separately from the full collection. The room is
+not a pristine unseen development environment because those pilots informed
+diagnosis. Acoustic acceptance remains distinct from CRC-verified delivery.
+
+The first frozen comparison (`experiments/real-clocked-20260917/run1/summary.json`)
+trained on 1,191 aligned recordings from three configurations. Exact multi-word
+recovery on composition holdouts was 68/68 MacBook→AUKEY, 68/68 Bluetooth→AUKEY,
+and 67/68 Bluetooth→MacBook in room 2. The full room 3 run, excluded from training,
+scored 232/328 (70.7%), including a missing capture as unsuccessful. Its 327
+available multi-word raw recordings all had the expected marker count, but 23
+messages were wrongly accepted and 72 rejected. This is strong same-environment
+recognition, not 90% generalization to new rooms. No waveform redesign was needed.
 
 ## Layout
 

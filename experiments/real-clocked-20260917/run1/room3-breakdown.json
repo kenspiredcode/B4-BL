@@ -1,0 +1,69 @@
+{
+  "room3_all": {
+    "n": 500,
+    "exact": 389,
+    "best_exact": 422,
+    "markers_ok": 499,
+    "accepted_wrong": 27,
+    "rejected": 83
+  },
+  "room3_seen_compositions": {
+    "n": 399,
+    "exact": 316,
+    "best_exact": 343,
+    "markers_ok": 399,
+    "accepted_wrong": 19,
+    "rejected": 64
+  },
+  "room3_collector_accepted": {
+    "n": 435,
+    "exact": 338,
+    "best_exact": 367,
+    "markers_ok": 435,
+    "accepted_wrong": 23,
+    "rejected": 74
+  },
+  "room3_all_multi": {
+    "n": 328,
+    "exact": 232,
+    "best_exact": 259,
+    "markers_ok": 327,
+    "accepted_wrong": 23,
+    "rejected": 72
+  },
+  "room3_seen_compositions_multi": {
+    "n": 260,
+    "exact": 189,
+    "best_exact": 210,
+    "markers_ok": 260,
+    "accepted_wrong": 17,
+    "rejected": 54
+  },
+  "room3_novel": {
+    "n": 101,
+    "exact": 73,
+    "best_exact": 79,
+    "markers_ok": 100,
+    "accepted_wrong": 8,
+    "rejected": 19
+  },
+  "room3_novel_multi": {
+    "n": 68,
+    "exact": 43,
+    "best_exact": 49,
+    "markers_ok": 67,
+    "accepted_wrong": 6,
+    "rejected": 18
+  },
+  "room3_trim_rejected": {
+    "n": 64,
+    "exact": 51,
+    "best_exact": 55,
+    "markers_ok": 64,
+    "accepted_wrong": 4,
+    "rejected": 9
+  },
+  "room3_missing": {
+    "n": 1
+  }
+}

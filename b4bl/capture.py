@@ -81,13 +81,25 @@ def _resolve_device(spec, kind):
     if spec is None:
         return None
     sd = _sd()
-    if isinstance(spec, int):
-        return spec
     key = "max_input_channels" if kind == "input" else "max_output_channels"
-    for i, d in enumerate(sd.query_devices()):
-        if d[key] > 0 and spec.lower() in d["name"].lower():
-            return i
-    return None
+    devices = sd.query_devices()
+    # argparse supplies numeric IDs as strings. An explicit but invalid selector
+    # must never silently switch the capture to a system-default microphone.
+    selector = str(spec).strip()
+    if selector.lstrip("+-").isdigit():
+        index = int(selector)
+        if 0 <= index < len(devices) and devices[index][key] > 0:
+            return index
+        raise ValueError(f"Invalid {kind} audio device index: {spec!r}")
+    matches = [i for i, d in enumerate(devices)
+               if d[key] > 0 and selector and selector.lower() in d["name"].lower()]
+    if len(matches) == 1:
+        return matches[0]
+    available = ", ".join(f"{i}: {d['name']}" for i, d in enumerate(devices) if d[key] > 0)
+    problem = "Ambiguous" if matches else "Unknown"
+    raise ValueError(f"{problem} {kind} audio device {spec!r}. "
+                     f"Use an exact name or index, with straight shell quotes. "
+                     f"Available: {available or 'none'}")
 
 
 def _resolve_input_device(spec):
@@ -233,6 +245,35 @@ def find_message(rec: np.ndarray) -> Optional[np.ndarray]:
     return seg[start_samp:end]
 
 
+def assess_test_tone(rec):
+    """Find a sustained 1 kHz tone instead of assuming the loudest sound is it.
+
+    This is a capture health check, not a message decoder. Narrow-band power
+    rejects broadband transients; off-tone windows estimate the noise floor.
+    """
+    rec = np.asarray(rec, dtype=float)
+    w, step = int(.3 * SR), int(.05 * SR)
+    if rec.ndim != 1 or len(rec) < w or not np.isfinite(rec).all():
+        return dict(ok=False, tone_rms=0., concentration=0., snr_db=0., start_sec=None)
+    window = np.hanning(w)
+    freqs = np.fft.rfftfreq(w, 1 / SR)
+    band = (freqs > 950) & (freqs < 1050)
+    rows = []
+    for i in range(0, len(rec) - w + 1, step):
+        power = np.abs(np.fft.rfft(rec[i:i+w] * window)) ** 2
+        tone_power = float(np.sum(power[band]))
+        rms = np.sqrt(2 * tone_power / (w * np.sum(window ** 2)))
+        concentration = tone_power / (float(np.sum(power)) + 1e-20)
+        rows.append((i, float(rms), concentration))
+    candidates = [row for row in rows if row[2] >= .5]
+    chosen = max(candidates or rows, key=lambda row: row[1])
+    noise = float(np.percentile([row[1] for row in rows], 30))
+    snr_db = float(20 * np.log10((chosen[1] + 1e-9) / (noise + 1e-9)))
+    return dict(ok=bool(chosen[1] > .003 and chosen[2] >= .5 and snr_db > 12),
+                tone_rms=chosen[1], concentration=chosen[2], snr_db=snr_db,
+                start_sec=chosen[0] / SR)
+
+
 def self_test() -> bool:
     """Play a tone, record it, confirm the mic captured it (i.e. AEC is NOT
     eating our own output). Returns True if the channel is live."""
@@ -240,30 +281,11 @@ def self_test() -> bool:
     print("self-test: playing a tone and listening for it...")
     tone = 0.6 * np.sin(2 * np.pi * 1000 * np.arange(int(0.4 * SR)) / SR).astype(np.float32)
     rec = play_and_record(tone)
-    # Find the LOUDEST 0.3s window (where the tone landed — the rest is silence /
-    # latency padding, which would dilute a whole-recording measurement) and
-    # measure level + tonality THERE. Channel-agnostic: works for built-in and for
-    # buffered/quiet AirPlay alike.
-    w = int(0.3 * SR)
-    step = int(0.05 * SR)
-    best_i, best_e = 0, 0.0
-    for i in range(0, max(1, len(rec) - w), step):
-        e = float(np.sqrt(np.mean(rec[i:i + w] ** 2)))
-        if e > best_e:
-            best_e, best_i = e, i
-    chunk = rec[best_i:best_i + w]
-    mag = np.abs(np.fft.rfft(chunk * np.hanning(len(chunk))))
-    freqs = np.fft.rfftfreq(len(chunk), 1 / SR)
-    band = (freqs > 850) & (freqs < 1150)
-    ratio = float(np.sum(mag[band]) / (np.sum(mag) + 1e-9))
-    noise = float(np.percentile(
-        [np.sqrt(np.mean(rec[i:i + w] ** 2)) for i in range(0, max(1, len(rec) - w), step)], 30))
-    snr_db = 20 * np.log10((best_e + 1e-9) / (noise + 1e-9))
-    print(f"  loudest-window rms={best_e:.4f}, 1kHz ratio={ratio:.3f}, SNR~{snr_db:.0f}dB")
-    # Level + SNR are the real health checks. Tonality (ratio) is only a weak
-    # sanity bound — AirPlay/codec paths smear a pure tone spectrally, so a low
-    # ratio at healthy level+SNR is the channel's character, not a dead mic.
-    ok = best_e > 0.003 and snr_db > 12 and ratio > 0.015
+    assessment = assess_test_tone(rec)
+    print(f"  tone-band rms={assessment['tone_rms']:.4f}, "
+          f"concentration={assessment['concentration']:.3f}, "
+          f"tone-band SNR~{assessment['snr_db']:.0f}dB")
+    ok = assessment['ok']
     print("  -> channel LIVE" if ok else
           "  -> FAIL: tone not clearly captured (volume? wrong device? AEC?)")
     return ok
