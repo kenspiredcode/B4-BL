@@ -31,3 +31,10 @@ experiments/**/recordings.json
 experiments/**/reference_boundaries.json
 experiments/**/room3-errors.json
 experiments/**/phoneme-diagnostic.json
+
+# Retained local comparison runs; compact verdicts are in continued-comparison.json.
+experiments/real-clocked-20260917/augmented1/
+experiments/real-clocked-20260917/extratrees-periodicity05/
+experiments/real-clocked-20260917/periodicity04/
+experiments/real-clocked-20260917/periodicity06/
+experiments/real-clocked-20260917/phoneme_diagnostic.py
