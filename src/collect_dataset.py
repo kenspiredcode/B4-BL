@@ -63,6 +63,33 @@ def build_message_set(rng, clocked=False):
     return items
 
 
+def build_compact_packet_set(rng):
+    """Deterministic protected frames spanning payload words, lengths, and headers."""
+    from b4bl import clocked, compact_clocked, protocol
+    allowed = [word for word in clocked.vocabulary()
+               if word not in ('SYNC', 'CKSUM')]
+    items = []
+    payloads = []
+    for word in allowed:
+        payloads.append(['NUM', word] if word.startswith('D') and word[1:].isdigit()
+                        else [word])
+    for _ in range(400):
+        payload = list(rng.choice(allowed, size=int(rng.integers(2, 6)), replace=True))
+        if payload[0].startswith('D') and payload[0][1:].isdigit():
+            payload.insert(0, 'NUM')
+        payloads.append(payload)
+    for seq, payload in enumerate(payloads):
+        frame = protocol.Frame(
+            sender=seq % (compact_clocked.MAX_ADDRESS + 1),
+            recipient=(seq * 7 + 3) % (compact_clocked.MAX_ADDRESS + 1),
+            msg_type=protocol.MSG_TYPES[seq % len(protocol.MSG_TYPES)],
+            seq=seq % (compact_clocked.MAX_SEQUENCE + 1),
+            payload=payload)
+        items.append((compact_clocked.to_concepts(frame), PROSODIES[seq % 4][0]))
+    rng.shuffle(items)
+    return items
+
+
 def load_done(channel, encoding=None):
     """Set of (concepts-tuple, prosody, channel) already recorded, for resume."""
     done = set()
@@ -107,30 +134,42 @@ def main():
                     help="seconds to wait after a hang before the next emission, so "
                          "a wedged audio link can settle (e.g. 3.0 for Bluetooth).")
     ap.add_argument("--clocked", action="store_true", help="experimental synchronized format; use a new channel tag")
+    ap.add_argument("--compact-packets", action="store_true",
+                    help="clocked v2 protected packets with compact headers and CRC32; use a fresh channel tag")
     ap.add_argument("--dry-run", action="store_true", help="print corpus/format summary; no audio-device access or playback")
     ap.add_argument("--session-id", help="capture session ID; defaults to a new UUID per run")
     args = ap.parse_args()
-    if args.clocked and args.slots:
-        ap.error("--clocked and --slots select different formats")
+    if args.clocked and args.compact_packets:
+        ap.error('--clocked and --compact-packets are separate wire formats')
+    if (args.clocked or args.compact_packets) and args.slots:
+        ap.error("clocked formats and --slots select different formats")
     import uuid, hashlib
     from datetime import datetime, timezone
-    from b4bl import clocked as clock_format
-    encoding = clock_format.PROFILE if args.clocked else ("slots-complete-contours-v2" if args.slots else "legacy-v1")
+    from b4bl import clocked as clock_format, compact_clocked
+    use_clocked = args.clocked or args.compact_packets
+    encoding = (compact_clocked.PROFILE if args.compact_packets else
+                clock_format.PROFILE if args.clocked else
+                "slots-complete-contours-v2" if args.slots else "legacy-v1")
     session_id = args.session_id or str(uuid.uuid4())
     source_hash = hashlib.sha256()
-    for module in ("codec", "phonology", "prosody", "generators", "lexicon", "clocked"):
+    for module in ("codec", "phonology", "prosody", "generators", "lexicon", "clocked",
+                   "compact_clocked"):
         with open(os.path.join(os.path.dirname(__file__), "..", "b4bl", module+".py"), "rb") as source:
             source_hash.update(source.read())
     rng = np.random.default_rng(args.seed)
-    items = build_message_set(rng, clocked=args.clocked)
+    items = (build_compact_packet_set(rng) if args.compact_packets else
+             build_message_set(rng, clocked=args.clocked))
     if args.limit:
         items = items[:args.limit]
     if args.dry_run:
         from collections import Counter
+        audio_seconds = (sum(clock_format.duration_samples(message) for message, _ in items)
+                         / gen.SR if use_clocked else None)
         print(json.dumps({"encoding": encoding, "session_id": session_id,
                           "messages": len(items), "lengths": dict(Counter(len(m) for m, _ in items)),
                           "seed": args.seed, "source_sha256": source_hash.hexdigest(),
-                          "raw_recordings": args.clocked, "playback": False}, indent=2))
+                          "rendered_audio_seconds": audio_seconds,
+                          "raw_recordings": use_clocked, "playback": False}, indent=2))
         return
     # Never silently mix a new wire format into a historical channel tag.
     if os.path.exists(MANIFEST):
@@ -154,8 +193,9 @@ def main():
     if args.output_device:
         base_env["B4BL_OUTPUT_DEVICE"] = args.output_device
     base_env["B4BL_SLOTS"] = "1" if args.slots else "0"
-    base_env["B4BL_CLOCKED"] = "1" if args.clocked else "0"
-    base_env["B4BL_KEEP_RAW"] = "1" if args.clocked else "0"
+    base_env["B4BL_CLOCKED"] = "1" if use_clocked else "0"
+    base_env["B4BL_KEEP_RAW"] = "1" if use_clocked else "0"
+    base_env["B4BL_PACKET_ENCODING"] = encoding if args.compact_packets else ""
     try:
         st = subprocess.run(
             [sys.executable, emit, "/tmp/b4bl_selftest.wav",
@@ -183,7 +223,13 @@ def main():
 
     print(f"=== collecting {len(pending)} emissions on channel '{args.channel}' "
           f"({len(items) - len(pending)} already done) ===")
-    est_min = len(pending) * 2.5 / 60
+    if use_clocked:
+        audio_seconds = sum(clock_format.duration_samples(message) for message, _ in pending) / gen.SR
+        capture_overhead = (capture.LEAD_SIL + 2*capture.REC_MARGIN + .26 +
+                            capture.POST_SIL + .6)
+        est_min = (audio_seconds + len(pending)*capture_overhead) / 60
+    else:
+        est_min = len(pending) * 2.5 / 60
     print(f"estimated ~{est_min:.0f} min")
 
     # Each emission runs in a SUBPROCESS. A hung audio call (AirPlay drop wedging
@@ -209,7 +255,7 @@ def main():
             from b4bl import clocked as clock_format
             prmap = {"neutral": prosody.NEUTRAL, "uncertain": prosody.UNCERTAIN,
                      "urgent": prosody.URGENT, "calm": prosody.CALM}
-            preview = (clock_format.encode(msg, prmap[pname]) if args.clocked else
+            preview = (clock_format.encode(msg, prmap[pname]) if use_clocked else
                        codec.encode(msg, prmap[pname], slots=args.slots))
             message_timeout = emission_timeout + len(preview)/gen.SR
             try:
@@ -246,8 +292,10 @@ def main():
                                      "recorded_at": datetime.now(timezone.utc).isoformat(),
                                      "input_device": args.input_device, "output_device": args.output_device,
                                      "gain": args.gain, "seed": args.seed,
-                                     "timing_file": fn.replace(".wav", ".timing.json") if args.clocked else None,
-                                     "raw_file": fn.replace(".wav", ".raw.wav") if args.clocked else None}) + "\n")
+                                     "timing_file": fn.replace(".wav", ".timing.json") if use_clocked else None,
+                                     "raw_file": fn.replace(".wav", ".raw.wav") if use_clocked else None,
+                                     "frame": (compact_clocked.parse_concepts(msg).frame.__dict__
+                                               if args.compact_packets else None)}) + "\n")
                 mf.flush()
                 n_ok += 1
             elif rc == 2:

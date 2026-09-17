@@ -40,7 +40,8 @@ def main():
         from b4bl import clocked
         audio, spans = clocked.encode(concepts, prmap.get(pname, prosody.NEUTRAL), return_spans=True)
         with open(os.path.splitext(out_wav)[0] + ".timing.json", "w") as f:
-            json.dump({"encoding": clocked.PROFILE, "sample_rate": gen.SR,
+            json.dump({"encoding": os.environ.get("B4BL_PACKET_ENCODING") or clocked.PROFILE,
+                       "transport": clocked.PROFILE, "sample_rate": gen.SR,
                        "origin": "synthesized message start; align to raw capture separately",
                        "concepts": concepts, "prosody": pname, "spans": spans}, f)
     else:

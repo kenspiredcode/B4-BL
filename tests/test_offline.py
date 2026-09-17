@@ -3,7 +3,7 @@ import json
 import numpy as np
 import pytest
 from b4bl import benchmark, classifier, codec, phonology as ph, prosody, slot_decoder
-from b4bl import clocked, clocked_receiver, protocol, verified_clocked
+from b4bl import clocked, clocked_receiver, compact_clocked, protocol, verified_clocked
 
 
 def test_word_error_counts_include_insertions_and_deletions():
@@ -189,6 +189,51 @@ def test_crc_list_decode_does_not_accept_when_correct_word_is_absent():
     assert not result.accepted and not result.selected_by_validation
 
 
+def test_compact_packet_roundtrip_integrity_and_limits():
+    frame = protocol.Frame(31, 0, 'MSG_WARN', 1023, ['SELF', 'MOVE', 'FRONT'])
+    wire = compact_clocked.to_concepts(frame)
+    parsed = compact_clocked.parse_concepts(wire)
+    assert parsed.ok and parsed.checksum_ok and parsed.frame == frame
+    assert wire[:2] == ['SYNC', 'D2']
+    assert len(wire[-compact_clocked.CRC_SYMBOLS:]) == 7
+    for index, original in enumerate(wire):
+        replacement = ('ACK' if original != 'ACK' else 'ALL')
+        corrupted = wire.copy(); corrupted[index] = replacement
+        assert not compact_clocked.parse_concepts(corrupted).checksum_ok
+    for bad in (
+            protocol.Frame(32, 0, 'MSG_TELL', 0, ['SELF']),
+            protocol.Frame(0, 32, 'MSG_TELL', 0, ['SELF']),
+            protocol.Frame(0, 0, 'MSG_TELL', 1024, ['SELF'])):
+        with pytest.raises(ValueError):
+            compact_clocked.to_concepts(bad)
+
+
+def test_compact_packet_reduces_sample_airtime_and_acoustic_loopback(tiny_clock_model):
+    frame = protocol.Frame(1, 2, 'MSG_TELL', 3, ['SELF', 'MOVE', 'FRONT'])
+    compact_audio = compact_clocked.encode(frame)
+    verbose_audio = verified_clocked.encode(frame)
+    assert len(compact_audio) < len(verbose_audio) * .6
+    result = compact_clocked.decode(compact_audio, tiny_clock_model)
+    assert result.accepted and result.parsed.frame == frame
+
+
+def test_compact_crc_list_decode_uses_structural_pruning():
+    frame = protocol.Frame(1, 2, 'MSG_TELL', 3, ['SELF', 'MOVE', 'FRONT'])
+    wire = compact_clocked.to_concepts(frame)
+    wrong = wire.copy(); wrong[wire.index('FRONT')] = 'FAR'
+
+    def fake_decoder(audio, model, repetition=1, min_margin=0):
+        candidates = [[('SYNC', 1.0), (word, 0.0)] for word in wrong]
+        index = wire.index('FRONT')
+        candidates[index] = [('FAR', 0.0), ('FRONT', -0.2)]
+        return clocked.DecodeResult(words=wrong.copy(), accepted=True,
+                                    hypothesis=wrong.copy(), word_candidates=candidates)
+
+    result = compact_clocked.decode(np.zeros(1), {}, acoustic_decoder=fake_decoder)
+    assert result.accepted and result.parsed.frame == frame
+    assert result.selected_by_validation
+
+
 def test_silent_capture_plan_never_opens_devices(monkeypatch, capsys):
     from src import collect_dataset
     monkeypatch.setattr(collect_dataset.capture, 'set_channel_profile',
@@ -200,8 +245,22 @@ def test_silent_capture_plan_never_opens_devices(monkeypatch, capsys):
     assert plan['encoding'] == clocked.PROFILE
 
 
+def test_compact_packet_capture_plan_is_silent_and_versioned(monkeypatch, capsys):
+    from src import collect_dataset
+    monkeypatch.setattr(collect_dataset.capture, 'set_channel_profile',
+                        lambda **kw: pytest.fail('dry run touched the audio channel'))
+    monkeypatch.setattr('sys.argv', ['collect_dataset', '--compact-packets',
+                                    '--dry-run', '--limit', '12'])
+    collect_dataset.main()
+    plan = json.loads(capsys.readouterr().out)
+    assert plan['messages'] == 12 and plan['playback'] is False
+    assert plan['encoding'] == compact_clocked.PROFILE
+    assert min(map(int, plan['lengths'])) >= 16
+
+
 def test_transmitter_spans_match_audio_and_clock():
     audio, spans = clocked.encode(['SELF', 'IT', 'GIVE'], return_spans=True)
+    assert len(audio) == clocked.duration_samples(['SELF', 'IT', 'GIVE'])
     assert len(spans) == 4
     for span in spans:
         expected = clocked.body(span['phoneme'], prosody.NEUTRAL)

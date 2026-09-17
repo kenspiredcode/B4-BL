@@ -11,7 +11,7 @@ from . import clocked, lexicon, protocol
 from .prosody import NEUTRAL
 
 
-def _crc(words):
+def concept_crc32(words):
     return zlib.crc32(json.dumps(words, separators=(',', ':'), ensure_ascii=True).encode())
 
 
@@ -28,7 +28,7 @@ def to_concepts(frame):
         raise ValueError('unknown concepts are unsupported in clocked packets')
     base = frame.to_concepts()
     protected = ['SYNC'] + base[:base.index('CKSUM')]
-    return protected + ['CKSUM', 'NUM'] + ['D'+d for d in f'{_crc(protected):010d}']
+    return protected + ['CKSUM', 'NUM'] + ['D'+d for d in f'{concept_crc32(protected):010d}']
 
 
 def parse_concepts(words):
@@ -38,7 +38,7 @@ def parse_concepts(words):
     if words[-12:-10] != ['CKSUM', 'NUM'] or any(c not in [f'D{i}' for i in range(10)] for c in words[-10:]):
         return fail('invalid CRC suffix')
     expected = int(''.join(c[1:] for c in words[-10:]))
-    if expected != _crc(words[:-12]):
+    if expected != concept_crc32(words[:-12]):
         return fail('CRC mismatch')
     parsed = protocol.parse_concepts(words[1:])
     if not parsed.ok or parsed.frame is None:
@@ -67,7 +67,8 @@ class PacketResult:
         return self.acoustic.accepted and self.parsed.ok and self.parsed.checksum_ok
 
 
-def _validated_candidate(acoustic, top_k=3, beam_width=10000):
+def _validated_candidate(acoustic, top_k=3, beam_width=10000,
+                         packet_parser=parse_concepts, candidate_filter=None):
     """Return the highest-scoring CRC-valid path from bounded word candidates.
 
     CRC is used only as a final integrity constraint. The beam cap prevents an
@@ -76,32 +77,39 @@ def _validated_candidate(acoustic, top_k=3, beam_width=10000):
     if not acoustic.word_candidates:
         return None, 0
     beam = [([], 0.0)]
-    for candidates in acoustic.word_candidates:
+    total = len(acoustic.word_candidates)
+    for index, candidates in enumerate(acoustic.word_candidates):
+        choices = candidates[:top_k]
+        if candidate_filter is not None:
+            choices = [(word, score) for word, score in choices
+                       if candidate_filter(index, total, word)]
         expanded = [(words+[word], score+candidate_score)
                     for words, score in beam
-                    for word, candidate_score in candidates[:top_k]]
+                    for word, candidate_score in choices]
         expanded.sort(key=lambda item: item[1], reverse=True)
         beam = expanded[:beam_width]
     checked = 0
     for words, _ in beam:
         checked += 1
-        parsed = parse_concepts(words)
+        parsed = packet_parser(words)
         if parsed.ok and parsed.checksum_ok:
             return (words, parsed), checked
     return None, checked
 
 
 def decode(audio, model, repetition=1, acoustic_decoder=clocked.decode,
-           top_k=3, beam_width=10000):
+           top_k=3, beam_width=10000, packet_parser=parse_concepts,
+           candidate_filter=None):
     # CRC is the acceptance gate. Do not discard a correct whole-packet candidate
     # merely because an individual word has a low heuristic RF margin.
     acoustic = acoustic_decoder(audio, model, repetition=repetition, min_margin=0.0)
-    parsed = (parse_concepts(acoustic.words) if acoustic.accepted else
+    parsed = (packet_parser(acoustic.words) if acoustic.accepted else
               protocol.ParseResult(None, False, acoustic.reason, False))
     checked = 1
     selected = False
     if repetition == 1 and not (parsed.ok and parsed.checksum_ok):
-        candidate, checked = _validated_candidate(acoustic, top_k, beam_width)
+        candidate, checked = _validated_candidate(
+            acoustic, top_k, beam_width, packet_parser, candidate_filter)
         if candidate is not None:
             words, parsed = candidate
             selected = words != acoustic.words

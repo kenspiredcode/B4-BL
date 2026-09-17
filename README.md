@@ -51,12 +51,15 @@ acceptance must not be treated as CRC-verified delivery.
 Triple repetition did not improve the moderate condition and increases mean
 utterance duration from 4.41 to 12.58 seconds; it remains optional, off by default.
 
-`b4bl.verified_clocked` adds experimental CRC32 protection over headers and payload.
-It is deliberately verbose (a three-word payload example takes 30.28 seconds).
-It is not an acoustic ACK/retry implementation. Fixed tempo, rhythm-defined
-ALARM/WORKING, spelling support, compact protection, and realistic noisy-room
-performance remain open. Rhythm-defined words/spelling are explicitly unsupported
-by the new transport, not silently changed.
+`b4bl.verified_clocked` retains the first inspectable CRC32 packet format; a
+three-word payload takes 30.28 seconds. `b4bl.compact_clocked` is its versioned
+successor: fixed-width base-32 metadata and seven base-32 CRC symbols cut the same
+packet to 13.70 seconds while preserving CRC32 coverage of the version, complete
+header, and payload. It supports 32 local addresses and 1,024 sequence values and
+adds no classifier labels or sounds. It is not an acoustic ACK/retry implementation.
+Fixed tempo, rhythm-defined ALARM/WORKING, spelling support, and realistic protected-
+packet performance remain open. Rhythm-defined words/spelling are explicitly
+unsupported by the new transport, not silently changed.
 
 The initial offline work used no new captures; subsequent collection was explicitly
 authorized and includes preserved raw audio even for trim-rejected attempts.
@@ -159,8 +162,31 @@ oracle bounds, not delivered accuracy.
 
 `verified_clocked.decode` now supports bounded candidate-list search. An alternate
 path is accepted only when the complete packet is canonical and its CRC validates.
-This mechanism is tested symbolically; the project still needs real captures of
-protected packets before claiming the oracle bounds as verified delivery.
+The compact v2 decoder also prunes candidates that cannot occupy fixed header or
+CRC positions before beam expansion. Both mechanisms are tested symbolically and
+in synthetic acoustic loopback; the project still needs real captures of protected
+packets before claiming the oracle bounds as verified delivery.
+
+Prepare or collect a compact protected-packet corpus with a fresh channel tag:
+
+```bash
+python3 src/collect_dataset.py --compact-packets --dry-run --limit 500 --seed 42
+python3 src/collect_dataset.py --compact-packets \
+  --channel compact_room4_v2 --limit 500 --seed 42 \
+  --input-device "MacBook Pro Microphone" --output-device "<speaker>" \
+  --gain 1 --max-hang-streak 8 --hang-pause 3
+```
+
+The dry run is silent. The live command performs the usual audible self-test and
+records raw audio plus timing labels. After capture, evaluate verified delivery
+without opening audio devices:
+
+```bash
+python3 -m b4bl.compact_packet_experiment \
+  --channel compact_room4_v2 \
+  --model experiments/real-clocked-20260917/allrooms-periodicity05/real_classifier.joblib \
+  --output experiments/compact-room4-v2
+```
 
 When room 3 non-holdout recordings are included in training, its reserved
 multi-word compositions score 67/68 (98.5% including one missing capture; 67/67

@@ -60,6 +60,22 @@ def body(name, prosody):
     return ph.BY_NAME[name].render(prosody, duration_sec=duration)
 
 
+def duration_samples(concepts, repetition=1):
+    """Exact encoded length without rendering the waveform."""
+    if repetition not in (1, 3):
+        raise ValueError('repetition must be 1 or 3')
+    if not concepts:
+        raise ValueError('empty utterance')
+    vocab = vocabulary()
+    unsupported = [c for c in concepts if c not in vocab]
+    if unsupported:
+        raise ValueError(f'clocked-v1 does not support these words: {unsupported}')
+    word_ticks = sum(sum(ticks(name) for name in vocab[concept]) for concept in concepts)
+    transmissions = len(concepts) * repetition
+    return (2 * PAD + (transmissions + 1) * len(MARKER) +
+            transmissions * MARK_GAP + word_ticks * repetition * TICK)
+
+
 def encode(concepts, prosody=NEUTRAL, repetition=1, return_spans=False):
     """Encode bracketing markers + fixed clock. repetition=3 enables majority FEC.
     Repetition is a configured profile, not negotiated by this prototype.
@@ -89,6 +105,7 @@ def encode(concepts, prosody=NEUTRAL, repetition=1, return_spans=False):
                 cursor += len(cell)
     clips.extend([MARKER, np.zeros(PAD, np.float32)])
     audio = np.concatenate(clips)
+    assert len(audio) == duration_samples(concepts, repetition)
     return (audio, spans) if return_spans else audio
 
 
