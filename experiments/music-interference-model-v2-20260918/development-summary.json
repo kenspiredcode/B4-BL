@@ -1,0 +1,87 @@
+{
+  "profile": "music-interference-rf-split-session-v2",
+  "status": "development_complete_requires_fresh_validation",
+  "model_sha256": "3e096f33384da5ef707ac563fc3a48edc8abce86c70c2da515d661ffac1c110f",
+  "decoder": {
+    "receiver_profile": "spectral-marker-v2-hp300-threshold055",
+    "top_k": 6,
+    "beam_width": 50000
+  },
+  "training": {
+    "base_real_and_synthetic_windows": 16172,
+    "prior_music_packets": [0, 97],
+    "prior_music_windows": 3586,
+    "prior_music_sample_weight": 2,
+    "fresh_failed_validation_training_packets": [0, 149],
+    "fresh_available_recordings_used": 147,
+    "fresh_music_windows": 5560,
+    "fresh_sample_weight": 1,
+    "special_class_weighting": false
+  },
+  "selection": {
+    "fresh_tuning_packets": [150, 199],
+    "attempts": 50,
+    "available": 49,
+    "verified_exact": 49,
+    "accepted_wrong": 0,
+    "missing": 1,
+    "rate_over_attempts": 0.98,
+    "exact_95_percent_interval_over_attempts": [
+      0.8935304542885001,
+      0.9994937720169592
+    ],
+    "weight_trials": [
+      {"fresh_weight": 1, "hc_hr_multiplier": 1, "exact_available": [49, 49]},
+      {"fresh_weight": 2, "hc_hr_multiplier": 1, "exact_available": [49, 49]},
+      {"fresh_weight": 4, "hc_hr_multiplier": 1, "exact_available": [49, 49]},
+      {"fresh_weight": 2, "hc_hr_multiplier": 2, "exact_available": [49, 49]},
+      {"fresh_weight": 2, "hc_hr_multiplier": 4, "exact_available": [49, 49]},
+      {"fresh_weight": 4, "hc_hr_multiplier": 2, "exact_available": [49, 49]}
+    ],
+    "decision": "Choose the smallest fresh weight with no special Hc/Hr multiplier because all variants tied."
+  },
+  "regressions": {
+    "prior_music_303_499": {
+      "verified_exact": 181,
+      "attempts": 197,
+      "rate": 0.9187817258883249,
+      "exact_95_percent_interval": [0.8714566280451245, 0.9528644948323649],
+      "accepted_wrong": 0
+    },
+    "prior_quiet_98_302": {
+      "verified_exact": 204,
+      "attempts": 205,
+      "rate": 0.9951219512195122,
+      "accepted_wrong": 0
+    },
+    "room5_clean": {
+      "verified_exact": 491,
+      "attempts": 500,
+      "rate": 0.982,
+      "accepted_wrong": 0
+    },
+    "aukey_clean": {
+      "verified_exact": 199,
+      "attempts": 200,
+      "available": 199,
+      "rate_over_attempts": 0.995,
+      "accepted_wrong": 0
+    }
+  },
+  "rejected_ablation": {
+    "change": "Fold all 196 available fresh-session recordings into training.",
+    "reason": "Despite improving prior music and room5 results, clean AUKEY fell to 181/200.",
+    "results": {
+      "prior_music_303_499": [186, 197],
+      "prior_quiet_98_302": [203, 205],
+      "room5_clean": [496, 500],
+      "aukey_clean": [181, 200],
+      "accepted_wrong": 0
+    }
+  },
+  "interpretation": [
+    "The first 150 fresh attempts supply enough real music coverage to remove the Hc/Hr bottleneck on the later same-session tuning slice.",
+    "The 49/50 tuning result has a lower exact 95% bound below 90%, and the prior music block is reused development data; neither is a final 90% claim.",
+    "A new untouched 200-attempt music run is required for prospective confirmation."
+  ]
+}

@@ -229,6 +229,20 @@ high-band contour robustness using this failed-validation batch, followed by a
 new untouched music capture. Results and diagnosis are in
 `experiments/compact-aukey-room6-music-validation-v2-full200/`.
 
+That failed-validation corpus was then split for the next development iteration:
+attempts 0–149 joined the existing training data, while attempts 150–199 remained
+a tuning holdout. A plain sample weight of one, with no special weighting for the
+problematic `Hc`/`Hr` classes, decodes all 49 available tuning packets; one of the
+50 attempts is missing. It also delivers 181/197 (91.9%) on the earlier music
+block, 204/205 on its quiet middle, 491/500 in room 5, and 199/200 on the clean
+AUKEY corpus, with zero wrong acceptances. Folding the final 50 attempts into
+training was rejected because clean AUKEY delivery fell to 181/200. The selected
+development model is therefore frozen at SHA256
+`3e096f33384da5ef707ac563fc3a48edc8abce86c70c2da515d661ffac1c110f`.
+These are development results; a new untouched 200-packet music run is required
+for a prospective 90% claim. The selection and regression ledger is in
+`experiments/music-interference-model-v2-20260918/development-summary.json`.
+
 Prepare or collect a compact protected-packet corpus with a fresh channel tag:
 
 ```bash
