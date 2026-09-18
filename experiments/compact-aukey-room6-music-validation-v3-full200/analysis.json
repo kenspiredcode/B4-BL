@@ -1,0 +1,62 @@
+{
+  "status": "fresh_prospective_validation_passed",
+  "channel": "compact_aukey_room6_music_validation_v3",
+  "frozen_configuration": {
+    "model_sha256": "3e096f33384da5ef707ac563fc3a48edc8abce86c70c2da515d661ffac1c110f",
+    "receiver_profile": "spectral-marker-v2-hp300-threshold055",
+    "top_k": 6,
+    "beam_width": 50000,
+    "evaluations_on_fresh_batch": 1
+  },
+  "capture": {
+    "attempts": 200,
+    "raw_recordings_available": 200,
+    "collector_returncode_zero": 194,
+    "collector_returncode_four": 6,
+    "median_premessage_background_rms": 0.012362650858605193,
+    "median_premessage_background_dbfs": -38.1577679153209,
+    "prior_validation_median_background_dbfs": -39.225888226723924,
+    "condition_assessment": "Music remained present across the run. Successive 25-attempt background medians ranged from -40.48 to -37.52 dBFS."
+  },
+  "result": {
+    "verified_exact": 192,
+    "attempts": 200,
+    "verified_delivery_rate": 0.96,
+    "exact_95_percent_interval": [
+      0.9227080317739839,
+      0.9825751910055194
+    ],
+    "accepted_wrong": 0,
+    "accepted_wrong_exact_95_percent_upper_bound": 0.01827534035513624,
+    "rejected": 8,
+    "target_rate": 0.9,
+    "target_met": true,
+    "lower_confidence_bound_exceeds_target": true
+  },
+  "failure_attribution": {
+    "collector_flagged_attempts": {
+      "count": 6,
+      "verified_exact": 0,
+      "rejected": 6,
+      "indices": [0, 8, 14, 22, 26, 27],
+      "interpretation": "All six recordings flagged by the online trimmer also failed offline framing."
+    },
+    "collector_successful_attempts": {
+      "count": 194,
+      "verified_exact": 192,
+      "rejected": 2,
+      "conditional_delivery_rate": 0.9896907216494846,
+      "rejected_indices": [106, 113],
+      "rejected_expected_words_outside_top6": ["ACK", "COME"]
+    },
+    "marker_count_exact": 194,
+    "top_path_exact": 94,
+    "selected_by_crc_and_structure": 98
+  },
+  "decision": {
+    "promote_same_condition_configuration": true,
+    "claim_scope": "AUKEY microphone and Bluetooth speaker in the represented room, with the represented low-level music condition.",
+    "next_evaluation": "Use a different room and/or interference source for generalization; do not tune on this validation batch.",
+    "continuous_listening": "Wake/presence detection and adaptive gain remain a separate required front-end evaluation."
+  }
+}

@@ -1,0 +1,39 @@
+{
+  "profile": "compact-clocked-v2-crc32-base32",
+  "receiver_profile": "spectral-marker-v2-hp300-threshold055",
+  "marker_threshold": 0.55,
+  "channel": "compact_aukey_room6_music_validation_v3",
+  "source_attempt_rows": 200,
+  "unique_labeled_packets": 200,
+  "model": "experiments/music-interference-model-v2-20260918/real_classifier.joblib",
+  "model_sha256": "3e096f33384da5ef707ac563fc3a48edc8abce86c70c2da515d661ffac1c110f",
+  "top_k": 6,
+  "beam_width": 50000,
+  "counts": {
+    "attempts": 200,
+    "available": 200,
+    "marker_count_ok": 194,
+    "top_path_exact": 94,
+    "verified_exact": 192,
+    "accepted_wrong": 0,
+    "rejected": 8,
+    "selected_by_validation": 98
+  },
+  "verified_delivery_rate": 0.96,
+  "accepted_wrong_rate": 0.0,
+  "parse_reasons": {
+    "word marker is off the symbol grid": 2,
+    "accepted": 192,
+    "not a compact clocked packet v2": 4,
+    "CRC mismatch": 2
+  },
+  "candidate_paths_checked": {
+    "mean": 692.21,
+    "max": 50000
+  },
+  "limitations": [
+    "This channel is a measured environment, not universal room generalization.",
+    "CRC32 detects accidental corruption; it is not authentication.",
+    "The same packet corpus must not be used for both model tuning and final claims."
+  ]
+}

@@ -243,6 +243,17 @@ These are development results; a new untouched 200-packet music run is required
 for a prospective 90% claim. The selection and regression ledger is in
 `experiments/music-interference-model-v2-20260918/development-summary.json`.
 
+The untouched follow-up run passes that prospective test. With the frozen model
+hash and search settings, it delivers 192/200 packets exactly (96.0%; exact 95%
+interval 92.27–98.26%) and accepts zero wrong packets. All 200 raw recordings are
+present. The collector flagged six captures, and all six account for rejections;
+among the 194 collector-successful attempts, delivery is 192/194 (99.0%). Music
+remained present throughout at a median -38.16 dBFS. This supports promotion for
+the represented AUKEY/Bluetooth/room/low-music condition. Different rooms and
+interference sources, plus continuous presence detection, remain separate
+generalization problems. Results are in
+`experiments/compact-aukey-room6-music-validation-v3-full200/`.
+
 Prepare or collect a compact protected-packet corpus with a fresh channel tag:
 
 ```bash
