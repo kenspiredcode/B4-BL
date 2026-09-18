@@ -190,6 +190,16 @@ development result that needs a fresh prospective confirmation. Arbitrary speech
 music, and machinery remain untested negative controls. The corrected aggregate
 and audit are in `experiments/compact-aukey-room6-v2-threshold055/`.
 
+A subsequent 500-packet AUKEY/Bluetooth batch added continuous music in the same
+room. The music stopped during packets 98–302 and resumed at packet 303, producing
+a useful natural A/B comparison. With the same frozen model and decoder, the quiet
+middle delivered 204/205 packets exactly (99.5%), while the two music-on segments
+delivered 121/295 (41.0%). The full mixed batch delivered 325/500 (65.0%), with
+zero wrong acceptances. Marker counts were exact in 498/500 recordings, so the
+dominant interference failure is phoneme ranking rather than packet detection.
+The aggregate and measured-condition split are in
+`experiments/compact-aukey-room6-musiclow-v1-full500/`.
+
 Prepare or collect a compact protected-packet corpus with a fresh channel tag:
 
 ```bash

@@ -1,0 +1,179 @@
+{
+  "change_points": {
+    "music_off_start": 98,
+    "music_on_resume": 303,
+    "method": "largest persistent changes in centered 10-recording background-RMS median"
+  },
+  "chronological_segments": [
+    {
+      "name": "music_on_1",
+      "indices": [
+        0,
+        97
+      ],
+      "background_rms_median": 0.011329739644415299,
+      "background_dbfs_median": -38.91560140077784,
+      "counts": {
+        "attempts": 98,
+        "marker_count_ok": 97,
+        "top_path_exact": 8,
+        "verified_exact": 46,
+        "accepted_wrong": 0,
+        "rejected": 52,
+        "selected_by_validation": 38
+      },
+      "verified_rate": 0.46938775510204084,
+      "exact_95_ci": [
+        0.36778450920144473,
+        0.5728904522025193
+      ],
+      "mean_paths_checked": 4429.051020408163
+    },
+    {
+      "name": "music_off",
+      "indices": [
+        98,
+        302
+      ],
+      "background_rms_median": 0.0010852235311084517,
+      "background_dbfs_median": -59.2896159583681,
+      "counts": {
+        "attempts": 205,
+        "marker_count_ok": 205,
+        "top_path_exact": 140,
+        "verified_exact": 204,
+        "accepted_wrong": 0,
+        "rejected": 1,
+        "selected_by_validation": 64
+      },
+      "verified_rate": 0.9951219512195122,
+      "exact_95_ci": [
+        0.9731223762233312,
+        0.9998765061236342
+      ],
+      "mean_paths_checked": 50.80975609756098
+    },
+    {
+      "name": "music_on_2",
+      "indices": [
+        303,
+        499
+      ],
+      "background_rms_median": 0.010383118444359137,
+      "background_dbfs_median": -39.67344383576352,
+      "counts": {
+        "attempts": 197,
+        "marker_count_ok": 196,
+        "top_path_exact": 17,
+        "verified_exact": 75,
+        "accepted_wrong": 0,
+        "rejected": 122,
+        "selected_by_validation": 58
+      },
+      "verified_rate": 0.38071065989847713,
+      "exact_95_ci": [
+        0.3126307200543165,
+        0.4524388740179041
+      ],
+      "mean_paths_checked": 4363.48730964467
+    },
+    {
+      "name": "music_on_combined",
+      "indices": [
+        0,
+        499
+      ],
+      "background_rms_median": 0.010972141392760369,
+      "background_dbfs_median": -39.194172089706065,
+      "counts": {
+        "attempts": 295,
+        "marker_count_ok": 293,
+        "top_path_exact": 25,
+        "verified_exact": 121,
+        "accepted_wrong": 0,
+        "rejected": 174,
+        "selected_by_validation": 96
+      },
+      "verified_rate": 0.4101694915254237,
+      "exact_95_ci": [
+        0.3534998884306526,
+        0.4686621690981684
+      ],
+      "mean_paths_checked": 4385.267796610169
+    }
+  ],
+  "background_level_bins": [
+    {
+      "name": "quiet",
+      "indices": [
+        41,
+        484
+      ],
+      "background_rms_median": 0.0010946634617331123,
+      "background_dbfs_median": -59.21438755578006,
+      "counts": {
+        "attempts": 220,
+        "marker_count_ok": 220,
+        "top_path_exact": 142,
+        "verified_exact": 213,
+        "accepted_wrong": 0,
+        "rejected": 7,
+        "selected_by_validation": 71
+      },
+      "verified_rate": 0.9681818181818181,
+      "exact_95_ci": [
+        0.9355439539950396,
+        0.9871135903462579
+      ],
+      "mean_paths_checked": 277.0681818181818
+    },
+    {
+      "name": "medium",
+      "indices": [
+        0,
+        499
+      ],
+      "background_rms_median": 0.005299134809934561,
+      "background_dbfs_median": -45.51590063796041,
+      "counts": {
+        "attempts": 73,
+        "marker_count_ok": 73,
+        "top_path_exact": 7,
+        "verified_exact": 31,
+        "accepted_wrong": 0,
+        "rejected": 42,
+        "selected_by_validation": 24
+      },
+      "verified_rate": 0.4246575342465753,
+      "exact_95_ci": [
+        0.309675767898426,
+        0.545945577893546
+      ],
+      "mean_paths_checked": 4298.342465753424
+    },
+    {
+      "name": "high",
+      "indices": [
+        1,
+        497
+      ],
+      "background_rms_median": 0.013431807049592133,
+      "background_dbfs_median": -37.437311110925016,
+      "counts": {
+        "attempts": 207,
+        "marker_count_ok": 205,
+        "top_path_exact": 16,
+        "verified_exact": 81,
+        "accepted_wrong": 0,
+        "rejected": 126,
+        "selected_by_validation": 65
+      },
+      "verified_rate": 0.391304347826087,
+      "exact_95_ci": [
+        0.3243952918707351,
+        0.4613740347738986
+      ],
+      "mean_paths_checked": 4489.545893719806
+    }
+  ]
+}
