@@ -8,7 +8,8 @@ the OS reclaims the audio state — which an in-process thread timeout cannot do
 Usage:
   python3 src/_emit_one.py <out_wav> <latency> <gain> <concept1> [concept2 ...]
   (special: if the first concept is '__SELFTEST__', run the self-test instead)
-Exit: 0 = wrote a good segment, 2 = no sync / too quiet, 3 = self-test fail.
+Exit: 0 = wrote a good segment, 2 = trim rejected but raw retained,
+3 = self-test fail, 4 = clocked marker health check failed.
 """
 import sys, os, json
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
@@ -50,6 +51,11 @@ def main():
     if os.environ.get("B4BL_KEEP_RAW") == "1":
         raw_path = os.path.splitext(out_wav)[0] + ".raw.wav"
         wavfile.write(raw_path, gen.SR, (np.clip(rec, -1, 1)*32767).astype(np.int16))
+    if os.environ.get("B4BL_CLOCKED") == "1":
+        from b4bl import clocked_receiver
+        markers = clocked_receiver.marker_positions(clocked_receiver.preprocess(rec))
+        if len(markers) != len(concepts) + 1:
+            sys.exit(4)
     seg = capture.find_message(rec)               # parent kills us on timeout.
     if seg is None or float(np.sqrt(np.mean(seg ** 2))) < MIN_RMS:
         sys.exit(2)

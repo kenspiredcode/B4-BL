@@ -106,16 +106,19 @@ def load_done(channel, encoding=None):
     # trimmer rejection must not replay a packet whose raw capture was preserved.
     attempts_path = os.path.join(REC_DIR, "attempts.jsonl")
     if encoding and os.path.exists(attempts_path):
+        by_file = {}
         with open(attempts_path) as f:
             for line in f:
                 try:
                     r = json.loads(line)
-                    raw = os.path.join(REC_DIR, r["file"].replace(".wav", ".raw.wav"))
-                    if (r.get("channel") == channel and r.get("encoding") == encoding
-                            and os.path.exists(raw)):
-                        done.add((tuple(r["concepts"]), r["prosody"], channel))
+                    if r.get("channel") == channel and r.get("encoding") == encoding:
+                        by_file[r["file"]] = r
                 except Exception:
                     pass
+        for r in by_file.values():
+            raw = os.path.join(REC_DIR, r["file"].replace(".wav", ".raw.wav"))
+            if os.path.exists(raw):
+                done.add((tuple(r["concepts"]), r["prosody"], channel))
     return done
 
 
@@ -234,6 +237,20 @@ def main():
         m = re.search(rf"{re.escape(args.channel)}_(\d+)(?:\.raw)?\.wav$", p)
         if m:
             next_idx = max(next_idx, int(m.group(1)) + 1)
+    # Failed attempts may have no WAV but still reserve their filename in the
+    # append-only log. Never reuse it: doing so can attach new audio to an old label.
+    attempts_path = os.path.join(REC_DIR, "attempts.jsonl")
+    if os.path.exists(attempts_path):
+        for line in open(attempts_path):
+            try:
+                row = json.loads(line)
+                if row.get("channel") != args.channel:
+                    continue
+                m = re.search(rf"{re.escape(args.channel)}_(\d+)\.wav$", row.get("file", ""))
+                if m:
+                    next_idx = max(next_idx, int(m.group(1)) + 1)
+            except Exception:
+                pass
 
     print(f"=== collecting {len(pending)} emissions on channel '{args.channel}' "
           f"({len(items) - len(pending)} already done) ===")
@@ -294,7 +311,8 @@ def main():
             elif rc not in (0, 2):
                 n_error += 1
                 failure_streak += 1
-                detail = worker_error.splitlines()[-1] if worker_error else f'exit {rc}'
+                detail = ('clocked marker health check failed' if rc == 4 else
+                          worker_error.splitlines()[-1] if worker_error else f'exit {rc}')
                 print(f"  [device error] attempt {i}: {detail}", flush=True)
             else:
                 failure_streak = 0

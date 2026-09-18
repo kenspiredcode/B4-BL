@@ -298,6 +298,22 @@ def test_clocked_resume_uses_preserved_raw_audio(tmp_path, monkeypatch):
         'channel', compact_clocked.PROFILE)
 
 
+def test_clocked_resume_does_not_assign_reused_file_to_old_label(tmp_path, monkeypatch):
+    from src import collect_dataset
+    recordings = tmp_path/'recordings'; recordings.mkdir()
+    base = {'file': 'reused.wav', 'channel': 'channel',
+            'encoding': compact_clocked.PROFILE, 'prosody': 'neutral'}
+    (recordings/'attempts.jsonl').write_text(
+        json.dumps(dict(base, concepts=['OLD'])) + '\n' +
+        json.dumps(dict(base, concepts=['NEW'])) + '\n')
+    (recordings/'reused.raw.wav').write_bytes(b'new waveform')
+    monkeypatch.setattr(collect_dataset, 'REC_DIR', str(recordings))
+    monkeypatch.setattr(collect_dataset, 'MANIFEST', str(recordings/'manifest.jsonl'))
+    done = collect_dataset.load_done('channel', compact_clocked.PROFILE)
+    assert (('NEW',), 'neutral', 'channel') in done
+    assert (('OLD',), 'neutral', 'channel') not in done
+
+
 def test_packet_evaluation_prefers_raw_retry_and_deduplicates(tmp_path):
     from b4bl.compact_packet_experiment import select_attempts
     base = {'channel': 'channel', 'encoding': compact_clocked.PROFILE,
@@ -308,6 +324,19 @@ def test_packet_evaluation_prefers_raw_retry_and_deduplicates(tmp_path):
     selected, source_count = select_attempts(rows, tmp_path, 'channel')
     assert source_count == 2
     assert [row['file'] for row in selected] == ['retry.wav']
+
+
+def test_packet_evaluation_assigns_reused_file_to_latest_attempt(tmp_path):
+    from b4bl.compact_packet_experiment import select_attempts
+    base = {'channel': 'channel', 'encoding': compact_clocked.PROFILE,
+            'prosody': 'neutral', 'returncode': 0}
+    rows = [dict(base, file='reused.wav', concepts=['OLD']),
+            dict(base, file='reused.wav', concepts=['NEW'])]
+    (tmp_path/'reused.raw.wav').write_bytes(b'new waveform')
+    selected, source_count = select_attempts(rows, tmp_path, 'channel')
+    assert source_count == 2
+    assert [(row['file'], row['concepts']) for row in selected] == [
+        ('reused.wav', ['NEW'])]
 
 
 def test_transmitter_spans_match_audio_and_clock():

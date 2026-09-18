@@ -19,7 +19,11 @@ from . import clocked_receiver as receiver, compact_clocked
 
 def select_attempts(lines, recordings, channel):
     """Choose one attempt per labeled packet, preferring an available raw retry."""
-    selected = {}
+    # A legacy resume could reuse a failed attempt's filename because numbering
+    # looked only at files that existed. The last log row is the owner of an
+    # overwritten filename; collapse that first so one waveform cannot acquire
+    # two incompatible labels.
+    by_file = {}
     source_rows = 0
     recordings = Path(recordings)
     for line in lines:
@@ -28,6 +32,9 @@ def select_attempts(lines, recordings, channel):
                 row.get('encoding') != compact_clocked.PROFILE):
             continue
         source_rows += 1
+        by_file[row['file']] = row
+    selected = {}
+    for row in by_file.values():
         key = (tuple(row['concepts']), row['prosody'])
         raw_exists = (recordings/row['file'].replace('.wav', '.raw.wav')).exists()
         previous = selected.get(key)
