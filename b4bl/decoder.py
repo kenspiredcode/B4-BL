@@ -118,7 +118,13 @@ def _pitch_track(seg: np.ndarray, min_periodicity: float = 0.0) -> np.ndarray:
         frame = frame - frame.mean()
         if np.sqrt(np.mean(frame ** 2)) < 1e-4:
             continue
-        ac = np.correlate(frame, frame, "full")[len(frame) - 1:]
+        # Linear autocorrelation via FFT is equivalent to the positive-lag half
+        # of np.correlate(frame, frame, "full"), but avoids repeating an O(n^2)
+        # calculation for every overlapping pitch frame. Zero-padding to at
+        # least 2*n-1 samples prevents circular correlation.
+        nfft = 1 << (2 * len(frame) - 1).bit_length()
+        spectrum = np.fft.rfft(frame, n=nfft)
+        ac = np.fft.irfft(spectrum * spectrum.conjugate(), n=nfft)[:len(frame)]
         ac0 = ac[0] if ac[0] != 0 else 1.0
         ac = ac / ac0                       # normalize so ac[0] == 1
         seg_ac = ac[lag_min:lag_max]

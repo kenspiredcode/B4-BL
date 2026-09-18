@@ -68,6 +68,13 @@ def test_periodicity_gate_ignores_noise_after_tone_release():
     assert decoder._pitch_track(noise, min_periodicity=.5).tolist() == [0.0]
 
 
+def test_fft_pitch_autocorrelation_finds_known_tone():
+    t = np.arange(decoder.FRAME * 2) / clocked.SR
+    track = decoder._pitch_track(np.sin(2 * np.pi * 700 * t), min_periodicity=.5)
+    assert len(track) > 0
+    assert np.allclose(track, 700, atol=12)
+
+
 def test_feature_profile_carries_its_periodicity_threshold():
     assert clocked.CONFIDENT_FEATURE_PREFIX.endswith('-')
     # Decoder behavior is driven by model metadata; separately trained feature

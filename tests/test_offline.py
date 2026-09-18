@@ -234,6 +234,22 @@ def test_compact_crc_list_decode_uses_structural_pruning():
     assert result.selected_by_validation
 
 
+def test_validated_candidate_preserves_stable_tie_order():
+    acoustic = clocked.DecodeResult(word_candidates=[
+        [('A', 0.0), ('B', 0.0)],
+        [('C', 0.0), ('D', 0.0)],
+    ])
+
+    def parser(words):
+        ok = words == ['B', 'C']
+        return protocol.ParseResult(None, ok, '' if ok else 'no', ok)
+
+    candidate, checked = verified_clocked._validated_candidate(
+        acoustic, top_k=2, beam_width=4, packet_parser=parser)
+    assert candidate[0] == ['B', 'C']
+    assert checked == 3
+
+
 def test_compact_spoken_replies_are_optional_and_ignore_nonpackets():
     frame = protocol.Frame(1, 2, 'MSG_TELL', 3, ['SELF'])
     accepted = verified_clocked.PacketResult(

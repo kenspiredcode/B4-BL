@@ -6,6 +6,7 @@ This intentionally favors inspectability over airtime; it is not a compact modem
 """
 from dataclasses import dataclass
 import json
+import numpy as np
 import zlib
 from . import clocked, lexicon, protocol
 from .prosody import NEUTRAL
@@ -76,21 +77,32 @@ def _validated_candidate(acoustic, top_k=3, beam_width=10000,
     """
     if not acoustic.word_candidates:
         return None, 0
-    beam = [([], 0.0)]
+    # Keep paths and scores in separate containers. The former implementation
+    # materialized and sorted up to 50,000 growing Python lists at every word.
+    # Vectorized score expansion preserves the same stable descending order and
+    # beam cap while constructing paths only for survivors.
+    paths = [()]
+    scores = np.asarray([0.0])
     total = len(acoustic.word_candidates)
     for index, candidates in enumerate(acoustic.word_candidates):
         choices = candidates[:top_k]
         if candidate_filter is not None:
             choices = [(word, score) for word, score in choices
                        if candidate_filter(index, total, word)]
-        expanded = [(words+[word], score+candidate_score)
-                    for words, score in beam
-                    for word, candidate_score in choices]
-        expanded.sort(key=lambda item: item[1], reverse=True)
-        beam = expanded[:beam_width]
+        if not choices:
+            return None, 0
+        choice_scores = np.asarray([score for _, score in choices], dtype=float)
+        expanded = (scores[:, None] + choice_scores[None, :]).ravel()
+        order = np.argsort(-expanded, kind='stable')[:beam_width]
+        choice_count = len(choices)
+        paths = [paths[int(flat_index) // choice_count] +
+                 (choices[int(flat_index) % choice_count][0],)
+                 for flat_index in order]
+        scores = expanded[order]
     checked = 0
-    for words, _ in beam:
+    for path in paths:
         checked += 1
+        words = list(path)
         parsed = packet_parser(words)
         if parsed.ok and parsed.checksum_ok:
             return (words, parsed), checked

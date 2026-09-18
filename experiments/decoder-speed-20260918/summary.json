@@ -1,0 +1,40 @@
+{
+  "purpose": "Measure decision-preserving decoder acceleration on real AUKEY compact-v2 packets.",
+  "benchmark": {
+    "packets": 30,
+    "packets_requiring_list_search": 13,
+    "candidate_paths_checked": 40177,
+    "before_seconds": {
+      "read_audio": 0.082,
+      "acoustic_decode": 14.395,
+      "candidate_list_search": 3.918,
+      "total": 18.395
+    },
+    "after_seconds": {
+      "read_audio": 0.082,
+      "acoustic_decode": 5.989,
+      "candidate_list_search": 0.492,
+      "total": 6.563
+    },
+    "overall_speedup": 2.802,
+    "notes": [
+      "Wall-clock timings are local development measurements and will vary by host and load.",
+      "FFT autocorrelation replaces equivalent positive-lag time-domain autocorrelation.",
+      "Vectorized beam score expansion preserves stable candidate ordering and the 10000-path cap."
+    ]
+  },
+  "equivalence_audit": {
+    "corpus": "compact_aukey_room6_v2",
+    "available_packets": 199,
+    "result_differences": 0,
+    "compared_fields": [
+      "accepted",
+      "selected words",
+      "raw hypothesis",
+      "parse result",
+      "candidate paths checked",
+      "selected-by-validation flag"
+    ]
+  },
+  "tests": "74 passed"
+}
