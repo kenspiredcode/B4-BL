@@ -156,7 +156,8 @@ def decode(audio, model, repetition=1, acoustic_decoder=clocked.decode,
     return verified_clocked.decode(
         audio, model, repetition=repetition, acoustic_decoder=acoustic_decoder,
         top_k=top_k, beam_width=beam_width, packet_parser=parse_concepts,
-        candidate_filter=_candidate_filter)
+        candidate_filter=_candidate_filter,
+        acoustic_candidate_limit=top_k if top_k > 5 else None)
 
 
 def spoken_reply_concepts(result, confirm_success=False, request_repeat=True):

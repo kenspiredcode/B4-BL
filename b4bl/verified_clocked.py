@@ -111,10 +111,13 @@ def _validated_candidate(acoustic, top_k=3, beam_width=10000,
 
 def decode(audio, model, repetition=1, acoustic_decoder=clocked.decode,
            top_k=3, beam_width=10000, packet_parser=parse_concepts,
-           candidate_filter=None):
+           candidate_filter=None, acoustic_candidate_limit=None):
     # CRC is the acceptance gate. Do not discard a correct whole-packet candidate
     # merely because an individual word has a low heuristic RF margin.
-    acoustic = acoustic_decoder(audio, model, repetition=repetition, min_margin=0.0)
+    acoustic_kwargs = dict(repetition=repetition, min_margin=0.0)
+    if acoustic_candidate_limit is not None:
+        acoustic_kwargs['candidate_limit'] = acoustic_candidate_limit
+    acoustic = acoustic_decoder(audio, model, **acoustic_kwargs)
     parsed = (packet_parser(acoustic.words) if acoustic.accepted else
               protocol.ParseResult(None, False, acoustic.reason, False))
     checked = 1

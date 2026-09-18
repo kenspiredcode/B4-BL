@@ -1,0 +1,168 @@
+{
+  "selection_rule": "Choose on packets 68-97 using the model trained only on packets 0-67; do not tune on packets 303-499.",
+  "top_k_beam_10000": [
+    {
+      "top_k": 5,
+      "beam_width": 10000,
+      "counts": {
+        "attempts": 30,
+        "exact": 26,
+        "wrong": 0,
+        "rejected": 4,
+        "selected": 16,
+        "paths": 40317
+      },
+      "elapsed_seconds": 5.469420542
+    },
+    {
+      "top_k": 6,
+      "beam_width": 10000,
+      "counts": {
+        "attempts": 30,
+        "exact": 27,
+        "wrong": 0,
+        "rejected": 3,
+        "selected": 17,
+        "paths": 30358
+      },
+      "elapsed_seconds": 5.399790584000001
+    },
+    {
+      "top_k": 7,
+      "beam_width": 10000,
+      "counts": {
+        "attempts": 30,
+        "exact": 27,
+        "wrong": 0,
+        "rejected": 3,
+        "selected": 17,
+        "paths": 30364
+      },
+      "elapsed_seconds": 5.445703125
+    },
+    {
+      "top_k": 8,
+      "beam_width": 10000,
+      "counts": {
+        "attempts": 30,
+        "exact": 27,
+        "wrong": 0,
+        "rejected": 3,
+        "selected": 17,
+        "paths": 30368
+      },
+      "elapsed_seconds": 5.496703084
+    },
+    {
+      "top_k": 10,
+      "beam_width": 10000,
+      "counts": {
+        "attempts": 30,
+        "exact": 27,
+        "wrong": 0,
+        "rejected": 3,
+        "selected": 17,
+        "paths": 30373
+      },
+      "elapsed_seconds": 5.591457000000002
+    }
+  ],
+  "top_k_beam_50000": [
+    {
+      "top_k": 6,
+      "beam_width": 50000,
+      "counts": {
+        "attempts": 30,
+        "exact": 29,
+        "wrong": 0,
+        "rejected": 1,
+        "selected": 19,
+        "paths": 122430
+      },
+      "elapsed_seconds": 7.714616958000001
+    },
+    {
+      "top_k": 8,
+      "beam_width": 50000,
+      "counts": {
+        "attempts": 30,
+        "exact": 28,
+        "wrong": 0,
+        "rejected": 2,
+        "selected": 18,
+        "paths": 130982
+      },
+      "elapsed_seconds": 8.185795166000002
+    },
+    {
+      "top_k": 10,
+      "beam_width": 50000,
+      "counts": {
+        "attempts": 30,
+        "exact": 29,
+        "wrong": 0,
+        "rejected": 1,
+        "selected": 19,
+        "paths": 110963
+      },
+      "elapsed_seconds": 8.566378833000002
+    }
+  ],
+  "selected": {
+    "top_k": 6,
+    "beam_width": 50000,
+    "tuning_exact": 29,
+    "tuning_attempts": 30,
+    "wrong_accepted": 0
+  },
+  "crc_collision_note": "Worst-case random CRC32 collision exposure is approximately beam_width / 2^32 per failed top path; real correlations still require measurement.",
+  "clean_regressions": {
+    "quiet_98_302": {
+      "counts": {
+        "available": 205,
+        "marker_count_ok": 205,
+        "top_path_exact": 179,
+        "verified_exact": 205,
+        "accepted_wrong": 0,
+        "rejected": 0,
+        "selected": 26,
+        "paths_checked": 1330,
+        "attempts": 205
+      },
+      "rate": 1.0,
+      "elapsed_seconds": 39.299379458
+    },
+    "room5_clean": {
+      "counts": {
+        "available": 500,
+        "marker_count_ok": 500,
+        "top_path_exact": 207,
+        "verified_exact": 494,
+        "accepted_wrong": 0,
+        "rejected": 6,
+        "selected": 287,
+        "paths_checked": 257707,
+        "attempts": 500
+      },
+      "rate": 0.988,
+      "elapsed_seconds": 144.167727291
+    },
+    "aukey_clean": {
+      "counts": {
+        "available": 199,
+        "marker_count_ok": 199,
+        "top_path_exact": 108,
+        "verified_exact": 194,
+        "accepted_wrong": 0,
+        "rejected": 5,
+        "selected": 86,
+        "paths_checked": 252234,
+        "attempts": 200,
+        "missing": 1
+      },
+      "rate": 0.97,
+      "elapsed_seconds": 52.157329167
+    }
+  },
+  "validation_policy": "The inspected music-validation block 303-499 was not re-evaluated with the selected search settings. Use a fresh music-interference recording."
+}

@@ -54,8 +54,8 @@ def main():
     parser.add_argument('--top-k', type=int, default=5)
     parser.add_argument('--beam-width', type=int, default=10000)
     args = parser.parse_args()
-    if not 1 <= args.top_k <= 5:
-        parser.error('--top-k must be in [1, 5]')
+    if not 1 <= args.top_k <= 10:
+        parser.error('--top-k must be in [1, 10]')
     if args.beam_width < 1:
         parser.error('--beam-width must be positive')
 

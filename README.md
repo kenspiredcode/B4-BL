@@ -211,6 +211,15 @@ packets have at least one expected word outside the retained top five. The model
 is promising but remains below the 90% interference target. Development results
 are in `experiments/music-interference-model-20260918/`.
 
+Candidate-search tuning uses the model trained on music packets 0–67 and only
+packets 68–97 for selection. Six acoustic candidates with a 50,000-path beam
+deliver 29/30 (96.7%) on that tuning slice, versus 26/30 for the five-candidate,
+10,000-path baseline. With the final music-aware model, the selected search gives
+205/205 on the quiet middle, 494/500 on room 5, and 194/200 on the clean AUKEY
+corpus, with zero wrong acceptances. The inspected later music block was not
+re-evaluated under these settings. A fresh 200-packet music-interference capture
+is required to evaluate the frozen model and search configuration together.
+
 Prepare or collect a compact protected-packet corpus with a fresh channel tag:
 
 ```bash

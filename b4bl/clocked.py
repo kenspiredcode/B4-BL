@@ -170,9 +170,12 @@ class DecodeResult:
     # This acceptance means acoustic framing passed, NOT checksum verification.
 
 
-def decode(audio, model, repetition=1, min_margin=.5, marker_detector=None):
+def decode(audio, model, repetition=1, min_margin=.5, marker_detector=None,
+           candidate_limit=5):
     if repetition not in (1, 3):
         raise ValueError('repetition must be 1 or 3')
+    if not isinstance(candidate_limit, int) or isinstance(candidate_limit, bool) or candidate_limit < 1:
+        raise ValueError('candidate_limit must be a positive integer')
     feature_profile = model.get('features', '')
     if (model.get('profile') != PROFILE or
             (feature_profile not in (FEATURE_PROFILE, LEGACY_CONFIDENT_FEATURE_PROFILE)
@@ -238,7 +241,7 @@ def decode(audio, model, repetition=1, min_margin=.5, marker_detector=None):
             scored.append((score, concept))
         scored.sort(reverse=True)
         result.word_candidates.append([(concept, float(score))
-                                       for score, concept in scored[:5]])
+                                       for score, concept in scored[:candidate_limit]])
         margin = scored[0][0]-scored[1][0] if len(scored) > 1 else 100.0
         result.word_margins.append(float(margin))
         result.hypothesis.append(scored[0][1])

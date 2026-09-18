@@ -250,6 +250,26 @@ def test_validated_candidate_preserves_stable_tie_order():
     assert checked == 3
 
 
+def test_compact_decoder_can_request_sixth_acoustic_candidate():
+    frame = protocol.Frame(1, 2, 'MSG_TELL', 3, ['SELF'])
+    wire = compact_clocked.to_concepts(frame)
+    wrong = wire.copy(); payload_index = 7; wrong[payload_index] = 'OTHER_BOT'
+
+    def fake_decoder(audio, model, **kwargs):
+        candidates = [[(word, 0.0)] for word in wrong]
+        candidates[payload_index] = [
+            ('OTHER_BOT', 0.0), ('YOU', -0.1), ('THAT', -0.2),
+            ('GO', -0.3), ('TAKE', -0.4), ('SELF', -0.5),
+        ]
+        assert kwargs['candidate_limit'] == 6
+        return clocked.DecodeResult(words=wrong.copy(), accepted=True,
+                                    hypothesis=wrong.copy(), word_candidates=candidates)
+
+    result = compact_clocked.decode(
+        np.zeros(1), {}, acoustic_decoder=fake_decoder, top_k=6)
+    assert result.accepted and result.acoustic.words == wire
+
+
 def test_compact_spoken_replies_are_optional_and_ignore_nonpackets():
     frame = protocol.Frame(1, 2, 'MSG_TELL', 3, ['SELF'])
     accepted = verified_clocked.PacketResult(
