@@ -200,6 +200,17 @@ dominant interference failure is phoneme ranking rather than packet detection.
 The aggregate and measured-condition split are in
 `experiments/compact-aukey-room6-musiclow-v1-full500/`.
 
+A conservative interference-aware development model adds the 97 alignable
+recordings from music-on packets 0–97 at sample weight two. Weight was selected
+on packets 68–97 before evaluating the later music block. On music-on packets
+303–499, verified delivery rises from 75/197 (38.1%) to 165/197 (83.8%), with
+zero wrong acceptances. The quiet middle remains 204/205 (99.5%); room 5 improves
+from 479/500 to 490/500, and the clean AUKEY corpus improves from 190/200 to
+193/200. The remaining music gap is mostly candidate coverage: 28 of 32 rejected
+packets have at least one expected word outside the retained top five. The model
+is promising but remains below the 90% interference target. Development results
+are in `experiments/music-interference-model-20260918/`.
+
 Prepare or collect a compact protected-packet corpus with a fresh channel tag:
 
 ```bash

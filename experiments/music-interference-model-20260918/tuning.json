@@ -1,0 +1,62 @@
+[
+  {
+    "weight": 1,
+    "tune_music_68_97": {
+      "attempts": 30,
+      "exact": 23,
+      "wrong": 0,
+      "rejected": 7
+    },
+    "quiet_98_147": {
+      "attempts": 50,
+      "exact": 50,
+      "wrong": 0,
+      "rejected": 0
+    }
+  },
+  {
+    "weight": 2,
+    "tune_music_68_97": {
+      "attempts": 30,
+      "exact": 26,
+      "wrong": 0,
+      "rejected": 4
+    },
+    "quiet_98_147": {
+      "attempts": 50,
+      "exact": 50,
+      "wrong": 0,
+      "rejected": 0
+    }
+  },
+  {
+    "weight": 4,
+    "tune_music_68_97": {
+      "attempts": 30,
+      "exact": 26,
+      "wrong": 0,
+      "rejected": 4
+    },
+    "quiet_98_147": {
+      "attempts": 50,
+      "exact": 50,
+      "wrong": 0,
+      "rejected": 0
+    }
+  },
+  {
+    "weight": 8,
+    "tune_music_68_97": {
+      "attempts": 30,
+      "exact": 27,
+      "wrong": 0,
+      "rejected": 3
+    },
+    "quiet_98_147": {
+      "attempts": 50,
+      "exact": 49,
+      "wrong": 0,
+      "rejected": 1
+    }
+  }
+]
