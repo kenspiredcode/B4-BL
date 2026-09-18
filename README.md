@@ -176,6 +176,16 @@ rejections, and zero wrong acceptances. The exact 95% interval is 93.65–97.38%
 This clears 90% for that measured condition, not for arbitrary acoustic channels.
 The aggregate is in `experiments/compact-room5-v2-full/summary.json`.
 
+A separate 200-packet AUKEY-microphone/Bluetooth-speaker replication exposed an
+operational channel failure: 94 available recordings contained no complete marker
+pair and one packet was missing. End-to-end verified delivery was 95/200 (47.5%),
+with zero wrong acceptances. Conditional on the 103 recordings with complete
+framing, 95 decoded exactly (92.2%). This does not establish AUKEY performance
+above 90%; it shows that link-health detection is as important as packet decoding.
+The collector now validates each clocked marker count and aborts after a repeated
+failure streak. The aggregate is in
+`experiments/compact-aukey-room6-v2-final199/summary.json`.
+
 Prepare or collect a compact protected-packet corpus with a fresh channel tag:
 
 ```bash
