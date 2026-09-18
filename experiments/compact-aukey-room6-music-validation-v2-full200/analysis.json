@@ -1,0 +1,70 @@
+{
+  "status": "fresh_prospective_validation_failed_target",
+  "channel": "compact_aukey_room6_music_validation_v2",
+  "frozen_configuration": {
+    "model_sha256": "ccefa481f0d50740dc078dd45618b3aebf694dc85c3a508a4e85d9a4e32985a9",
+    "receiver_profile": "spectral-marker-v2-hp300-threshold055",
+    "top_k": 6,
+    "beam_width": 50000,
+    "evaluations_on_fresh_batch": 1
+  },
+  "capture": {
+    "attempts": 200,
+    "returncode_zero": 196,
+    "worker_timeouts": 3,
+    "other_capture_failures": 1,
+    "decoder_available": 197,
+    "median_premessage_background_rms": 0.010932150167367745,
+    "median_premessage_background_dbfs": -39.225888226723924,
+    "prior_music_on_median_background_dbfs": -39.194172089706065,
+    "condition_assessment": "Music remained on throughout; 25-attempt block medians ranged from -40.23 to -38.24 dBFS."
+  },
+  "result": {
+    "verified_exact": 159,
+    "attempts": 200,
+    "verified_delivery_rate": 0.795,
+    "exact_95_percent_interval": [
+      0.7323460792147147,
+      0.8486894280044806
+    ],
+    "verified_rate_among_decoder_available": 0.8071065989847716,
+    "accepted_wrong": 0,
+    "rejected_or_missing": 41,
+    "target_rate": 0.9,
+    "target_met": false
+  },
+  "diagnosis": {
+    "success_by_25_attempt_block": [
+      [21, 25],
+      [19, 25],
+      [19, 25],
+      [19, 25],
+      [18, 25],
+      [22, 25],
+      [21, 25],
+      [20, 25]
+    ],
+    "success_by_background_rms_quartile": [
+      [36, 49],
+      [39, 49],
+      [42, 49],
+      [42, 50]
+    ],
+    "rejections_with_exactly_one_expected_word_outside_top6": 30,
+    "single_family_bottlenecks": {
+      "CLEAN_Hc_Hc_only": 16,
+      "COME_Hc_only": 6,
+      "MOVE_Hr_only": 4
+    },
+    "counterfactual_if_those_26_packets_were_recovered": {
+      "verified_exact": 185,
+      "attempts": 200,
+      "rate": 0.925
+    },
+    "interpretation": "Failures are dominated by candidate coverage for high-band contour morphemes under music, not by marker detection, overall background amplitude, or a mid-run condition change. The counterfactual localizes the opportunity but is not a measured decoder result."
+  },
+  "data_use": {
+    "disposition": "development_after_failed_validation",
+    "rule": "This batch may now be used for diagnosis and retraining, but it cannot serve as fresh validation for changes developed from it."
+  }
+}

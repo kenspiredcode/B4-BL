@@ -218,7 +218,16 @@ deliver 29/30 (96.7%) on that tuning slice, versus 26/30 for the five-candidate,
 205/205 on the quiet middle, 494/500 on room 5, and 194/200 on the clean AUKEY
 corpus, with zero wrong acceptances. The inspected later music block was not
 re-evaluated under these settings. A fresh 200-packet music-interference capture
-is required to evaluate the frozen model and search configuration together.
+evaluated the frozen model and search configuration together. It delivered
+159/200 packets (79.5%, exact 95% interval 73.23–84.87%) with zero wrong
+acceptances, so the wider-search configuration did not meet the 90% target.
+Music remained stable through the run at a median -39.23 dBFS, essentially the
+same as the prior music-on corpus. Thirty of the 41 failed packets have only one
+expected word outside the top-six candidates; 26 are isolated to `CLEAN`
+(`Hc Hc`), `COME` (`Hc`), or `MOVE` (`Hr`). The next development step is targeted
+high-band contour robustness using this failed-validation batch, followed by a
+new untouched music capture. Results and diagnosis are in
+`experiments/compact-aukey-room6-music-validation-v2-full200/`.
 
 Prepare or collect a compact protected-packet corpus with a fresh channel tag:
 
