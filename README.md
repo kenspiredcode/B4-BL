@@ -15,9 +15,11 @@ going on*, while a droid recovers the *exact packet*.
 
 ## Status (2026-09-17)
 
-The sound palette, vocabulary, synthesis, and acoustic decoder exist. Reliable
-multi-word room communication is **not solved**. Older 95% figures were small
-loopback experiments and must not be read as real-channel delivery accuracy.
+The sound palette, vocabulary, synthesis, and acoustic decoder exist. Compact
+CRC-protected packets have now reached 95.8% verified exact delivery in one
+prospective 500-packet room test, with no wrong packets accepted. Robustness across
+additional rooms, interference, and hardware remains open. Older 95% figures were
+small loopback experiments and must not be read as real-channel delivery accuracy.
 
 A reproducible offline replay of 2,267 existing slotted recordings gives:
 
@@ -163,9 +165,13 @@ oracle bounds, not delivered accuracy.
 `verified_clocked.decode` now supports bounded candidate-list search. An alternate
 path is accepted only when the complete packet is canonical and its CRC validates.
 The compact v2 decoder also prunes candidates that cannot occupy fixed header or
-CRC positions before beam expansion. Both mechanisms are tested symbolically and
-in synthetic acoustic loopback; the project still needs real captures of protected
-packets before claiming the oracle bounds as verified delivery.
+CRC positions before beam expansion. In a new-room run with a model and decoder
+settings frozen beforehand, all 500 recordings had complete marker framing. Raw
+top-path decoding was exact on 216/500 packets; structural/CRC list selection
+repaired another 263, producing 479/500 (95.8%) verified exact deliveries, 21
+rejections, and zero wrong acceptances. The exact 95% interval is 93.65–97.38%.
+This clears 90% for that measured condition, not for arbitrary acoustic channels.
+The aggregate is in `experiments/compact-room5-v2-full/summary.json`.
 
 Prepare or collect a compact protected-packet corpus with a fresh channel tag:
 
