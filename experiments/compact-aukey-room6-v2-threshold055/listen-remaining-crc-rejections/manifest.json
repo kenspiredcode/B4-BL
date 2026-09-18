@@ -1,0 +1,59 @@
+{
+  "note": "These are the nine available packets still rejected after marker threshold 0.55. Packet 170 is missing and has no audio.",
+  "items": [
+    {
+      "packet_index": 0,
+      "file": "compact_aukey_room6_v2_00000.raw.wav",
+      "source": "/Users/kenburleson/Projects/B4-BL/recordings/compact_aukey_room6_v2_00000.raw.wav",
+      "reason": "CRC rejected after correct framing"
+    },
+    {
+      "packet_index": 12,
+      "file": "compact_aukey_room6_v2_00012.raw.wav",
+      "source": "/Users/kenburleson/Projects/B4-BL/recordings/compact_aukey_room6_v2_00012.raw.wav",
+      "reason": "CRC rejected after correct framing"
+    },
+    {
+      "packet_index": 19,
+      "file": "compact_aukey_room6_v2_00019.raw.wav",
+      "source": "/Users/kenburleson/Projects/B4-BL/recordings/compact_aukey_room6_v2_00019.raw.wav",
+      "reason": "CRC rejected after correct framing"
+    },
+    {
+      "packet_index": 27,
+      "file": "compact_aukey_room6_v2_00027.raw.wav",
+      "source": "/Users/kenburleson/Projects/B4-BL/recordings/compact_aukey_room6_v2_00027.raw.wav",
+      "reason": "CRC rejected after correct framing"
+    },
+    {
+      "packet_index": 31,
+      "file": "compact_aukey_room6_v2_00031.raw.wav",
+      "source": "/Users/kenburleson/Projects/B4-BL/recordings/compact_aukey_room6_v2_00031.raw.wav",
+      "reason": "CRC rejected after correct framing"
+    },
+    {
+      "packet_index": 32,
+      "file": "compact_aukey_room6_v2_00032.raw.wav",
+      "source": "/Users/kenburleson/Projects/B4-BL/recordings/compact_aukey_room6_v2_00032.raw.wav",
+      "reason": "CRC rejected after correct framing"
+    },
+    {
+      "packet_index": 38,
+      "file": "compact_aukey_room6_v2_00038.raw.wav",
+      "source": "/Users/kenburleson/Projects/B4-BL/recordings/compact_aukey_room6_v2_00038.raw.wav",
+      "reason": "CRC rejected after correct framing"
+    },
+    {
+      "packet_index": 40,
+      "file": "compact_aukey_room6_v2_00040.raw.wav",
+      "source": "/Users/kenburleson/Projects/B4-BL/recordings/compact_aukey_room6_v2_00040.raw.wav",
+      "reason": "CRC rejected after correct framing"
+    },
+    {
+      "packet_index": 64,
+      "file": "compact_aukey_room6_v2_00064.raw.wav",
+      "source": "/Users/kenburleson/Projects/B4-BL/recordings/compact_aukey_room6_v2_00064.raw.wav",
+      "reason": "CRC rejected after correct framing"
+    }
+  ]
+}

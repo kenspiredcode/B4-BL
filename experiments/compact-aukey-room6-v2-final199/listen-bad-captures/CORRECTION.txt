@@ -1,0 +1,9 @@
+CORRECTION (2026-09-18)
+
+The recordings in 01-channel-loss-no-marker-pair are not bad captures and do not
+show channel loss. Human listening prompted a detector audit: their clear marker
+scores clustered just below the old fixed 0.65 threshold. Receiver profile
+spectral-marker-v2-hp300-threshold055 frames all 199 available recordings.
+
+Use ../../compact-aukey-room6-v2-threshold055/listen-remaining-crc-rejections/
+for the nine available packets that still fail CRC-verified decoding.

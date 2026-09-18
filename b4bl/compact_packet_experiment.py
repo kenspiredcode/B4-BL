@@ -113,6 +113,8 @@ def main():
 
     summary = {
         'profile': compact_clocked.PROFILE,
+        'receiver_profile': receiver.PROFILE,
+        'marker_threshold': receiver.MARKER_THRESHOLD,
         'channel': args.channel,
         'source_attempt_rows': source_rows,
         'unique_labeled_packets': len(rows),

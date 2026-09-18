@@ -8,11 +8,15 @@ import numpy as np
 from scipy import signal
 from . import clocked
 
-PROFILE = 'spectral-marker-v1-hp300'
+PROFILE = 'spectral-marker-v2-hp300-threshold055'
 DECIMATION = 3
 HOP = 32
 FFT_SIZE = 256
-MARKER_THRESHOLD = .65
+# V1 used .65. Real AUKEY captures with clearly audible packets clustered near
+# .63 and were therefore rejected wholesale. A .55 threshold recovers the exact
+# expected count in those 199 captures and 1,994 prior real captures, with no
+# detections in the corresponding 1,994 pre-message background windows.
+MARKER_THRESHOLD = .55
 
 
 def read_audio(path):
@@ -51,7 +55,7 @@ def _template():
     return _spectrum(clocked.MARKER)[:, 2:-2]
 
 
-def marker_positions(audio):
+def marker_positions(audio, threshold=MARKER_THRESHOLD):
     audio = np.asarray(audio)
     if audio.ndim != 1 or not np.isfinite(audio).all():
         raise ValueError('requires finite mono audio')
@@ -60,7 +64,7 @@ def marker_positions(audio):
     observed, template = _spectrum(audio), _template()
     scores = sum(signal.correlate(row, target, mode='valid', method='fft')
                  for row, target in zip(observed, template)) / template.shape[1]
-    peaks, _ = signal.find_peaks(np.pad(scores, (1, 1)), height=MARKER_THRESHOLD,
+    peaks, _ = signal.find_peaks(np.pad(scores, (1, 1)), height=threshold,
                                 distance=round(.25*clocked.SR/(DECIMATION*HOP)))
     # Template drops two leading STFT frames; translate to marker onset samples.
     return [int((p-3)*HOP*DECIMATION) for p in peaks if (p-3)*HOP*DECIMATION >= 0]

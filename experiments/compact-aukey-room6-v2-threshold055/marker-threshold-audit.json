@@ -1,0 +1,48 @@
+{
+  "reason": "Human listening found that recordings classified as lacking a complete marker pair contained clearly audible packets.",
+  "conclusion": "The prior channel-loss diagnosis was incorrect. The fixed 0.65 spectral-marker threshold was too high for this AUKEY channel.",
+  "status": "post-hoc development result; requires fresh prospective confirmation",
+  "promoted_receiver": {
+    "profile": "spectral-marker-v2-hp300-threshold055",
+    "threshold": 0.55
+  },
+  "aukey_199_available_threshold_sweep": [
+    {"threshold": 0.65, "exact_expected_count": 103, "too_few": 96, "too_many": 0},
+    {"threshold": 0.625, "exact_expected_count": 104, "too_few": 95, "too_many": 0},
+    {"threshold": 0.61, "exact_expected_count": 194, "too_few": 5, "too_many": 0},
+    {"threshold": 0.60, "exact_expected_count": 195, "too_few": 4, "too_many": 0},
+    {"threshold": 0.59, "exact_expected_count": 196, "too_few": 3, "too_many": 0},
+    {"threshold": 0.575, "exact_expected_count": 197, "too_few": 2, "too_many": 0},
+    {"threshold": 0.55, "exact_expected_count": 199, "too_few": 0, "too_many": 0},
+    {"threshold": 0.50, "exact_expected_count": 196, "too_few": 0, "too_many": 3},
+    {"threshold": 0.45, "exact_expected_count": 139, "too_few": 0, "too_many": 60}
+  ],
+  "prior_real_capture_check_at_055": {
+    "channels": {
+      "clocked_bluetooth_aukey_far_v1": {"captures": 500, "exact_expected_count": 500, "background_windows_with_marker": 0},
+      "clocked_bluetooth_macmic_room2_verified_v1": {"captures": 499, "exact_expected_count": 499, "background_windows_with_marker": 0},
+      "clocked_bluetooth_macmic_room3_verified_v1": {"captures": 499, "exact_expected_count": 499, "background_windows_with_marker": 0},
+      "clocked_macbook_aukey_near_v1": {"captures": 496, "exact_expected_count": 496, "background_windows_with_marker": 0}
+    },
+    "total_captures": 1994,
+    "exact_expected_count": 1994,
+    "pre_message_background_windows": 1994,
+    "background_windows_with_marker": 0,
+    "background_window_seconds": 0.8
+  },
+  "corrected_aukey_decode": {
+    "attempts": 200,
+    "available": 199,
+    "complete_expected_marker_framing": 199,
+    "verified_exact": 190,
+    "rejected": 9,
+    "wrong_accepted": 0,
+    "missing": 1,
+    "verified_delivery_rate": 0.95,
+    "exact_clopper_pearson_95_percent": [0.909972, 0.975766]
+  },
+  "limitations": [
+    "The 0.55 threshold was selected after inspecting the AUKEY corpus and is not a prospective result.",
+    "The background controls are short quiet pre-message windows, not continuous speech, music, motor, or machinery recordings."
+  ]
+}

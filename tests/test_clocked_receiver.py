@@ -28,6 +28,15 @@ def test_spectral_marker_rejects_silence_noise_and_stationary_tones():
         assert receiver.marker_positions(a) == []
 
 
+def test_promoted_marker_threshold_retains_negative_margin():
+    assert receiver.MARKER_THRESHOLD == .55
+    clean = clocked.encode(['SELF', 'GIVE', 'SELF'])
+    assert len(receiver.marker_positions(receiver.preprocess(clean))) == 4
+    # The next lower development threshold began adding peaks in real captures;
+    # keep the promoted setting explicit and versioned.
+    assert receiver.PROFILE.endswith('threshold055')
+
+
 def test_audio_reader_preserves_float_capture_scale(tmp_path):
     a = np.array([-.2, 0., .4, 1.2], dtype=np.float32)
     p = tmp_path/'float.wav'; wavfile.write(p, clocked.SR, a)

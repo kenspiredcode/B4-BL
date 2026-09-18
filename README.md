@@ -176,15 +176,19 @@ rejections, and zero wrong acceptances. The exact 95% interval is 93.65–97.38%
 This clears 90% for that measured condition, not for arbitrary acoustic channels.
 The aggregate is in `experiments/compact-room5-v2-full/summary.json`.
 
-A separate 200-packet AUKEY-microphone/Bluetooth-speaker replication exposed an
-operational channel failure: 94 available recordings contained no complete marker
-pair and one packet was missing. End-to-end verified delivery was 95/200 (47.5%),
-with zero wrong acceptances. Conditional on the 103 recordings with complete
-framing, 95 decoded exactly (92.2%). This does not establish AUKEY performance
-above 90%; it shows that link-health detection is as important as packet decoding.
-The collector now validates each clocked marker count and aborts after a repeated
-failure streak. The aggregate is in
-`experiments/compact-aukey-room6-v2-final199/summary.json`.
+A separate 200-packet AUKEY-microphone/Bluetooth-speaker replication initially
+scored only 95/200 because the marker detector's fixed 0.65 threshold rejected 94
+clearly audible packets whose marker scores clustered near 0.63. A threshold audit
+prompted by human listening disproved the earlier channel-loss diagnosis. The
+versioned 0.55 detector recovers the exact expected marker count in all 199
+available AUKEY recordings and in all 1,994 prior real captures, while finding no
+markers in the corresponding 1,994 pre-message background windows. Re-decoding
+delivers 190/200 packets exactly (95.0%), rejects nine, accepts zero wrong packets,
+and counts one missing capture; the exact 95% delivery interval is 91.00–97.58%.
+Because the threshold was selected after inspecting this corpus, this is a
+development result that needs a fresh prospective confirmation. Arbitrary speech,
+music, and machinery remain untested negative controls. The corrected aggregate
+and audit are in `experiments/compact-aukey-room6-v2-threshold055/`.
 
 Prepare or collect a compact protected-packet corpus with a fresh channel tag:
 
