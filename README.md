@@ -118,7 +118,10 @@ attempt, saves raw capture plus transmitter timing, and can resume after hangs.
 Use `--dry-run` to inspect the corpus without touching audio devices.
 Explicit device selectors now reject unknown/ambiguous names; numeric device IDs
 are supported. The self-test locates a sustained 1 kHz tone instead of assuming
-the loudest captured sound is the test signal.
+the loudest captured sound is the test signal. For clocked formats, a preserved
+raw capture counts as complete on resume even if the legacy trimmer rejected it.
+Unexpected worker exits retain their stderr and stop the run after the configured
+failure streak instead of being mislabeled indefinitely as quiet skips.
 
 ### Real clocked recordings
 

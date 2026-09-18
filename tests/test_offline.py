@@ -283,6 +283,33 @@ def test_compact_packet_capture_plan_is_silent_and_versioned(monkeypatch, capsys
     assert min(map(int, plan['lengths'])) >= 16
 
 
+def test_clocked_resume_uses_preserved_raw_audio(tmp_path, monkeypatch):
+    from src import collect_dataset
+    recordings = tmp_path/'recordings'; recordings.mkdir()
+    attempts = recordings/'attempts.jsonl'
+    row = {'file': 'channel_00000.wav', 'channel': 'channel',
+           'encoding': compact_clocked.PROFILE, 'concepts': ['SYNC'],
+           'prosody': 'neutral', 'returncode': 2}
+    attempts.write_text(json.dumps(row) + '\n')
+    (recordings/'channel_00000.raw.wav').write_bytes(b'preserved')
+    monkeypatch.setattr(collect_dataset, 'REC_DIR', str(recordings))
+    monkeypatch.setattr(collect_dataset, 'MANIFEST', str(recordings/'manifest.jsonl'))
+    assert (('SYNC',), 'neutral', 'channel') in collect_dataset.load_done(
+        'channel', compact_clocked.PROFILE)
+
+
+def test_packet_evaluation_prefers_raw_retry_and_deduplicates(tmp_path):
+    from b4bl.compact_packet_experiment import select_attempts
+    base = {'channel': 'channel', 'encoding': compact_clocked.PROFILE,
+            'concepts': ['SYNC'], 'prosody': 'neutral'}
+    rows = [dict(base, file='old.wav', returncode=1),
+            dict(base, file='retry.wav', returncode=0)]
+    (tmp_path/'retry.raw.wav').write_bytes(b'preserved')
+    selected, source_count = select_attempts(rows, tmp_path, 'channel')
+    assert source_count == 2
+    assert [row['file'] for row in selected] == ['retry.wav']
+
+
 def test_transmitter_spans_match_audio_and_clock():
     audio, spans = clocked.encode(['SELF', 'IT', 'GIVE'], return_spans=True)
     assert len(audio) == clocked.duration_samples(['SELF', 'IT', 'GIVE'])

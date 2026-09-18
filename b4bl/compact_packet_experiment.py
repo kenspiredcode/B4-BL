@@ -17,6 +17,27 @@ import joblib
 from . import clocked_receiver as receiver, compact_clocked
 
 
+def select_attempts(lines, recordings, channel):
+    """Choose one attempt per labeled packet, preferring an available raw retry."""
+    selected = {}
+    source_rows = 0
+    recordings = Path(recordings)
+    for line in lines:
+        row = json.loads(line) if isinstance(line, str) else line
+        if (row.get('channel') != channel or
+                row.get('encoding') != compact_clocked.PROFILE):
+            continue
+        source_rows += 1
+        key = (tuple(row['concepts']), row['prosody'])
+        raw_exists = (recordings/row['file'].replace('.wav', '.raw.wav')).exists()
+        previous = selected.get(key)
+        previous_raw = (previous is not None and
+                        (recordings/previous['file'].replace('.wav', '.raw.wav')).exists())
+        if previous is None or raw_exists or not previous_raw:
+            selected[key] = row
+    return list(selected.values()), source_rows
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--channel', required=True)
@@ -33,12 +54,8 @@ def main():
 
     recordings = Path(args.recordings)
     attempts_path = recordings/'attempts.jsonl'
-    rows = []
-    for line in attempts_path.read_text().splitlines():
-        row = json.loads(line)
-        if (row.get('channel') == args.channel and
-                row.get('encoding') == compact_clocked.PROFILE):
-            rows.append(row)
+    rows, source_rows = select_attempts(
+        attempts_path.read_text().splitlines(), recordings, args.channel)
     if not rows:
         parser.error(f'no {compact_clocked.PROFILE} attempts for channel {args.channel!r}')
 
@@ -90,6 +107,8 @@ def main():
     summary = {
         'profile': compact_clocked.PROFILE,
         'channel': args.channel,
+        'source_attempt_rows': source_rows,
+        'unique_labeled_packets': len(rows),
         'model': str(model_path),
         'model_sha256': hashlib.sha256(model_path.read_bytes()).hexdigest(),
         'top_k': args.top_k,

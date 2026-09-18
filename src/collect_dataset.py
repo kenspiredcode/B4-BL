@@ -91,7 +91,7 @@ def build_compact_packet_set(rng):
 
 
 def load_done(channel, encoding=None):
-    """Set of (concepts-tuple, prosody, channel) already recorded, for resume."""
+    """Set of labeled messages with usable trimmed OR raw audio for resume."""
     done = set()
     if os.path.exists(MANIFEST):
         with open(MANIFEST) as f:
@@ -100,6 +100,20 @@ def load_done(channel, encoding=None):
                     r = json.loads(line)
                     if encoding is None or r.get("encoding") == encoding:
                         done.add((tuple(r["concepts"]), r["prosody"], r["channel"]))
+                except Exception:
+                    pass
+    # Clocked raw audio is the evaluation source of truth. A conservative legacy
+    # trimmer rejection must not replay a packet whose raw capture was preserved.
+    attempts_path = os.path.join(REC_DIR, "attempts.jsonl")
+    if encoding and os.path.exists(attempts_path):
+        with open(attempts_path) as f:
+            for line in f:
+                try:
+                    r = json.loads(line)
+                    raw = os.path.join(REC_DIR, r["file"].replace(".wav", ".raw.wav"))
+                    if (r.get("channel") == channel and r.get("encoding") == encoding
+                            and os.path.exists(raw)):
+                        done.add((tuple(r["concepts"]), r["prosody"], channel))
                 except Exception:
                     pass
     return done
@@ -241,8 +255,8 @@ def main():
     emit = os.path.join(os.path.dirname(__file__), "_emit_one.py")
     emission_timeout = args.latency * 2 + 12   # generous per-emission cap (seconds)
 
-    n_ok = n_skip = n_quiet = n_hang = 0
-    hang_streak = 0
+    n_ok = n_skip = n_hang = n_error = 0
+    failure_streak = 0
     with open(MANIFEST, "a") as mf:
         for i, (msg, pname) in enumerate(pending):
             fn = f"{args.channel}_{next_idx:05d}.wav"
@@ -260,30 +274,38 @@ def main():
             message_timeout = emission_timeout + len(preview)/gen.SR
             try:
                 p = subprocess.run(cmd, env=env, timeout=message_timeout,
-                                   stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+                                   stdout=subprocess.PIPE, stderr=subprocess.PIPE,
+                                   text=True)
                 rc = p.returncode
+                worker_error = (p.stderr or p.stdout or '').strip()[-2000:]
             except subprocess.TimeoutExpired:
                 rc = -1   # hung: subprocess killed by timeout, OS frees audio state
+                worker_error = 'worker timed out'
 
             with open(os.path.join(REC_DIR, "attempts.jsonl"), "a") as attempts:
                 attempts.write(json.dumps({"file": fn, "session_id": session_id,
                                            "encoding": encoding, "channel": args.channel,
                                            "concepts": msg, "prosody": pname, "returncode": rc,
+                                           "worker_error": worker_error if rc not in (0, 2) else "",
                                            "recorded_at": datetime.now(timezone.utc).isoformat()}) + "\n")
             if rc == -1:
                 n_hang += 1
-                hang_streak += 1
-                if hang_streak >= args.max_hang_streak:
-                    print(f"  [abort] {hang_streak} hangs in a row at {i}; channel "
-                          f"likely dropped. Stopping cleanly — fix output & re-run "
-                          f"to resume.", flush=True)
-                    break
-                # brief pause so a wedged CoreAudio/Bluetooth link can settle before
-                # the next attempt — a transient hang often clears on its own, so we
-                # ride it out instead of aborting a whole run over a blip.
+                failure_streak += 1
+            elif rc not in (0, 2):
+                n_error += 1
+                failure_streak += 1
+                detail = worker_error.splitlines()[-1] if worker_error else f'exit {rc}'
+                print(f"  [device error] attempt {i}: {detail}", flush=True)
+            else:
+                failure_streak = 0
+            if failure_streak >= args.max_hang_streak:
+                print(f"  [abort] {failure_streak} audio worker failures in a row at {i}; "
+                      f"channel likely dropped. Reconnect devices and re-run to resume.",
+                      flush=True)
+                break
+            if rc not in (0, 2):
                 time.sleep(args.hang_pause)
                 continue
-            hang_streak = 0
             if rc == 0 and os.path.exists(out):
                 mf.write(json.dumps({"file": fn, "concepts": msg,
                                      "prosody": pname, "channel": args.channel,
@@ -303,9 +325,11 @@ def main():
             else:
                 n_skip += 1
             if (i + 1) % 50 == 0:
-                print(f"  {i+1}/{len(pending)}  ok={n_ok} skip={n_skip} hang={n_hang}",
+                print(f"  {i+1}/{len(pending)}  ok={n_ok} skip={n_skip} "
+                      f"hang={n_hang} error={n_error}",
                       flush=True)
-    print(f"DONE: {n_ok} recorded, {n_skip} no-sync/quiet, {n_hang} hangs. "
+    print(f"DONE: {n_ok} trimmed, {n_skip} raw-only, {n_hang} hangs, "
+          f"{n_error} worker errors. "
           f"manifest -> {MANIFEST}")
 
 
