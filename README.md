@@ -194,6 +194,13 @@ python3 -m b4bl.compact_packet_experiment \
   --output experiments/compact-room4-v2
 ```
 
+Spoken responses are optional application behavior, not a transport handshake.
+`compact_clocked.spoken_reply_concepts(result)` stays silent after success by
+default, returns `SORRY REPEAT` for a packet-like CRC rejection, and ignores short
+or non-packet audio. Pass `confirm_success=True` to request an `ACK`; use
+`encode_spoken_reply` to render it. `python3 src/render_packet_replies.py` writes
+listening samples without opening an audio device.
+
 When room 3 non-holdout recordings are included in training, its reserved
 multi-word compositions score 67/68 (98.5% including one missing capture; 67/67
 available), with no wrong acceptances. Other represented channels remain at

@@ -234,6 +234,31 @@ def test_compact_crc_list_decode_uses_structural_pruning():
     assert result.selected_by_validation
 
 
+def test_compact_spoken_replies_are_optional_and_ignore_nonpackets():
+    frame = protocol.Frame(1, 2, 'MSG_TELL', 3, ['SELF'])
+    accepted = verified_clocked.PacketResult(
+        clocked.DecodeResult(words=compact_clocked.to_concepts(frame), accepted=True,
+                             marker_count=compact_clocked.MIN_PACKET_WORDS + 1),
+        protocol.ParseResult(frame, True, '', True))
+    assert compact_clocked.spoken_reply_concepts(accepted) == []
+    assert compact_clocked.spoken_reply_concepts(
+        accepted, confirm_success=True) == ['ACK']
+    assert compact_clocked.encode_spoken_reply(accepted) is None
+
+    rejected = verified_clocked.PacketResult(
+        clocked.DecodeResult(accepted=True,
+                             marker_count=compact_clocked.MIN_PACKET_WORDS + 1),
+        protocol.ParseResult(None, False, 'CRC mismatch', False))
+    assert compact_clocked.spoken_reply_concepts(rejected) == ['SORRY', 'REPEAT']
+    reply_audio = compact_clocked.encode_spoken_reply(rejected)
+    assert len(clocked.marker_positions(reply_audio)) == 3
+
+    background = verified_clocked.PacketResult(
+        clocked.DecodeResult(accepted=False, marker_count=2, reason='not a packet'),
+        protocol.ParseResult(None, False, 'not a packet', False))
+    assert compact_clocked.spoken_reply_concepts(background) == []
+
+
 def test_silent_capture_plan_never_opens_devices(monkeypatch, capsys):
     from src import collect_dataset
     monkeypatch.setattr(collect_dataset.capture, 'set_channel_profile',

@@ -24,6 +24,10 @@ PROFILE = 'compact-clocked-v2-crc32-base32'
 ADDRESS_SYMBOLS = 1
 SEQUENCE_SYMBOLS = 2
 CRC_SYMBOLS = 7
+MIN_PACKET_WORDS = (len(VERSION) + ADDRESS_SYMBOLS * 2 + 1 +
+                    SEQUENCE_SYMBOLS + 1 + 1 + CRC_SYMBOLS)
+CONFIRM_REPLY = ('ACK',)
+REPEAT_REPLY = ('SORRY', 'REPEAT')
 
 # Wire constants: append-only/versioned if the vocabulary later changes. These
 # are the 32 shortest clocked-v1 concepts available when v2 was defined, after
@@ -98,8 +102,7 @@ def to_concepts(frame):
 
 def parse_concepts(words):
     fail = lambda reason: protocol.ParseResult(None, False, reason, False)
-    minimum = len(VERSION) + ADDRESS_SYMBOLS * 2 + 1 + SEQUENCE_SYMBOLS + 1 + 1 + CRC_SYMBOLS
-    if len(words) < minimum or tuple(words[:len(VERSION)]) != VERSION:
+    if len(words) < MIN_PACKET_WORDS or tuple(words[:len(VERSION)]) != VERSION:
         return fail('not a compact clocked packet v2')
     checksum_index = len(words) - CRC_SYMBOLS - 1
     if words[checksum_index] != 'CKSUM':
@@ -154,3 +157,24 @@ def decode(audio, model, repetition=1, acoustic_decoder=clocked.decode,
         audio, model, repetition=repetition, acoustic_decoder=acoustic_decoder,
         top_k=top_k, beam_width=beam_width, packet_parser=parse_concepts,
         candidate_filter=_candidate_filter)
+
+
+def spoken_reply_concepts(result, confirm_success=False, request_repeat=True):
+    """Suggest an optional audible reply without adding a protocol handshake.
+
+    Successful packets are silent unless the application asks to confirm them.
+    A failed decode prompts for repetition only when enough word markers were
+    received to identify a complete compact-packet attempt. Silence, background
+    audio, and short ordinary utterances therefore do not provoke chatter.
+    """
+    if result.accepted:
+        return list(CONFIRM_REPLY) if confirm_success else []
+    packet_like = result.acoustic.marker_count >= MIN_PACKET_WORDS + 1
+    return list(REPEAT_REPLY) if request_repeat and packet_like else []
+
+
+def encode_spoken_reply(result, prosody=NEUTRAL, confirm_success=False,
+                        request_repeat=True):
+    """Render the suggested reply, or return None when the policy stays silent."""
+    concepts = spoken_reply_concepts(result, confirm_success, request_repeat)
+    return clocked.encode(concepts, prosody) if concepts else None
