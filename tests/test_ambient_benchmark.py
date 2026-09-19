@@ -1,6 +1,6 @@
 import numpy as np
 
-from b4bl import ambient_benchmark
+from b4bl import ambient_benchmark, robust_features
 
 
 def test_source_split_is_deterministic_and_source_level():
@@ -25,3 +25,12 @@ def test_clip_starts_stay_inside_source():
     assert len(starts) == 5
     assert all(0 <= start <= 88 for start in starts)
     assert starts == sorted(starts)
+
+
+def test_robust_feature_profiles_are_finite_and_fixed_length():
+    rng = np.random.default_rng(8)
+    for profile in robust_features.PROFILES:
+        short = robust_features.extract(rng.normal(0, .1, 8820), profile)
+        long = robust_features.extract(rng.normal(0, .1, 22050), profile)
+        assert short.shape == long.shape
+        assert np.isfinite(short).all()

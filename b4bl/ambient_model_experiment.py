@@ -16,12 +16,13 @@ import joblib
 import numpy as np
 from sklearn.ensemble import RandomForestClassifier
 
-from . import ambient_benchmark, clocked, clocked_receiver, media_audio, prosody
+from . import (ambient_benchmark, clocked, clocked_receiver, media_audio,
+               prosody, robust_features)
 from .compact_packet_experiment import select_attempts
 from .real_clocked_experiment import select_rows, training_windows
 
 
-def synthetic_windows(rng, min_periodicity):
+def synthetic_windows(rng, min_periodicity, feature_function=None):
     X, y = [], []
     names = sorted({name for sequence in clocked.vocabulary().values()
                     for name in sequence})
@@ -33,15 +34,16 @@ def synthetic_windows(rng, min_periodicity):
             audio = clocked.body(name, expression)
             audio = clocked_receiver.preprocess(
                 audio + rng.normal(0, .005, len(audio)))
-            X.append(clocked.window_features(audio, min_periodicity))
+            feature = feature_function or (
+                lambda window: clocked.window_features(window, min_periodicity))
+            X.append(feature(audio))
             y.append(name)
             if index % 3 == 0:
                 first, second = rng.choice(shorts, size=2)
                 bad = np.concatenate([
                     clocked.body(first, expression), np.zeros(clocked.GUARD),
                     clocked.body(second, expression)])
-                X.append(clocked.window_features(
-                    clocked_receiver.preprocess(bad), min_periodicity))
+                X.append(feature(clocked_receiver.preprocess(bad)))
                 y.append("__invalid__")
     return X, y
 
@@ -80,6 +82,8 @@ def main():
     parser.add_argument("--ambient-weight", type=float, default=1.0,
                         help="classifier sample weight for ambient-augmented windows")
     parser.add_argument("--min-periodicity", type=float, default=.5)
+    parser.add_argument("--frontend", choices=("legacy",) + robust_features.PROFILES,
+                        default="legacy")
     args = parser.parse_args()
     if not 0 <= args.min_periodicity < 1:
         parser.error("--min-periodicity must be in [0, 1)")
@@ -96,6 +100,8 @@ def main():
     if not sources:
         raise SystemExit("no development ambient sources")
 
+    feature_function = (None if args.frontend == "legacy" else
+                        lambda window: robust_features.extract(window, args.frontend))
     X, y, weights = [], [], []
     stats = Counter(attempted=len(rows))
     aligned = []
@@ -105,7 +111,8 @@ def main():
             stats["missing"] += 1
             continue
         audio = clocked_receiver.read_audio(path)
-        windows = training_windows(audio, row["concepts"], args.min_periodicity)
+        windows = training_windows(audio, row["concepts"], args.min_periodicity,
+                                   feature_function)
         if windows is None:
             stats["alignment_rejected"] += 1
             continue
@@ -131,7 +138,8 @@ def main():
         length = min(len(audio), len(ambient))
         snr = float(rng.uniform(args.snr_low, args.snr_high))
         mixed, info = ambient_benchmark.mix_at_snr(audio[:length], ambient[:length], snr)
-        windows = training_windows(mixed, row["concepts"], args.min_periodicity)
+        windows = training_windows(mixed, row["concepts"], args.min_periodicity,
+                                   feature_function)
         accepted = windows is not None
         if accepted:
             xx, yy = windows
@@ -149,7 +157,7 @@ def main():
             print(f"ambient augmentation {aug_index + 1}/{len(selected)}", flush=True)
 
     synth_X, synth_y = synthetic_windows(np.random.default_rng(170926),
-                                         args.min_periodicity)
+                                         args.min_periodicity, feature_function)
     X.extend(synth_X); y.extend(synth_y); weights.extend([1.0] * len(synth_y))
     stats["synthetic_windows"] = len(synth_y)
     model = RandomForestClassifier(n_estimators=200, max_depth=22, n_jobs=-1,
@@ -158,12 +166,15 @@ def main():
     model.n_jobs = 1
     bundle = {
         "profile": clocked.PROFILE,
-        "features": f"{clocked.CONFIDENT_FEATURE_PREFIX}{args.min_periodicity:g}",
+        "features": (f"{clocked.CONFIDENT_FEATURE_PREFIX}{args.min_periodicity:g}"
+                     if args.frontend == "legacy" else
+                     f"{clocked.ROBUST_FEATURE_PREFIX}{args.frontend}"),
         "min_periodicity": args.min_periodicity,
         "frontend": clocked_receiver.PROFILE,
         "model": model,
         "seed": 170926,
         "ambient_profile": ambient_benchmark.PROFILE,
+        "robust_frontend": args.frontend,
         "ambient_split": "development",
         "ambient_snr_db": [args.snr_low, args.snr_high],
         "ambient_sample_weight": args.ambient_weight,
@@ -179,6 +190,7 @@ def main():
         "model_sha256": hashlib.sha256(model_path.read_bytes()).hexdigest(),
         "ambient_source_count": len(sources),
         "ambient_source_split": "development",
+        "frontend": args.frontend,
         "snr_db_range": [args.snr_low, args.snr_high],
         "ambient_sample_weight": args.ambient_weight,
         "stats": dict(stats), "training_windows": len(y),

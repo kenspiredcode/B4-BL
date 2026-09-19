@@ -49,6 +49,8 @@ def main():
     parser.add_argument("--confirm-success", action="store_true")
     parser.add_argument("--no-repeat", action="store_true")
     parser.add_argument("--min-marker-snr-db", type=float, default=3.0)
+    parser.add_argument("--marker-threshold", type=float,
+                        default=clocked_receiver.MARKER_THRESHOLD)
     parser.add_argument("--render-replies", action="store_true")
     args = parser.parse_args()
     if args.chunk_ms <= 0:
@@ -66,7 +68,8 @@ def main():
         analysis_block_ms=args.chunk_ms,
         confirm_success=args.confirm_success,
         request_repeat=not args.no_repeat,
-        min_marker_snr_db=args.min_marker_snr_db)
+        min_marker_snr_db=args.min_marker_snr_db,
+        marker_threshold=args.marker_threshold)
     chunk_samples = max(1, round(args.chunk_ms / 1000 * clocked.SR))
 
     recordings = Path(args.recordings)

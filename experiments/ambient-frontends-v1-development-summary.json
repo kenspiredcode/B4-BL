@@ -1,0 +1,41 @@
+{
+  "profile": "ambient-frontends-v1-development-comparison",
+  "status": "lexical_winner_found_marker_localization_remains",
+  "benchmark_design": {
+    "partition": "development",
+    "cases": 20,
+    "snr_db": [30, 24, 18, 12],
+    "design": "same packet, ambient source, and start offset repeated at every SNR",
+    "validation_sources_opened": false
+  },
+  "factorial_results": {
+    "legacy": {"exact": [9, 6, 2, 0], "total": [17, 80], "wrong_accepts": 0},
+    "ridge": {"exact": [8, 8, 5, 1], "total": [22, 80], "wrong_accepts": 0},
+    "spectral_subtraction": {"exact": [7, 5, 3, 0], "total": [15, 80], "wrong_accepts": 0},
+    "multipitch_v1": {"exact": [9, 9, 9, 4], "total": [31, 80], "wrong_accepts": 0},
+    "multipitch_v2_threshold040": {"exact": [12, 12, 11, 7], "total": [42, 80], "wrong_accepts": 0}
+  },
+  "multipitch_v2": {
+    "model_sha256": "d0f0d8170229da869332ae0754e05e488602d13f2fac6cd2ef6ae80a974ad551",
+    "training_windows": 40335,
+    "ambient_augmented_recordings": 1200,
+    "ambient_training_snr_db": [12, 32],
+    "former_music_validation_regression": {"exact": [189, 200], "wrong_accepts": 0},
+    "clean_room5_prefix_regression": {"exact": [100, 100], "wrong_accepts": 0}
+  },
+  "oracle_marker_diagnostic": {
+    "exact": [78, 80],
+    "by_snr": {"30": [20, 20], "24": [20, 20], "18": [19, 20], "12": [19, 20]},
+    "wrong_accepts": 0,
+    "scope": "development diagnostic using marker positions from each unmixed packet; not deployable"
+  },
+  "threshold040_negative_pilot": {
+    "audio_hours": 1.1647504220206601,
+    "accepted_false_packets": 0,
+    "spoken_repeats": 0,
+    "incomplete_events": 163,
+    "rejected_nonpacket_events": 55,
+    "isolated_marker_events": 74
+  },
+  "decision": "Keep multipitch lexical features. Do not promote threshold .40. Develop interference-tolerant marker localization, freeze it on development, then evaluate the sealed ambient validation sources once."
+}

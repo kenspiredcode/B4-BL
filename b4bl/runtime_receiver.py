@@ -42,6 +42,7 @@ class RuntimeConfig:
     noise_time_constant_seconds: float = 4.0
     noise_update_gate: float = 2.5
     min_marker_snr_db: Optional[float] = 3.0
+    marker_threshold: float = clocked_receiver.MARKER_THRESHOLD
     target_marker_rms: float = 0.031
     min_gain: float = 0.25
     max_gain: float = 8.0
@@ -62,6 +63,8 @@ class RuntimeConfig:
             raise ValueError("invalid list-decoder bounds")
         if not 0 < self.min_gain <= self.max_gain:
             raise ValueError("gain bounds must be positive and ordered")
+        if not 0 < self.marker_threshold <= 1:
+            raise ValueError("marker threshold must be in (0, 1]")
 
 
 @dataclass
@@ -235,7 +238,8 @@ class StreamingPacketReceiver:
         if len(window) < len(clocked.MARKER):
             return []
         processed = clocked_receiver.preprocess(window)
-        found = clocked_receiver.marker_positions(processed)
+        found = clocked_receiver.marker_positions(
+            processed, threshold=self.config.marker_threshold)
         cutoff = self._total - round(self.config.marker_commit_seconds * clocked.SR)
         edge = scan_start + round(self.config.marker_edge_guard_seconds * clocked.SR)
         spacing = round(.20 * clocked.SR)

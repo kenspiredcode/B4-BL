@@ -1,0 +1,70 @@
+{
+  "profile": "ambient-benchmark-v1",
+  "mode": "controlled-snr-mixtures",
+  "split": "development",
+  "packet_channel": "compact_room5_v2",
+  "model": "experiments/ambient-frontend-multipitch-v1-development/real_classifier.joblib",
+  "model_sha256": "1d518ad3d1842792c769d7917b2598e85ad013d30553d1f8e44c108a60e2ff73",
+  "runtime_config": {
+    "sample_rate": 44100,
+    "analysis_block_ms": 100.0,
+    "scan_window_seconds": 1.2,
+    "marker_commit_seconds": 0.17,
+    "marker_edge_guard_seconds": 0.06,
+    "interval_tolerance_seconds": 0.1,
+    "end_timeout_seconds": 2.3,
+    "pre_roll_seconds": 1.0,
+    "post_roll_seconds": 0.04,
+    "max_packet_seconds": 60.0,
+    "noise_time_constant_seconds": 4.0,
+    "noise_update_gate": 2.5,
+    "min_marker_snr_db": 3.0,
+    "target_marker_rms": 0.031,
+    "min_gain": 0.25,
+    "max_gain": 8.0,
+    "marker_peak_headroom": 0.75,
+    "top_k": 6,
+    "beam_width": 50000,
+    "confirm_success": false,
+    "request_repeat": true
+  },
+  "seed": 20260918,
+  "snrs_db": [
+    30.0,
+    24.0,
+    18.0,
+    12.0
+  ],
+  "counts": {
+    "mixtures": 80,
+    "source_attempt_rows": 500,
+    "verified_exact": 37,
+    "accepted_wrong": 0,
+    "no_exact_delivery": 43
+  },
+  "verified_delivery_rate": 0.4625,
+  "accepted_wrong_rate": 0.0,
+  "by_snr": {
+    "30.0": {
+      "attempts": 20,
+      "verified_exact": 10,
+      "accepted_wrong": 0
+    },
+    "24.0": {
+      "attempts": 20,
+      "verified_exact": 8,
+      "accepted_wrong": 0
+    },
+    "18.0": {
+      "attempts": 20,
+      "verified_exact": 9,
+      "accepted_wrong": 0
+    },
+    "12.0": {
+      "attempts": 20,
+      "verified_exact": 10,
+      "accepted_wrong": 0
+    }
+  },
+  "caveat": "Digital mixtures test interference robustness; they do not reproduce room transfer, speaker nonlinearities, or microphone AGC."
+}

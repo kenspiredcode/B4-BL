@@ -33,6 +33,7 @@ PROFILE = 'clocked-v1-fixed-300ms'
 FEATURE_PROFILE = 'pitch-envelope-v1'
 CONFIDENT_FEATURE_PREFIX = 'pitch-envelope-periodicity-v2-'
 LEGACY_CONFIDENT_FEATURE_PROFILE = 'pitch-envelope-periodicity05-v2'
+ROBUST_FEATURE_PREFIX = 'robust-clock-features-v1:'
 
 
 def window_features(audio, min_periodicity=0.0):
@@ -43,6 +44,17 @@ def window_features(audio, min_periodicity=0.0):
     rms = np.asarray([np.sqrt(np.mean(c*c)) if len(c) else 0 for c in chunks])
     rms /= max(float(rms.max()), 1e-9)
     return np.concatenate([features.extract(audio, min_periodicity=min_periodicity), rms]).astype(np.float32)
+
+
+def model_window_features(audio, model):
+    """Dispatch the model-declared feature frontend for one clock window."""
+    profile = model.get('features', '')
+    if profile.startswith(ROBUST_FEATURE_PREFIX):
+        from . import robust_features
+        return robust_features.extract(audio, profile[len(ROBUST_FEATURE_PREFIX):])
+    return window_features(
+        audio, min_periodicity=float(model.get(
+            'min_periodicity', .5 if profile == LEGACY_CONFIDENT_FEATURE_PROFILE else 0.0)))
 
 
 def vocabulary():
@@ -179,7 +191,8 @@ def decode(audio, model, repetition=1, min_margin=.5, marker_detector=None,
     feature_profile = model.get('features', '')
     if (model.get('profile') != PROFILE or
             (feature_profile not in (FEATURE_PROFILE, LEGACY_CONFIDENT_FEATURE_PROFILE)
-             and not feature_profile.startswith(CONFIDENT_FEATURE_PREFIX))):
+             and not feature_profile.startswith(CONFIDENT_FEATURE_PREFIX)
+             and not feature_profile.startswith(ROBUST_FEATURE_PREFIX))):
         raise ValueError('requires a clocked-v1 model, not the historical segment model')
     a = np.asarray(audio, dtype=np.float32)
     starts = (marker_detector or marker_positions)(a)
@@ -218,9 +231,7 @@ def decode(audio, model, repetition=1, min_margin=.5, marker_detector=None,
                         result.reason = 'truncated phoneme'
                         return result
                     keys[key] = len(windows)
-                    windows.append(window_features(
-                        a[lo:hi], min_periodicity=float(model.get(
-                            'min_periodicity', .5 if feature_profile == LEGACY_CONFIDENT_FEATURE_PROFILE else 0.0))))
+                    windows.append(model_window_features(a[lo:hi], model))
                 pos += width
         regions.append(candidates)
     X = np.asarray(windows)

@@ -53,7 +53,7 @@ def augment_channel(audio, rng):
     return (output + noise).astype(np.float32)
 
 
-def training_windows(audio, words, min_periodicity=0.0):
+def training_windows(audio, words, min_periodicity=0.0, feature_function=None):
     """Labels are allowed ONLY during training alignment, never inference.
 
     Check count AND every word's expected duration before extracting labels.
@@ -81,10 +81,12 @@ def training_windows(audio, words, min_periodicity=0.0):
             hi = lo+round((width*clocked.TICK-clocked.GUARD)*scale)
             if hi > len(audio):
                 return None
-            X.append(clocked.window_features(audio[lo:hi], min_periodicity)); y.append(name)
+            feature = feature_function or (
+                lambda window: clocked.window_features(window, min_periodicity))
+            X.append(feature(audio[lo:hi])); y.append(name)
             if width == 1 and j+1 < len(seq) and clocked.ticks(seq[j+1]) == 1:
                 end = lo+round((2*clocked.TICK-clocked.GUARD)*scale)
-                X.append(clocked.window_features(audio[lo:end], min_periodicity)); y.append('__invalid__')
+                X.append(feature(audio[lo:end])); y.append('__invalid__')
             pos += width
     return X, y
 

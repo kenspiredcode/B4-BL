@@ -37,6 +37,7 @@ def load_model(path):
 def runtime_config(args):
     return RuntimeConfig(
         analysis_block_ms=args.chunk_ms, min_marker_snr_db=args.min_marker_snr_db,
+        marker_threshold=args.marker_threshold,
         confirm_success=False, request_repeat=True)
 
 
@@ -164,16 +165,26 @@ def mixed(args):
     snrs = [float(x) for x in args.snrs.split(",")]
     rng = np.random.default_rng(args.seed)
     plan = []
-    for index in range(args.mixtures):
-        packet_row = rows[index % len(rows)]
-        ambient_path = ambient_paths[index % len(ambient_paths)]
+    if args.factorial and args.mixtures % len(snrs):
+        raise SystemExit("--factorial requires --mixtures divisible by the SNR count")
+    case_count = args.mixtures // len(snrs) if args.factorial else args.mixtures
+    cases = []
+    for case_index in range(case_count):
+        packet_row = rows[case_index % len(rows)]
+        ambient_path = ambient_paths[case_index % len(ambient_paths)]
         metadata = media_audio.probe(ambient_path)
         packet_path = recordings / packet_row["file"].replace(".wav", ".raw.wav")
         packet = clocked_receiver.read_audio(packet_path)
         maximum = max(0.0, metadata["duration_seconds"] - len(packet) / clocked.SR - 1)
         start = float(rng.uniform(min(5.0, maximum), maximum)) if maximum else 0.0
-        snr = snrs[index % len(snrs)]
-        plan.append((packet_row, packet, ambient_path, start, snr))
+        cases.append((packet_row, packet, ambient_path, start))
+    if args.factorial:
+        for packet_row, packet, ambient_path, start in cases:
+            for snr in snrs:
+                plan.append((packet_row, packet, ambient_path, start, snr))
+    else:
+        for index, case in enumerate(cases):
+            plan.append((*case, snrs[index % len(snrs)]))
     counts = Counter(mixtures=len(plan), source_attempt_rows=source_rows)
     by_snr = defaultdict(Counter)
     with (output / "results.jsonl").open("w") as log:
@@ -216,6 +227,7 @@ def mixed(args):
         "model": str(model_path),
         "model_sha256": hashlib.sha256(model_path.read_bytes()).hexdigest(),
         "runtime_config": config.__dict__, "seed": args.seed, "snrs_db": snrs,
+        "design": "same-case-factorial" if args.factorial else "rotating-snr",
         "counts": dict(counts),
         "verified_delivery_rate": counts["verified_exact"] / len(plan),
         "accepted_wrong_rate": counts["accepted_wrong"] / len(plan),
@@ -245,6 +257,7 @@ def main():
         p.add_argument("--split", choices=["development", "validation"], default="development")
         p.add_argument("--chunk-ms", type=float, default=100.0)
         p.add_argument("--min-marker-snr-db", type=float, default=3.0)
+        p.add_argument("--marker-threshold", type=float, default=.55)
         p.set_defaults(function=function)
     p = sub.choices["negative"]
     p.add_argument("--max-sources", type=int)
@@ -255,6 +268,8 @@ def main():
     p.add_argument("--snrs", default="12,8,4,0,-4")
     p.add_argument("--seed", type=int, default=20260918)
     p.add_argument("--context-seconds", type=float, default=3.0)
+    p.add_argument("--factorial", action="store_true",
+                   help="replay every packet/ambient/start case at every SNR")
     args = parser.parse_args()
     args.function(args)
 

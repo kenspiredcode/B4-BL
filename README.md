@@ -339,6 +339,42 @@ and the two-marker presence gate fixed during that comparison. Freeze the winnin
 frontend and model before running mixtures or continuous negative replay on the
 16 validation sources.
 
+That comparison is now complete. All candidates used the same real, synthetic,
+prior-music, and development-ambient training foundation, followed by the same
+20 packet/ambient/start cases at each of +30, +24, +18, and +12 dB. The corrected
+factorial results were:
+
+| Frontend | +30 | +24 | +18 | +12 | Total |
+|---|---:|---:|---:|---:|---:|
+| Legacy pitch features | 9/20 | 6/20 | 2/20 | 0/20 | 17/80 |
+| Constrained spectral ridge | 8/20 | 8/20 | 5/20 | 1/20 | 22/80 |
+| In-window spectral subtraction | 7/20 | 5/20 | 3/20 | 0/20 | 15/80 |
+| Multi-candidate time-frequency | 9/20 | 9/20 | 9/20 | 4/20 | 31/80 |
+
+The multi-candidate frontend is the lexical winner. Scaling it from 600 to 1,200
+ambient-augmented recordings adds little by itself. Lowering the marker detector
+threshold from .55 to .40 raises end-to-end delivery to 42/80, but creates much
+more internal candidate churn. A 1.16-hour development negative pilot at .40 had
+zero accepted false packets and zero spoken repeats, while producing 163
+incomplete, 55 rejected-nonpacket, and 74 isolated-marker events. Do not promote
+the lower threshold without a better marker tracker and a full negative replay.
+
+An oracle-marker diagnostic supplies marker positions measured from each unmixed
+packet while leaving the mixed waveform and lexical decoder unchanged. The scaled
+multi-candidate model then delivers 78/80: 20/20 at +30 and +24 dB, 19/20 at +18
+and +12 dB, and zero wrong accepts. This is not a deployable result; it proves the
+lexical frontend now exceeds 90% when framing is correct. On recorded regressions,
+the candidate delivers 189/200 (94.5%) on the prior low-music validation corpus
+and 100/100 on the clean room-5 prefix, with zero wrong accepts.
+
+The next blocker is marker localization in interference. Preserve the winning
+multi-candidate lexical frontend and compare marker detectors using the same
+development mixtures: whitened chirp correlation, a clock-constrained marker
+lattice that tolerates missing individual markers, and joint marker/word dynamic
+programming. The existing two-marker wake policy and CRC remain the safety gates.
+Do not open the 16 ambient validation sources until a marker configuration and
+model are frozen.
+
 Create the source manifest and acoustic characterization:
 
 ```bash

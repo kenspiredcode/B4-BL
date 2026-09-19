@@ -101,3 +101,9 @@ def test_noise_floor_can_recover_after_initial_digital_silence():
     before = tracker.rms
     tracker.observe(np.full(4410, .2))
     assert tracker.rms == before
+
+
+def test_runtime_rejects_invalid_marker_threshold():
+    import pytest
+    with pytest.raises(ValueError):
+        RuntimeConfig(marker_threshold=0)
