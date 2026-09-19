@@ -51,6 +51,7 @@ class RuntimeConfig:
     beam_width: int = 50000
     confirm_success: bool = False
     request_repeat: bool = True
+    require_sync_start: bool = True
 
     def __post_init__(self):
         if self.sample_rate != clocked.SR:
@@ -169,6 +170,8 @@ class StreamingPacketReceiver:
         word_ticks = [sum(map(clocked.ticks, seq)) for seq in vocab.values()]
         self._min_interval = clocked.PREFIX + min(word_ticks) * clocked.TICK
         self._max_interval = clocked.PREFIX + max(word_ticks) * clocked.TICK
+        self._sync_interval = (clocked.PREFIX +
+                               sum(map(clocked.ticks, vocab['SYNC'])) * clocked.TICK)
         self._block = max(1, round(self.config.analysis_block_ms / 1000 * clocked.SR))
         self._buffer = np.zeros(0, dtype=np.float32)
         self._buffer_start = 0
@@ -262,6 +265,14 @@ class StreamingPacketReceiver:
 
         interval = marker - self._markers[-1]
         tolerance = round(self.config.interval_tolerance_seconds * clocked.SR)
+        # Compact packets always begin with SYNC. An isolated ambient chirp just
+        # before a packet must not pair with its first real marker and shift the
+        # entire clock sequence. Roll the candidate forward silently until the
+        # first interval has the known SYNC duration.
+        if (self._state == "candidate" and self.config.require_sync_start and
+                abs(interval - self._sync_interval) > tolerance):
+            self._begin_candidate(marker)
+            return []
         if interval < self._min_interval - tolerance:
             return []
         if interval > self._max_interval + tolerance:

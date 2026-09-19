@@ -1,0 +1,49 @@
+{
+  "profile": "ambient-multipitch-v2-prospective-validation-freeze",
+  "frozen_before_validation": true,
+  "ambient_validation_sources_opened": false,
+  "model": "experiments/ambient-frontend-multipitch-v2-development/real_classifier.joblib",
+  "model_sha256": "d0f0d8170229da869332ae0754e05e488602d13f2fac6cd2ef6ae80a974ad551",
+  "runtime": {
+    "lexical_frontend": "multipitch",
+    "marker_profile": "spectral-marker-v2-hp300-threshold055",
+    "marker_threshold": 0.55,
+    "marker_snr_gate": null,
+    "require_sync_start": true,
+    "top_k": 6,
+    "beam_width": 50000
+  },
+  "positive_validation": {
+    "ambient_split": "validation",
+    "packet_channel": "compact_room5_v2",
+    "packet_offset": 100,
+    "cases": 32,
+    "snr_db": [30, 24, 18, 12],
+    "attempts": 128,
+    "design": "same packet, ambient source, and start repeated at every SNR; each of 16 ambient sources appears twice",
+    "primary_endpoint": "verified exact delivery pooled over +30 and +24 dB",
+    "primary_success_rule": "delivery at least 90 percent and zero accepted-wrong packets",
+    "secondary_endpoints": [
+      "verified exact delivery at +18 dB",
+      "verified exact delivery at +12 dB",
+      "all-SNR delivery",
+      "accepted-wrong packets at every SNR"
+    ]
+  },
+  "negative_validation": {
+    "ambient_split": "validation",
+    "sources": 16,
+    "success_rule": "zero accepted false packets and zero spoken repeats",
+    "report": ["audio hours", "isolated markers", "incomplete events", "rejected events", "processing realtime factor"]
+  },
+  "development_evidence": {
+    "factorial_200_exact_by_snr": {"30": [49, 50], "24": [48, 50], "18": [41, 50], "12": [26, 50]},
+    "factorial_200_wrong_accepts": 0,
+    "former_music_regression": [193, 200],
+    "clean_room5_prefix_regression": [100, 100],
+    "continuous_negative_hours": 10.479447782816832,
+    "continuous_negative_false_accepts": 0,
+    "continuous_negative_spoken_repeats": 0
+  },
+  "policy": "Run the declared validation once. Do not tune this model or runtime configuration from validation results."
+}

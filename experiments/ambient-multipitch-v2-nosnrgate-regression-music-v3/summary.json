@@ -1,0 +1,79 @@
+{
+  "profile": "streaming-runtime-v1",
+  "channel": "compact_aukey_room6_music_validation_v3",
+  "source_attempt_rows": 200,
+  "model": "experiments/ambient-frontend-multipitch-v2-development/real_classifier.joblib",
+  "model_sha256": "d0f0d8170229da869332ae0754e05e488602d13f2fac6cd2ef6ae80a974ad551",
+  "config": {
+    "sample_rate": 44100,
+    "analysis_block_ms": 100.0,
+    "scan_window_seconds": 1.2,
+    "marker_commit_seconds": 0.17,
+    "marker_edge_guard_seconds": 0.06,
+    "interval_tolerance_seconds": 0.1,
+    "end_timeout_seconds": 2.3,
+    "pre_roll_seconds": 1.0,
+    "post_roll_seconds": 0.04,
+    "max_packet_seconds": 60.0,
+    "noise_time_constant_seconds": 4.0,
+    "noise_update_gate": 2.5,
+    "min_marker_snr_db": null,
+    "marker_threshold": 0.55,
+    "target_marker_rms": 0.031,
+    "min_gain": 0.25,
+    "max_gain": 8.0,
+    "marker_peak_headroom": 0.75,
+    "top_k": 6,
+    "beam_width": 50000,
+    "confirm_success": false,
+    "request_repeat": false,
+    "require_sync_start": true
+  },
+  "counts": {
+    "files": 200,
+    "available": 200,
+    "accepted_events": 193,
+    "rejected_events": 4,
+    "incomplete_events": 3,
+    "false_trigger_events": 0,
+    "verified_exact": 193,
+    "accepted_wrong": 0,
+    "no_exact_delivery": 7
+  },
+  "audio_seconds": 3852.0799999999986,
+  "wall_seconds": 181.68438812799988,
+  "processing_realtime_factor": 0.047165268667317385,
+  "decision_latency_seconds": {
+    "mean": 0.17729421768707482,
+    "max": 2.2699319727891156,
+    "by_kind": {
+      "accepted": {
+        "count": 193,
+        "mean": 0.10339713087307462,
+        "max": 0.14829931972789115
+      },
+      "incomplete": {
+        "count": 3,
+        "mean": 2.222426303854875,
+        "max": 2.2699319727891156
+      },
+      "rejected": {
+        "count": 4,
+        "mean": 2.2089795918367345,
+        "max": 2.23
+      }
+    }
+  },
+  "decode_processing_seconds": {
+    "mean": 0.12687675058500048,
+    "max": 0.35307254099998886
+  },
+  "notes": [
+    "Decision latency is audio-time from the closing marker through the chunked detector.",
+    "Processing time is measured on this computer and is not a robot-hardware benchmark.",
+    "False-trigger rates require long representative ambient recordings, not packet corpora.",
+    "Runtime settings tuned on a corpus are development results, not a fresh validation on that corpus."
+  ],
+  "verified_delivery_rate": 0.965,
+  "accepted_wrong_rate": 0.0
+}

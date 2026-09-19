@@ -36,7 +36,9 @@ def load_model(path):
 
 def runtime_config(args):
     return RuntimeConfig(
-        analysis_block_ms=args.chunk_ms, min_marker_snr_db=args.min_marker_snr_db,
+        analysis_block_ms=args.chunk_ms,
+        min_marker_snr_db=(None if args.no_marker_snr_gate else
+                           args.min_marker_snr_db),
         marker_threshold=args.marker_threshold,
         confirm_success=False, request_repeat=True)
 
@@ -160,6 +162,8 @@ def mixed(args):
     rows, source_rows = select_attempts(
         (recordings / "attempts.jsonl").read_text().splitlines(), recordings, args.channel)
     rows = [r for r in rows if (recordings / r["file"].replace(".wav", ".raw.wav")).exists()]
+    if args.packet_offset:
+        rows = rows[args.packet_offset:] + rows[:args.packet_offset]
     if not rows:
         raise SystemExit(f"no available packet recordings for channel {args.channel!r}")
     snrs = [float(x) for x in args.snrs.split(",")]
@@ -224,6 +228,7 @@ def mixed(args):
     summary = {
         "profile": benchmark.PROFILE, "mode": "controlled-snr-mixtures",
         "split": args.split, "packet_channel": args.channel,
+        "packet_offset": args.packet_offset,
         "model": str(model_path),
         "model_sha256": hashlib.sha256(model_path.read_bytes()).hexdigest(),
         "runtime_config": config.__dict__, "seed": args.seed, "snrs_db": snrs,
@@ -257,6 +262,8 @@ def main():
         p.add_argument("--split", choices=["development", "validation"], default="development")
         p.add_argument("--chunk-ms", type=float, default=100.0)
         p.add_argument("--min-marker-snr-db", type=float, default=3.0)
+        p.add_argument("--no-marker-snr-gate", action="store_true",
+                       help="rely on normalized marker shape, SYNC cadence, and CRC")
         p.add_argument("--marker-threshold", type=float, default=.55)
         p.set_defaults(function=function)
     p = sub.choices["negative"]
@@ -268,6 +275,8 @@ def main():
     p.add_argument("--snrs", default="12,8,4,0,-4")
     p.add_argument("--seed", type=int, default=20260918)
     p.add_argument("--context-seconds", type=float, default=3.0)
+    p.add_argument("--packet-offset", type=int, default=0,
+                   help="rotate packet rows so validation can exclude development cases")
     p.add_argument("--factorial", action="store_true",
                    help="replay every packet/ambient/start case at every SNR")
     args = parser.parse_args()

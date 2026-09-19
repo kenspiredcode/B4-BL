@@ -1,0 +1,33 @@
+{
+  "profile": "ambient-oracle-marker-diagnostic-v1",
+  "development_only": true,
+  "model": "multipitch-v2",
+  "counts": {
+    "attempts": 200,
+    "exact": 175,
+    "wrong": 0
+  },
+  "by_snr": {
+    "30.0": {
+      "attempts": 50,
+      "exact": 50,
+      "wrong": 0
+    },
+    "24.0": {
+      "attempts": 50,
+      "exact": 50,
+      "wrong": 0
+    },
+    "18.0": {
+      "attempts": 50,
+      "exact": 45,
+      "wrong": 0
+    },
+    "12.0": {
+      "attempts": 50,
+      "exact": 30,
+      "wrong": 0
+    }
+  },
+  "interpretation": "Uses marker positions measured from the unmixed packet; isolates lexical decoding from mixed-audio marker detection."
+}

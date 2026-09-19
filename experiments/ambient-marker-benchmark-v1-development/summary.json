@@ -1,0 +1,175 @@
+{
+  "profile": "marker-development-benchmark-v1",
+  "cases": 20,
+  "snrs_db": [
+    30.0,
+    24.0,
+    18.0,
+    12.0
+  ],
+  "totals": {
+    "spectral055": {
+      "expected": 1484,
+      "hits": 1484,
+      "extras": 4,
+      "exact_sequences": 76
+    },
+    "whitened030": {
+      "expected": 1484,
+      "hits": 1484,
+      "extras": 4071,
+      "exact_sequences": 0
+    },
+    "whitened025": {
+      "expected": 1484,
+      "hits": 1484,
+      "extras": 4071,
+      "exact_sequences": 0
+    },
+    "lattice020": {
+      "expected": 1484,
+      "hits": 962,
+      "extras": 2388,
+      "exact_sequences": 0
+    },
+    "lattice015": {
+      "expected": 1484,
+      "hits": 962,
+      "extras": 2388,
+      "exact_sequences": 0
+    }
+  },
+  "by_snr": {
+    "spectral055": {
+      "30.0": {
+        "expected": 371,
+        "hits": 371,
+        "extras": 0,
+        "exact_sequences": 20
+      },
+      "24.0": {
+        "expected": 371,
+        "hits": 371,
+        "extras": 1,
+        "exact_sequences": 19
+      },
+      "18.0": {
+        "expected": 371,
+        "hits": 371,
+        "extras": 1,
+        "exact_sequences": 19
+      },
+      "12.0": {
+        "expected": 371,
+        "hits": 371,
+        "extras": 2,
+        "exact_sequences": 18
+      }
+    },
+    "whitened030": {
+      "30.0": {
+        "expected": 371,
+        "hits": 371,
+        "extras": 1009,
+        "exact_sequences": 0
+      },
+      "24.0": {
+        "expected": 371,
+        "hits": 371,
+        "extras": 1020,
+        "exact_sequences": 0
+      },
+      "18.0": {
+        "expected": 371,
+        "hits": 371,
+        "extras": 1018,
+        "exact_sequences": 0
+      },
+      "12.0": {
+        "expected": 371,
+        "hits": 371,
+        "extras": 1024,
+        "exact_sequences": 0
+      }
+    },
+    "whitened025": {
+      "30.0": {
+        "expected": 371,
+        "hits": 371,
+        "extras": 1009,
+        "exact_sequences": 0
+      },
+      "24.0": {
+        "expected": 371,
+        "hits": 371,
+        "extras": 1020,
+        "exact_sequences": 0
+      },
+      "18.0": {
+        "expected": 371,
+        "hits": 371,
+        "extras": 1018,
+        "exact_sequences": 0
+      },
+      "12.0": {
+        "expected": 371,
+        "hits": 371,
+        "extras": 1024,
+        "exact_sequences": 0
+      }
+    },
+    "lattice020": {
+      "30.0": {
+        "expected": 371,
+        "hits": 232,
+        "extras": 602,
+        "exact_sequences": 0
+      },
+      "24.0": {
+        "expected": 371,
+        "hits": 236,
+        "extras": 599,
+        "exact_sequences": 0
+      },
+      "18.0": {
+        "expected": 371,
+        "hits": 250,
+        "extras": 586,
+        "exact_sequences": 0
+      },
+      "12.0": {
+        "expected": 371,
+        "hits": 244,
+        "extras": 601,
+        "exact_sequences": 0
+      }
+    },
+    "lattice015": {
+      "30.0": {
+        "expected": 371,
+        "hits": 232,
+        "extras": 602,
+        "exact_sequences": 0
+      },
+      "24.0": {
+        "expected": 371,
+        "hits": 236,
+        "extras": 599,
+        "exact_sequences": 0
+      },
+      "18.0": {
+        "expected": 371,
+        "hits": 250,
+        "extras": 586,
+        "exact_sequences": 0
+      },
+      "12.0": {
+        "expected": 371,
+        "hits": 244,
+        "extras": 601,
+        "exact_sequences": 0
+      }
+    }
+  },
+  "validation_sources_opened": false
+}

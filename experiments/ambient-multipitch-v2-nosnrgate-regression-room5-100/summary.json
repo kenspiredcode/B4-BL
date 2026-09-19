@@ -1,0 +1,69 @@
+{
+  "profile": "streaming-runtime-v1",
+  "channel": "compact_room5_v2",
+  "source_attempt_rows": 500,
+  "model": "experiments/ambient-frontend-multipitch-v2-development/real_classifier.joblib",
+  "model_sha256": "d0f0d8170229da869332ae0754e05e488602d13f2fac6cd2ef6ae80a974ad551",
+  "config": {
+    "sample_rate": 44100,
+    "analysis_block_ms": 100.0,
+    "scan_window_seconds": 1.2,
+    "marker_commit_seconds": 0.17,
+    "marker_edge_guard_seconds": 0.06,
+    "interval_tolerance_seconds": 0.1,
+    "end_timeout_seconds": 2.3,
+    "pre_roll_seconds": 1.0,
+    "post_roll_seconds": 0.04,
+    "max_packet_seconds": 60.0,
+    "noise_time_constant_seconds": 4.0,
+    "noise_update_gate": 2.5,
+    "min_marker_snr_db": null,
+    "marker_threshold": 0.55,
+    "target_marker_rms": 0.031,
+    "min_gain": 0.25,
+    "max_gain": 8.0,
+    "marker_peak_headroom": 0.75,
+    "top_k": 6,
+    "beam_width": 50000,
+    "confirm_success": false,
+    "request_repeat": false,
+    "require_sync_start": true
+  },
+  "counts": {
+    "files": 100,
+    "available": 100,
+    "accepted_events": 100,
+    "rejected_events": 0,
+    "incomplete_events": 0,
+    "false_trigger_events": 0,
+    "verified_exact": 100,
+    "accepted_wrong": 0,
+    "no_exact_delivery": 0
+  },
+  "audio_seconds": 1899.3799999999994,
+  "wall_seconds": 91.30580592000005,
+  "processing_realtime_factor": 0.048071373774600176,
+  "decision_latency_seconds": {
+    "mean": 0.10321632653061229,
+    "max": 0.1417687074829932,
+    "by_kind": {
+      "accepted": {
+        "count": 100,
+        "mean": 0.10321632653061229,
+        "max": 0.1417687074829932
+      }
+    }
+  },
+  "decode_processing_seconds": {
+    "mean": 0.1455055329599999,
+    "max": 0.35778841700000186
+  },
+  "notes": [
+    "Decision latency is audio-time from the closing marker through the chunked detector.",
+    "Processing time is measured on this computer and is not a robot-hardware benchmark.",
+    "False-trigger rates require long representative ambient recordings, not packet corpora.",
+    "Runtime settings tuned on a corpus are development results, not a fresh validation on that corpus."
+  ],
+  "verified_delivery_rate": 1.0,
+  "accepted_wrong_rate": 0.0
+}

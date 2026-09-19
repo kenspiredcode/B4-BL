@@ -107,3 +107,26 @@ def test_runtime_rejects_invalid_marker_threshold():
     import pytest
     with pytest.raises(ValueError):
         RuntimeConfig(marker_threshold=0)
+    assert RuntimeConfig(min_marker_snr_db=None).min_marker_snr_db is None
+
+
+def test_sync_start_ignores_a_plausibly_spaced_leading_marker():
+    # A generic legal interval must roll the candidate forward; only the known
+    # SYNC duration may move a compact receiver into packet mode.
+    vocab = clocked.vocabulary()
+    arbitrary = next(word for word in vocab if word != "SYNC" and
+                     sum(map(clocked.ticks, vocab[word])) !=
+                     sum(map(clocked.ticks, vocab["SYNC"])))
+    interval = clocked.PREFIX + sum(map(clocked.ticks, vocab[arbitrary])) * clocked.TICK
+    receiver = StreamingPacketReceiver({})
+    receiver._state = "candidate"
+    receiver._markers = [10000]
+    receiver._begin_candidate = lambda marker: (
+        setattr(receiver, "_markers", [marker]) or
+        setattr(receiver, "_state", "candidate") or True)
+    second = 10000 + interval
+    assert receiver._on_marker(second) == []
+    assert receiver.state == "candidate"
+    assert receiver._markers == [second]
+    assert receiver._on_marker(second + receiver._sync_interval) == []
+    assert receiver.state == "receiving"
