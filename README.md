@@ -254,6 +254,57 @@ interference sources, plus continuous presence detection, remain separate
 generalization problems. Results are in
 `experiments/compact-aukey-room6-music-validation-v3-full200/`.
 
+### Streaming desktop runtime
+
+`b4bl.runtime_receiver.StreamingPacketReceiver` turns the validated batch decoder
+into an incremental receiver without depending on any particular audio device. It
+keeps a bounded rolling buffer, tracks the idle noise floor, wakes only after two
+spectral markers have a legal symbol-clock interval, estimates a noise-relative
+marker SNR, and freezes one bounded software gain for the whole packet. It tries
+CRC-verified decoding at each possible closing marker, stays silent for isolated
+markers and incomplete non-packets, and returns optional `ACK` or `SORRY REPEAT`
+audio according to the existing reply policy. Applications can call
+`suppress_for()` during playback to prevent a droid from waking on its own reply.
+
+A chunked replay of all 200 untouched music-validation recordings preserves the
+batch result: 192/200 exact (96.0%), eight rejected, and zero wrong accepted. On
+this Mac, replay used 5.9% of real time. Accepted packets were recognized a mean
+103 ms and maximum 148 ms of audio-time after the closing marker; decoder compute
+averaged 234 ms and reached 463 ms. These timings establish desktop feasibility,
+not robot-hardware performance. The runtime replay is a development evaluation
+because its one-second context setting was selected after comparing it with batch
+decoding. Its summary is in
+`experiments/runtime-replay-v3-full200-preroll1/summary.json`.
+
+Replay a labeled channel without opening an audio device:
+
+```bash
+python3 src/replay_runtime.py \
+  --channel compact_aukey_room6_music_validation_v3 \
+  --model experiments/music-interference-model-v2-20260918/real_classifier.joblib \
+  --output experiments/my-runtime-replay
+```
+
+The desktop listener prints JSON events and can save suggested replies. Playback
+requires the explicit `--play-replies` flag and an explicit output device:
+
+```bash
+python3 src/listen_runtime.py \
+  --model experiments/music-interference-model-v2-20260918/real_classifier.joblib \
+  --input-device "MacBook Pro Microphone" \
+  --reply-directory runtime-replies
+```
+
+Add `--play-replies --output-device "<speaker>"` for audible responses. The
+listener suppresses detection for the reply duration plus 250 ms to avoid waking
+on itself. Successful packets remain silent unless `--confirm-success` is also
+set; rejected packet-like transmissions use the repeat response by default.
+
+Long representative ambient recordings are still required to measure false wakes
+per hour. Software normalization cannot improve physical signal-to-noise ratio;
+it keeps a sufficiently audible packet in the classifier's numeric range. Actual
+microphone gain control remains hardware-specific.
+
 Prepare or collect a compact protected-packet corpus with a fresh channel tag:
 
 ```bash
@@ -297,8 +348,11 @@ b4bl/
   lexicon.py      Layer 2: morpheme vocabulary + grammar + spelling fallback
   prosody.py      Layer 3: affect as transforms on expressive dimensions
   codec.py        meaning <-> phoneme-sequence <-> audio
+  runtime_receiver.py  streaming wake, level normalization, decode + reply policy
 src/
   astromech_synth.py   Phase 0 A/B/C style comparison (historical)
+  replay_runtime.py    silent chunked receiver replay + metrics
+  listen_runtime.py    desktop microphone event/reply harness
   whistle_synth.py     Phase 0 whistle-direction study
   palette_synth.py     the palette listening-test renderer
   demo_language.py     renders sentences + prosody + inventory to audio

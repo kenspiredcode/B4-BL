@@ -1,0 +1,77 @@
+{
+  "profile": "streaming-runtime-v1",
+  "channel": "compact_aukey_room6_music_validation_v3",
+  "source_attempt_rows": 200,
+  "model": "experiments/music-interference-model-v2-20260918/real_classifier.joblib",
+  "model_sha256": "3e096f33384da5ef707ac563fc3a48edc8abce86c70c2da515d661ffac1c110f",
+  "config": {
+    "sample_rate": 44100,
+    "analysis_block_ms": 100.0,
+    "scan_window_seconds": 1.2,
+    "marker_commit_seconds": 0.17,
+    "marker_edge_guard_seconds": 0.06,
+    "interval_tolerance_seconds": 0.1,
+    "end_timeout_seconds": 2.3,
+    "pre_roll_seconds": 1.0,
+    "post_roll_seconds": 0.04,
+    "max_packet_seconds": 60.0,
+    "noise_time_constant_seconds": 4.0,
+    "noise_update_gate": 2.5,
+    "min_marker_snr_db": 3.0,
+    "target_marker_rms": 0.031,
+    "min_gain": 0.25,
+    "max_gain": 8.0,
+    "marker_peak_headroom": 0.75,
+    "top_k": 6,
+    "beam_width": 50000,
+    "confirm_success": false,
+    "request_repeat": true
+  },
+  "counts": {
+    "files": 200,
+    "available": 200,
+    "accepted_events": 192,
+    "rejected_events": 5,
+    "incomplete_events": 3,
+    "false_trigger_events": 0,
+    "verified_exact": 192,
+    "accepted_wrong": 0,
+    "no_exact_delivery": 8
+  },
+  "audio_seconds": 3852.0799999999986,
+  "wall_seconds": 226.62656837900013,
+  "processing_realtime_factor": 0.05883225903382074,
+  "decision_latency_seconds": {
+    "mean": 0.18774421768707483,
+    "max": 2.2699319727891156,
+    "by_kind": {
+      "accepted": {
+        "count": 192,
+        "mean": 0.10299319727891158,
+        "max": 0.14829931972789115
+      },
+      "incomplete": {
+        "count": 3,
+        "mean": 2.222426303854875,
+        "max": 2.2699319727891156
+      },
+      "rejected": {
+        "count": 5,
+        "mean": 2.221374149659864,
+        "max": 2.256530612244898
+      }
+    }
+  },
+  "decode_processing_seconds": {
+    "mean": 0.23390470020499998,
+    "max": 0.46311629200000226
+  },
+  "notes": [
+    "Decision latency is audio-time from the closing marker through the chunked detector.",
+    "Processing time is measured on this computer and is not a robot-hardware benchmark.",
+    "False-trigger rates require long representative ambient recordings, not packet corpora.",
+    "Runtime settings tuned on a corpus are development results, not a fresh validation on that corpus."
+  ],
+  "verified_delivery_rate": 0.96,
+  "accepted_wrong_rate": 0.0
+}
