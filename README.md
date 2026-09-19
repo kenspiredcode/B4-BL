@@ -367,13 +367,32 @@ lexical frontend now exceeds 90% when framing is correct. On recorded regression
 the candidate delivers 189/200 (94.5%) on the prior low-music validation corpus
 and 100/100 on the clean room-5 prefix, with zero wrong accepts.
 
-The next blocker is marker localization in interference. Preserve the winning
-multi-candidate lexical frontend and compare marker detectors using the same
-development mixtures: whitened chirp correlation, a clock-constrained marker
-lattice that tolerates missing individual markers, and joint marker/word dynamic
-programming. The existing two-marker wake policy and CRC remain the safety gates.
-Do not open the 16 ambient validation sources until a marker configuration and
-model are frozen.
+Marker diagnostics then showed that the batch spectral detector already retained
+all true markers. Streaming failures came from the amplitude admission rule: a
+valid first marker below 3 dB relative to the tracked broadband RMS was discarded,
+making the required opening `SYNC` interval impossible. The frozen candidate
+keeps the original normalized .55 marker-shape threshold, removes the redundant
+amplitude gate, and requires the first interval to have the known `SYNC` duration.
+On 200 development mixtures it delivers 49/50 at +30 dB, 48/50 at +24 dB,
+41/50 at +18 dB, and 26/50 at +12 dB, with zero wrong accepts. A complete
+10.48-hour development negative replay produces no packet activations or spoken
+repeats.
+
+The candidate and test plan were committed before opening validation. The single
+prospective run over all 16 reserved ambient sources delivers 63/64 at +24/+30
+dB: 98.44%, exact 95% interval 91.60-99.96%, and zero wrong accepts. The declared
+primary endpoint therefore passes. Secondary delivery is 27/32 at +18 dB and
+21/32 at +12 dB; all-SNR delivery is 111/128. Continuous replay of all 16
+validation sources covers 3.744 hours and produces seven isolated markers, zero
+packet activations, zero spoken repeats, and zero accepted false packets.
+
+The supported claim is consequently scoped to digital mixtures with packet audio
+at least 24 dB above ambient: verified delivery exceeds 90%, its exact confidence
+bound exceeds 90%, and observed wrong acceptance is zero. At +18 and +12 dB the
+receiver remains fail-closed but does not meet the delivery target. Digital
+mixtures do not reproduce simultaneous room transfer, speaker distortion, or
+microphone AGC, so a future physical-interference recording campaign would be a
+separate external-validity test rather than more model development on this corpus.
 
 Create the source manifest and acoustic characterization:
 
@@ -389,10 +408,10 @@ Run a development mixture sweep or continuous negative replay:
 ```bash
 python3 src/ambient_benchmark.py mixed \
   --split development --channel compact_room5_v2 --mixtures 500 \
-  --snrs 30,24,18,12 \
+  --factorial --snrs 30,24,18,12 --no-marker-snr-gate \
   --output experiments/ambient-mixtures-development
 python3 src/ambient_benchmark.py negative \
-  --split development \
+  --split development --no-marker-snr-gate \
   --output experiments/ambient-negative-development
 ```
 

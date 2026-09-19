@@ -1,0 +1,43 @@
+{
+  "profile": "ambient-benchmark-v1",
+  "mode": "negative-continuous",
+  "split": "validation",
+  "model": "experiments/ambient-frontend-multipitch-v2-development/real_classifier.joblib",
+  "model_sha256": "d0f0d8170229da869332ae0754e05e488602d13f2fac6cd2ef6ae80a974ad551",
+  "runtime_config": {
+    "sample_rate": 44100,
+    "analysis_block_ms": 100.0,
+    "scan_window_seconds": 1.2,
+    "marker_commit_seconds": 0.17,
+    "marker_edge_guard_seconds": 0.06,
+    "interval_tolerance_seconds": 0.1,
+    "end_timeout_seconds": 2.3,
+    "pre_roll_seconds": 1.0,
+    "post_roll_seconds": 0.04,
+    "max_packet_seconds": 60.0,
+    "noise_time_constant_seconds": 4.0,
+    "noise_update_gate": 2.5,
+    "min_marker_snr_db": null,
+    "marker_threshold": 0.55,
+    "target_marker_rms": 0.031,
+    "min_gain": 0.25,
+    "max_gain": 8.0,
+    "marker_peak_headroom": 0.75,
+    "top_k": 6,
+    "beam_width": 50000,
+    "confirm_success": false,
+    "request_repeat": true,
+    "require_sync_start": true
+  },
+  "counts": {
+    "sources": 16,
+    "false_trigger_events": 7,
+    "spoken_repeat_events": 0,
+    "accepted_events": 0
+  },
+  "audio_hours": 3.7444030801209376,
+  "wall_seconds": 337.57057125299986,
+  "processing_realtime_factor": 0.025042603886226027,
+  "spoken_repeats_per_hour": 0.0,
+  "accepted_false_packets_per_hour": 0.0
+}

@@ -1,0 +1,49 @@
+{
+  "profile": "ambient-multipitch-v2-prospective-validation",
+  "freeze_commit": "ad0dc7d",
+  "model_sha256": "d0f0d8170229da869332ae0754e05e488602d13f2fac6cd2ef6ae80a974ad551",
+  "configuration": {
+    "lexical_frontend": "multipitch",
+    "marker_threshold": 0.55,
+    "marker_snr_gate": null,
+    "require_sync_start": true,
+    "top_k": 6,
+    "beam_width": 50000
+  },
+  "positive_validation": {
+    "sources": 16,
+    "cases": 32,
+    "attempts": 128,
+    "packet_offset": 100,
+    "primary_24_and_30_db": {
+      "verified_exact": 63,
+      "attempts": 64,
+      "rate": 0.984375,
+      "exact_95_percent_interval": [0.9159896735656463, 0.9996044874859493],
+      "accepted_wrong": 0,
+      "passed": true
+    },
+    "by_snr_db": {
+      "30": {"verified_exact": 32, "attempts": 32, "accepted_wrong": 0},
+      "24": {"verified_exact": 31, "attempts": 32, "accepted_wrong": 0},
+      "18": {"verified_exact": 27, "attempts": 32, "accepted_wrong": 0},
+      "12": {"verified_exact": 21, "attempts": 32, "accepted_wrong": 0}
+    },
+    "all_snr": {
+      "verified_exact": 111,
+      "attempts": 128,
+      "rate": 0.8671875,
+      "accepted_wrong": 0
+    }
+  },
+  "negative_validation": {
+    "sources": 16,
+    "audio_hours": 3.7444030801209376,
+    "isolated_marker_events": 7,
+    "packet_activations": 0,
+    "spoken_repeats": 0,
+    "accepted_false_packets": 0
+  },
+  "decision": "Promote for digital ambient mixtures at packet-to-ambient SNR >= +24 dB. Do not claim 90 percent delivery at +18 or +12 dB. Keep physical simultaneous-interference generalization explicitly unvalidated.",
+  "validation_policy": "This was the single declared run on the sealed ambient validation partition; do not tune from it."
+}
