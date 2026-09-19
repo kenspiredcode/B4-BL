@@ -18,6 +18,7 @@ audio_samples/contour_*
 audio_samples/reg3_*
 audio_samples/slot_ab/
 recordings/
+ambientNoises/
 .claude/
 b4bl/models/
 

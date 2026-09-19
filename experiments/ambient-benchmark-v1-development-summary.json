@@ -1,0 +1,49 @@
+{
+  "profile": "ambient-benchmark-v1",
+  "status": "development_in_progress_validation_sources_sealed",
+  "source_corpus": {
+    "sources": 64,
+    "duration_hours": 14.224,
+    "development_sources": 48,
+    "validation_sources": 16,
+    "split_seed": "b4bl-ambient-v1"
+  },
+  "negative_development_full": {
+    "sources": 48,
+    "audio_hours": 10.479447782816832,
+    "isolated_false_trigger_events": 30,
+    "spoken_repeat_events": 0,
+    "accepted_false_packets": 0,
+    "processing_realtime_factor": 0.025186998848303752
+  },
+  "frozen_model_initial_sweep": {
+    "model_sha256": "3e096f33384da5ef707ac563fc3a48edc8abce86c70c2da515d661ffac1c110f",
+    "attempts_per_snr": 10,
+    "verified_exact_by_snr_db": {
+      "30": 5,
+      "24": 2,
+      "18": 1,
+      "12": 3
+    },
+    "accepted_wrong": 0
+  },
+  "ambient_model_v2_sweep": {
+    "model_sha256": "29b2506e4701a5bc7486b459699e24ddb4c70d4f8d1978f587947b2b43bba749",
+    "training": {
+      "ambient_augmented_recordings": 1200,
+      "ambient_snr_db_range": [18, 32],
+      "ambient_window_sample_weight": 4,
+      "total_windows": 40335
+    },
+    "attempts_per_snr": 20,
+    "verified_exact_by_snr_db": {
+      "30": 9,
+      "24": 5,
+      "18": 1,
+      "12": 4
+    },
+    "accepted_wrong": 0
+  },
+  "decision": "Do not promote either ambient-augmented model. Compare noise-invariant or multi-pitch frontends on development sources before sealed validation.",
+  "validation_policy": "Do not train, tune thresholds, select features, or choose models using the 16 validation sources."
+}

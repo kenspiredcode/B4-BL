@@ -1,0 +1,529 @@
+{
+  "profile": "ambient-benchmark-v1",
+  "split_seed": "b4bl-ambient-v1",
+  "validation_fraction_rule": 0.2,
+  "counts": {
+    "development": 48,
+    "validation": 16
+  },
+  "duration_hours": 14.224170712499998,
+  "sources": [
+    {
+      "duration_seconds": 2800.441,
+      "codec": "opus",
+      "sample_rate": 48000,
+      "channels": 2,
+      "file": "4K City Walks\uff1a Billings Montana Downtown Tour - Virtual Walk Walking Treadmill Video.webm",
+      "split": "development"
+    },
+    {
+      "duration_seconds": 582.841,
+      "codec": "opus",
+      "sample_rate": 48000,
+      "channels": 2,
+      "file": "Being a PC System Builder is EASY MONEY... right\uff1f.webm",
+      "split": "development"
+    },
+    {
+      "duration_seconds": 2950.981,
+      "codec": "opus",
+      "sample_rate": 48000,
+      "channels": 2,
+      "file": "Bozeman Montana Dangerous Cold Virtual Walk - City Walks Montana Walking Tour & Treadmill Scenery.webm",
+      "split": "validation"
+    },
+    {
+      "duration_seconds": 911.401,
+      "codec": "opus",
+      "sample_rate": 48000,
+      "channels": 2,
+      "file": "Checking on my Investment in Person - Framework Laptop Factory Tour.webm",
+      "split": "validation"
+    },
+    {
+      "duration_seconds": 809.881,
+      "codec": "opus",
+      "sample_rate": 48000,
+      "channels": 2,
+      "file": "Cherry MX Factory Tour - Linus & Luke do Auerbach, Germany.webm",
+      "split": "development"
+    },
+    {
+      "duration_seconds": 483.361,
+      "codec": "opus",
+      "sample_rate": 48000,
+      "channels": 2,
+      "file": "Dumplings Making Process \uff5c How Dumplings Are Made In Factory \uff5c Food Factory.webm",
+      "split": "validation"
+    },
+    {
+      "duration_seconds": 675.541,
+      "codec": "opus",
+      "sample_rate": 48000,
+      "channels": 2,
+      "file": "Full Goat Processing Line\uff1a Meat, Milk & Cheese Making \uff5c Goat Farm.webm",
+      "split": "validation"
+    },
+    {
+      "duration_seconds": 404.481,
+      "codec": "opus",
+      "sample_rate": 48000,
+      "channels": 2,
+      "file": "Hardware Prototyping & Testing Center - Microsoft.webm",
+      "split": "development"
+    },
+    {
+      "duration_seconds": 521.881,
+      "codec": "opus",
+      "sample_rate": 48000,
+      "channels": 2,
+      "file": "How Bread Is Made \uff5c How It's Made Bread In Factory.webm",
+      "split": "validation"
+    },
+    {
+      "duration_seconds": 554.361,
+      "codec": "opus",
+      "sample_rate": 48000,
+      "channels": 2,
+      "file": "How Candy Is Made \uff5c Candy Making Process \uff5c Candy Factory.webm",
+      "split": "development"
+    },
+    {
+      "duration_seconds": 556.861,
+      "codec": "opus",
+      "sample_rate": 48000,
+      "channels": 2,
+      "file": "How Canned Corn Is Made \uff5c Modern Corn Harvesting Technology \uff5c Food Factory.webm",
+      "split": "development"
+    },
+    {
+      "duration_seconds": 486.921,
+      "codec": "opus",
+      "sample_rate": 48000,
+      "channels": 2,
+      "file": "How Caviar Is Made - Sturgeon Caviar Farm \uff5c Food Factory.webm",
+      "split": "development"
+    },
+    {
+      "duration_seconds": 520.361,
+      "codec": "opus",
+      "sample_rate": 48000,
+      "channels": 2,
+      "file": "How Condensed Milk is Made \uff5c Modern Milk Processing Plant \uff5c Food Factory.webm",
+      "split": "validation"
+    },
+    {
+      "duration_seconds": 280.941,
+      "codec": "opus",
+      "sample_rate": 48000,
+      "channels": 2,
+      "file": "How Fresh Mozzarella Is Made \uff5c Buffalo Milk Cheese Factory.webm",
+      "split": "development"
+    },
+    {
+      "duration_seconds": 545.301,
+      "codec": "opus",
+      "sample_rate": 48000,
+      "channels": 2,
+      "file": "How Hot Sauce Is Made \uff5c Modern Chili Harvesting Technology \uff5c Food Factory.webm",
+      "split": "development"
+    },
+    {
+      "duration_seconds": 459.621,
+      "codec": "opus",
+      "sample_rate": 48000,
+      "channels": 2,
+      "file": "How It's Made Honey \uff5c Honey Cultivation and Processing.webm",
+      "split": "development"
+    },
+    {
+      "duration_seconds": 491.821,
+      "codec": "opus",
+      "sample_rate": 48000,
+      "channels": 2,
+      "file": "How King Crab Is Processed \uff5c Amazing King Crab Fishing Technology \uff5c Food Factory.webm",
+      "split": "development"
+    },
+    {
+      "duration_seconds": 531.061,
+      "codec": "opus",
+      "sample_rate": 48000,
+      "channels": 2,
+      "file": "How KitKat Is Made \uff5c How It's Made KitKat \ud83c\udf6b\u27a4 Food Factory.webm",
+      "split": "validation"
+    },
+    {
+      "duration_seconds": 385.061,
+      "codec": "opus",
+      "sample_rate": 48000,
+      "channels": 2,
+      "file": "How Milk Powder is Made \uff5c Modern Milk Powder Processing Plant \uff5c Food Factory \ud83e\udd5b.webm",
+      "split": "validation"
+    },
+    {
+      "duration_seconds": 448.481,
+      "codec": "opus",
+      "sample_rate": 48000,
+      "channels": 2,
+      "file": "How Millions Of Goose Rise & Process \uff5c Modern Farming Technology.webm",
+      "split": "development"
+    },
+    {
+      "duration_seconds": 465.461,
+      "codec": "opus",
+      "sample_rate": 48000,
+      "channels": 2,
+      "file": "How Millions Of Onions Are Harvested & Processed \uff5c Incredible Onion Processing Factory.webm",
+      "split": "development"
+    },
+    {
+      "duration_seconds": 598.061,
+      "codec": "opus",
+      "sample_rate": 48000,
+      "channels": 2,
+      "file": "How Millions of Banana Harvested & Processed \uff5c Banana Chips Factory\ud83c\udf4c.webm",
+      "split": "development"
+    },
+    {
+      "duration_seconds": 526.421,
+      "codec": "opus",
+      "sample_rate": 48000,
+      "channels": 2,
+      "file": "How Millions of Corn Flakes Are Made \u27a4 Food Factory.webm",
+      "split": "development"
+    },
+    {
+      "duration_seconds": 602.501,
+      "codec": "opus",
+      "sample_rate": 48000,
+      "channels": 2,
+      "file": "How Millions of Sausages Are Made Every Day \u27a4 Food Factory.webm",
+      "split": "validation"
+    },
+    {
+      "duration_seconds": 448.461,
+      "codec": "opus",
+      "sample_rate": 48000,
+      "channels": 2,
+      "file": "How NUTELLA Is Made In Factory \uff5c Food Factory.webm",
+      "split": "development"
+    },
+    {
+      "duration_seconds": 513.621,
+      "codec": "opus",
+      "sample_rate": 48000,
+      "channels": 2,
+      "file": "How Orange Juice Is Really Made \u27a4 Food Factory.webm",
+      "split": "development"
+    },
+    {
+      "duration_seconds": 370.401,
+      "codec": "opus",
+      "sample_rate": 48000,
+      "channels": 2,
+      "file": "How Our Videos are Made.webm",
+      "split": "development"
+    },
+    {
+      "duration_seconds": 517.161,
+      "codec": "opus",
+      "sample_rate": 48000,
+      "channels": 2,
+      "file": "How Palm Oil Is Made In Factory \uff5c Palm Harvesting & Processing Technology \uff5c Palm Oil Factory.webm",
+      "split": "development"
+    },
+    {
+      "duration_seconds": 546.541,
+      "codec": "opus",
+      "sample_rate": 48000,
+      "channels": 2,
+      "file": "How Peanuts are Made \uff5c Peanuts Harvesting & Processing \uff5c Food Factory.webm",
+      "split": "development"
+    },
+    {
+      "duration_seconds": 495.801,
+      "codec": "opus",
+      "sample_rate": 48000,
+      "channels": 2,
+      "file": "How Pineapple Juice Is Made In Factory \uff5c Modern Fruit Juice Making Technology \uff5c Food Factory.webm",
+      "split": "development"
+    },
+    {
+      "duration_seconds": 606.101,
+      "codec": "opus",
+      "sample_rate": 48000,
+      "channels": 2,
+      "file": "How Pistachio Is Harvested & Processed\uff1f \u27a4 Food Factory.webm",
+      "split": "development"
+    },
+    {
+      "duration_seconds": 486.801,
+      "codec": "opus",
+      "sample_rate": 48000,
+      "channels": 2,
+      "file": "How Pomegranate Juice Is Made In Factory \uff5c Fresh Pomegranate Juice Factory Process.webm",
+      "split": "development"
+    },
+    {
+      "duration_seconds": 484.101,
+      "codec": "opus",
+      "sample_rate": 48000,
+      "channels": 2,
+      "file": "How Salt Is Made From Seawater \uff5c Largest Salt Production Factory In the World.webm",
+      "split": "development"
+    },
+    {
+      "duration_seconds": 482.121,
+      "codec": "opus",
+      "sample_rate": 48000,
+      "channels": 2,
+      "file": "How Sardines are made \uff5c How Sardines are Caught & Processed.webm",
+      "split": "development"
+    },
+    {
+      "duration_seconds": 574.881,
+      "codec": "opus",
+      "sample_rate": 48000,
+      "channels": 2,
+      "file": "How Sheep Meat is Processed \uff5c Modern Sheep Farming Technology \uff5c Food Factory.webm",
+      "split": "development"
+    },
+    {
+      "duration_seconds": 530.141,
+      "codec": "opus",
+      "sample_rate": 48000,
+      "channels": 2,
+      "file": "How Spaghetti is Made - Pasta Factory \uff5c Food Factory.webm",
+      "split": "development"
+    },
+    {
+      "duration_seconds": 519.881,
+      "codec": "opus",
+      "sample_rate": 48000,
+      "channels": 2,
+      "file": "How Sugar Is Made From Sugar Beets \uff5c Sugar Beet Harvesting & Processing \uff5c Sugar Factory.webm",
+      "split": "development"
+    },
+    {
+      "duration_seconds": 616.341,
+      "codec": "opus",
+      "sample_rate": 48000,
+      "channels": 2,
+      "file": "How Tons of Rice Harvested & Processed \uff5c Modern Rice Agriculture Technology.webm",
+      "split": "development"
+    },
+    {
+      "duration_seconds": 586.761,
+      "codec": "opus",
+      "sample_rate": 48000,
+      "channels": 2,
+      "file": "How Tuna Fish Is Caught & Processed \uff5c How It's Made Canned Tuna.webm",
+      "split": "development"
+    },
+    {
+      "duration_seconds": 483.001,
+      "codec": "opus",
+      "sample_rate": 48000,
+      "channels": 2,
+      "file": "How Walnuts Is Made \uff5c Walnut Processing Factory.webm",
+      "split": "development"
+    },
+    {
+      "duration_seconds": 952.521,
+      "codec": "opus",
+      "sample_rate": 48000,
+      "channels": 2,
+      "file": "How a $100,000 Speaker gets made! - Meridian Facility Tour - LG XBOOM Go.webm",
+      "split": "development"
+    },
+    {
+      "duration_seconds": 1310.841,
+      "codec": "opus",
+      "sample_rate": 48000,
+      "channels": 2,
+      "file": "I Can Die Now. - Intel Fab Tour!.webm",
+      "split": "development"
+    },
+    {
+      "duration_seconds": 1416.701,
+      "codec": "opus",
+      "sample_rate": 48000,
+      "channels": 2,
+      "file": "I Can't BELIEVE They Let Me in Here!.webm",
+      "split": "development"
+    },
+    {
+      "duration_seconds": 620.341,
+      "codec": "opus",
+      "sample_rate": 48000,
+      "channels": 2,
+      "file": "I Ripped Up My Sponsor\u2019s Check - Intel Fab Tour.webm",
+      "split": "validation"
+    },
+    {
+      "duration_seconds": 1440.041,
+      "codec": "opus",
+      "sample_rate": 48000,
+      "channels": 2,
+      "file": "I Tried to Break a Million Dollar Computer - IBM Z16 Facility Tour!.webm",
+      "split": "validation"
+    },
+    {
+      "duration_seconds": 1054.481,
+      "codec": "opus",
+      "sample_rate": 48000,
+      "channels": 2,
+      "file": "I got TESTED in China's Incredible Biometrics Lab.webm",
+      "split": "validation"
+    },
+    {
+      "duration_seconds": 1839.501,
+      "codec": "opus",
+      "sample_rate": 48000,
+      "channels": 2,
+      "file": "I made my own RAM! - Micron Factory Tour.webm",
+      "split": "development"
+    },
+    {
+      "duration_seconds": 1015.081,
+      "codec": "opus",
+      "sample_rate": 48000,
+      "channels": 2,
+      "file": "I\u2019ve Never Had So Much FUN - Intel Development Center DEEP Dive.webm",
+      "split": "development"
+    },
+    {
+      "duration_seconds": 499.601,
+      "codec": "opus",
+      "sample_rate": 48000,
+      "channels": 2,
+      "file": "MSG Is NOT What You Think! MSG Production \u27a4 Food Factory.webm",
+      "split": "validation"
+    },
+    {
+      "duration_seconds": 492.301,
+      "codec": "opus",
+      "sample_rate": 48000,
+      "channels": 2,
+      "file": "Mega Sunflower Oil Factory \uff5c How Sunflowers are Harvested & their Oil Extracted.webm",
+      "split": "validation"
+    },
+    {
+      "duration_seconds": 3147.161,
+      "codec": "opus",
+      "sample_rate": 48000,
+      "channels": 2,
+      "file": "Miles City Montana Walking Tour - 4K City Walks - Virtual Travel Walking Treadmill Walk.webm",
+      "split": "development"
+    },
+    {
+      "duration_seconds": 639.701,
+      "codec": "opus",
+      "sample_rate": 48000,
+      "channels": 2,
+      "file": "Modern Chicken Meat Processing Factory \uff5c Chicken Factory.webm",
+      "split": "development"
+    },
+    {
+      "duration_seconds": 827.071565,
+      "codec": "aac",
+      "sample_rate": 44100,
+      "channels": 2,
+      "file": "Omron Factory Tour - The Making of a Logitech Romer-G Switch.m4a",
+      "split": "development"
+    },
+    {
+      "duration_seconds": 429.861,
+      "codec": "opus",
+      "sample_rate": 48000,
+      "channels": 2,
+      "file": "Oyster Harvesting & Processing \uff5c How Oyster Sauce Is Made \uff5c Oyster Factory.webm",
+      "split": "development"
+    },
+    {
+      "duration_seconds": 1181.481,
+      "codec": "opus",
+      "sample_rate": 48000,
+      "channels": 2,
+      "file": "Sennheiser Factory Tour - Hanover, Germany.webm",
+      "split": "development"
+    },
+    {
+      "duration_seconds": 674.361,
+      "codec": "opus",
+      "sample_rate": 48000,
+      "channels": 2,
+      "file": "The Biggest Test Bench I\u2019ve Ever Seen.webm",
+      "split": "development"
+    },
+    {
+      "duration_seconds": 1169.561,
+      "codec": "opus",
+      "sample_rate": 48000,
+      "channels": 2,
+      "file": "The World\u2019s Largest Cyclotron.webm",
+      "split": "development"
+    },
+    {
+      "duration_seconds": 839.401,
+      "codec": "opus",
+      "sample_rate": 48000,
+      "channels": 2,
+      "file": "The gaming PC days are NUMBERED! - Shadow Tech Facility Tour.webm",
+      "split": "validation"
+    },
+    {
+      "duration_seconds": 930.281,
+      "codec": "opus",
+      "sample_rate": 48000,
+      "channels": 2,
+      "file": "They Turned off this GPU Factory For Me! PowerColor Factory Tour.webm",
+      "split": "development"
+    },
+    {
+      "duration_seconds": 1173.721,
+      "codec": "opus",
+      "sample_rate": 48000,
+      "channels": 2,
+      "file": "They let me take apart a SUPER COMPUTER.webm",
+      "split": "development"
+    },
+    {
+      "duration_seconds": 939.041,
+      "codec": "opus",
+      "sample_rate": 48000,
+      "channels": 2,
+      "file": "This Cheap High Speed Camera is Made in Canada!!.webm",
+      "split": "development"
+    },
+    {
+      "duration_seconds": 578.101,
+      "codec": "opus",
+      "sample_rate": 48000,
+      "channels": 2,
+      "file": "Turning SCRAP Electronics into GOLD BARS!.webm",
+      "split": "development"
+    },
+    {
+      "duration_seconds": 951.841,
+      "codec": "opus",
+      "sample_rate": 48000,
+      "channels": 2,
+      "file": "Unboxing Canada's BIGGEST Supercomputer!.webm",
+      "split": "validation"
+    },
+    {
+      "duration_seconds": 1227.861,
+      "codec": "opus",
+      "sample_rate": 48000,
+      "channels": 2,
+      "file": "dbrand left me Unsupervised in their Factory.webm",
+      "split": "development"
+    }
+  ],
+  "notes": [
+    "The split is by complete source file; no source contributes to both partitions.",
+    "Validation source membership is frozen before detector calibration or mixture evaluation.",
+    "Raw media remains local and is decoded on demand with ffmpeg."
+  ]
+}

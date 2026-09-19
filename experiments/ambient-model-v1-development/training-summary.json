@@ -1,0 +1,23 @@
+{
+  "profile": "ambient-augmented-classifier-development-v1",
+  "status": "development model; validation ambient sources remain sealed",
+  "model_sha256": "a0961c61468a69f950f2f1a095ed2b9ba678d44f6c979fda66f20ac430ebfea9",
+  "ambient_source_count": 48,
+  "ambient_source_split": "development",
+  "snr_db_range": [
+    24.0,
+    36.0
+  ],
+  "stats": {
+    "attempted": 1864,
+    "original_base-real": 1610,
+    "missing": 5,
+    "alignment_rejected": 5,
+    "original_compact_aukey_room6_musiclow_v1": 97,
+    "original_compact_aukey_room6_music_validation_v2": 147,
+    "ambient_augmented_recordings": 600,
+    "synthetic_windows": 2080
+  },
+  "training_windows": 32586,
+  "next": "Compare on development mixtures and clean/music regression corpora before freezing; then evaluate once on validation ambient sources."
+}

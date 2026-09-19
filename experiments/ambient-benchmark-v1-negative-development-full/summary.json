@@ -1,0 +1,41 @@
+{
+  "profile": "ambient-benchmark-v1",
+  "mode": "negative-continuous",
+  "split": "development",
+  "model": "experiments/music-interference-model-v2-20260918/real_classifier.joblib",
+  "model_sha256": "3e096f33384da5ef707ac563fc3a48edc8abce86c70c2da515d661ffac1c110f",
+  "runtime_config": {
+    "sample_rate": 44100,
+    "analysis_block_ms": 100.0,
+    "scan_window_seconds": 1.2,
+    "marker_commit_seconds": 0.17,
+    "marker_edge_guard_seconds": 0.06,
+    "interval_tolerance_seconds": 0.1,
+    "end_timeout_seconds": 2.3,
+    "pre_roll_seconds": 1.0,
+    "post_roll_seconds": 0.04,
+    "max_packet_seconds": 60.0,
+    "noise_time_constant_seconds": 4.0,
+    "noise_update_gate": 2.5,
+    "min_marker_snr_db": 3.0,
+    "target_marker_rms": 0.031,
+    "min_gain": 0.25,
+    "max_gain": 8.0,
+    "marker_peak_headroom": 0.75,
+    "top_k": 6,
+    "beam_width": 50000,
+    "confirm_success": false,
+    "request_repeat": true
+  },
+  "counts": {
+    "sources": 48,
+    "false_trigger_events": 30,
+    "spoken_repeat_events": 0,
+    "accepted_events": 0
+  },
+  "audio_hours": 10.479447782816832,
+  "wall_seconds": 950.2050212520007,
+  "processing_realtime_factor": 0.025186998848303752,
+  "spoken_repeats_per_hour": 0.0,
+  "accepted_false_packets_per_hour": 0.0
+}

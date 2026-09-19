@@ -300,10 +300,70 @@ listener suppresses detection for the reply duration plus 250 ms to avoid waking
 on itself. Successful packets remain silent unless `--confirm-success` is also
 set; rejected packet-like transmissions use the repeat response by default.
 
-Long representative ambient recordings are still required to measure false wakes
-per hour. Software normalization cannot improve physical signal-to-noise ratio;
-it keeps a sufficiently audible packet in the classifier's numeric range. Actual
-microphone gain control remains hardware-specific.
+The ambient benchmark below now measures development false wakes and mixed-packet
+interference. Software normalization cannot improve physical signal-to-noise
+ratio; it keeps a sufficiently audible packet in the classifier's numeric range.
+Actual microphone gain control remains hardware-specific.
+
+### Ambient interference benchmark
+
+`src/ambient_benchmark.py` turns local long-form media into a reproducible
+interference benchmark without copying or committing the source videos. The
+current library contains 64 sources totaling 14.22 hours. A hash-based split made
+before detector tuning reserves 16 complete videos for validation and assigns 48
+to development; clips from one video can never cross that boundary. Five
+deterministic clips per source span -45.45 to -2.87 dBFS and put between 0.04% and
+34.04% of their energy in the 1.1-3.5 kHz marker band.
+
+The complete development partition streamed 10.48 hours through the receiver. It
+produced 30 isolated marker candidates, no legal multi-marker wake, no accepted
+false packet, and no spoken repeat. This is strong development evidence for the
+cadence gate, but it is not the sealed validation result.
+
+Controlled digital mixtures expose a separate lexical problem. The frozen music
+model decodes 39/40 of the selected clean packet recordings, but on arbitrary
+development-source interference it delivered only 5/10 at +30 dB, 2/10 at +24
+dB, 1/10 at +18 dB, and 3/10 at +12 dB in the initial sweep, with zero wrong
+accepts. Two ambient-augmented random-forest variants did not make a meaningful
+improvement; the stronger one delivered 9/20, 5/20, 1/20, and 4/20 at those SNRs.
+The likely bottleneck is upstream of the classifier: overlapping periodic sound
+causes the current pitch tracker either to follow the interferer or discard frames
+at its periodicity gate. More copies of the same features cannot restore evidence
+that feature extraction removed.
+
+The next development step is therefore a foreground frontend comparison on the
+development split: harmonic-ridge tracking constrained by the known droid pitch
+ranges, source enhancement using the idle noise estimate, and a time-frequency
+representation that retains multiple pitch candidates. Keep packet timing, CRC,
+and the two-marker presence gate fixed during that comparison. Freeze the winning
+frontend and model before running mixtures or continuous negative replay on the
+16 validation sources.
+
+Create the source manifest and acoustic characterization:
+
+```bash
+python3 src/ambient_benchmark.py inventory \
+  --output experiments/ambient-benchmark-v1-inventory
+python3 src/ambient_benchmark.py characterize \
+  --output experiments/ambient-benchmark-v1-characterization
+```
+
+Run a development mixture sweep or continuous negative replay:
+
+```bash
+python3 src/ambient_benchmark.py mixed \
+  --split development --channel compact_room5_v2 --mixtures 500 \
+  --snrs 30,24,18,12 \
+  --output experiments/ambient-mixtures-development
+python3 src/ambient_benchmark.py negative \
+  --split development \
+  --output experiments/ambient-negative-development
+```
+
+`b4bl.ambient_model_experiment` reconstructs the real, synthetic, and prior-music
+training foundation and adds only development-source ambient mixtures. Its models
+are development artifacts; do not promote one without clean/music regression
+checks and one untouched validation-source evaluation.
 
 Prepare or collect a compact protected-packet corpus with a fresh channel tag:
 
