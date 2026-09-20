@@ -5,7 +5,15 @@ framework, no server — plain ES modules and WebAudio.
 
 ## Publishing
 
-GitHub repo → Settings → Pages → Source: `main` branch, `/docs` folder.
+Live at **https://kenspiredcode.github.io/B4-BL/**, served from `main` + `/docs`.
+Pushing to `main` redeploys; a build takes about 40 seconds.
+
+Configured with:
+
+```bash
+gh api -X POST repos/kenspiredcode/B4-BL/pages \
+  -f 'source[branch]=main' -f 'source[path]=/docs'
+```
 
 ## Regenerating
 
@@ -65,4 +73,4 @@ transmit-only by design; the receiver lives in the repository.
 - [x] `inventory.js` — phoneme grid + vocab tables
 - [x] Annotated packet image (light + dark)
 - [x] Live spectrogram in the builder
-- [ ] Publish to GitHub Pages and link from the README
+- [x] Publish to GitHub Pages and link from the README

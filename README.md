@@ -24,7 +24,8 @@ The words are identical. Only the prosody changes.
 | [`prosody_urgent.wav`](audio_samples/prosody_urgent.wav) | fast, compressed, insistent |
 | [`prosody_calm.wav`](audio_samples/prosody_calm.wav) | slow, settled |
 
-*(GitHub won't play audio inline — download, or listen on the [demo page](#demo).)*
+*(GitHub won't play audio inline — download, or listen on the
+[demo page](https://kenspiredcode.github.io/B4-BL/).)*
 
 Also worth a listen: [`phoneme_inventory.wav`](audio_samples/phoneme_inventory.wav)
 (every sound in the language, in a row) and
@@ -164,10 +165,17 @@ python3 -m pytest -q             # round-trip + unambiguity tests
 
 ## Demo
 
-<!-- TODO: link to GitHub Pages demo once published -->
+**[kenspiredcode.github.io/B4-BL](https://kenspiredcode.github.io/B4-BL/)**
 
-A browser demo lets you compose a sentence from the real grammar and hear it
-synthesized live. *(In progress.)*
+Compose a sentence from the real grammar and hear it synthesized in your browser.
+Pick a sentence shape, fill the slots, choose a prosody, and watch the spectrogram.
+The dropdowns only offer words the grammar allows in each slot, so all ~228,000
+buildable sentences are ones a droid can actually say.
+
+The page also has a clickable phoneme inventory and the packet breakdown above.
+Synthesis runs entirely client-side — it is a verified port of the Python encoder,
+agreeing sample-for-sample. Decoding is not in the demo; it needs a trained model
+far too large for a browser.
 
 ## Design notes
 
