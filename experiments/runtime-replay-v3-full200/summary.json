@@ -1,0 +1,59 @@
+{
+  "profile": "streaming-runtime-v1",
+  "channel": "compact_aukey_room6_music_validation_v3",
+  "source_attempt_rows": 200,
+  "model": "experiments/music-interference-model-v2-20260918/real_classifier.joblib",
+  "model_sha256": "3e096f33384da5ef707ac563fc3a48edc8abce86c70c2da515d661ffac1c110f",
+  "config": {
+    "sample_rate": 44100,
+    "analysis_block_ms": 100.0,
+    "scan_window_seconds": 1.2,
+    "marker_commit_seconds": 0.17,
+    "marker_edge_guard_seconds": 0.06,
+    "interval_tolerance_seconds": 0.1,
+    "end_timeout_seconds": 2.3,
+    "pre_roll_seconds": 0.2,
+    "post_roll_seconds": 0.04,
+    "max_packet_seconds": 60.0,
+    "noise_time_constant_seconds": 4.0,
+    "noise_update_gate": 2.5,
+    "min_marker_snr_db": 3.0,
+    "target_marker_rms": 0.031,
+    "min_gain": 0.25,
+    "max_gain": 8.0,
+    "marker_peak_headroom": 0.75,
+    "top_k": 6,
+    "beam_width": 50000,
+    "confirm_success": false,
+    "request_repeat": true
+  },
+  "counts": {
+    "files": 200,
+    "available": 200,
+    "accepted_events": 190,
+    "rejected_events": 7,
+    "incomplete_events": 3,
+    "false_trigger_events": 0,
+    "verified_exact": 190,
+    "accepted_wrong": 0,
+    "no_exact_delivery": 10
+  },
+  "audio_seconds": 3852.0799999999986,
+  "wall_seconds": 217.64934753900008,
+  "processing_realtime_factor": 0.05650177242918116,
+  "decision_latency_seconds": {
+    "mean": 0.20854421768707482,
+    "max": 2.2699319727891156
+  },
+  "decode_processing_seconds": {
+    "mean": 0.2236364898249991,
+    "max": 0.46351300000000606
+  },
+  "notes": [
+    "Decision latency is audio-time from the closing marker through the chunked detector.",
+    "Processing time is measured on this computer and is not a robot-hardware benchmark.",
+    "False-trigger rates require long representative ambient recordings, not packet corpora."
+  ],
+  "verified_delivery_rate": 0.95,
+  "accepted_wrong_rate": 0.0
+}

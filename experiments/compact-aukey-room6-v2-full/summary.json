@@ -1,0 +1,37 @@
+{
+  "profile": "compact-clocked-v2-crc32-base32",
+  "channel": "compact_aukey_room6_v2",
+  "source_attempt_rows": 326,
+  "unique_labeled_packets": 200,
+  "model": "experiments/real-clocked-20260917/allrooms-periodicity05/real_classifier.joblib",
+  "model_sha256": "98abfef40eac3b35775e879cfd481369475ea68b4a13a34200ebc8803f997683",
+  "top_k": 5,
+  "beam_width": 10000,
+  "counts": {
+    "attempts": 200,
+    "available": 200,
+    "marker_count_ok": 103,
+    "top_path_exact": 70,
+    "verified_exact": 95,
+    "accepted_wrong": 0,
+    "rejected": 105,
+    "selected_by_validation": 25
+  },
+  "verified_delivery_rate": 0.475,
+  "accepted_wrong_rate": 0.0,
+  "parse_reasons": {
+    "word marker is off the symbol grid": 2,
+    "accepted": 95,
+    "CRC mismatch": 8,
+    "no complete marker pair": 95
+  },
+  "candidate_paths_checked": {
+    "mean": 402.31,
+    "max": 10000
+  },
+  "limitations": [
+    "This channel is a measured environment, not universal room generalization.",
+    "CRC32 detects accidental corruption; it is not authentication.",
+    "The same packet corpus must not be used for both model tuning and final claims."
+  ]
+}

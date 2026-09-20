@@ -1,0 +1,943 @@
+[
+  {
+    "file": "compact_aukey_room6_v2_00000.wav",
+    "raw_file": "/Users/kenburleson/Projects/B4-BL/recordings/compact_aukey_room6_v2_00000.raw.wav",
+    "category": "off-grid-framing",
+    "acoustic_reason": "word marker is off the symbol grid",
+    "parse_error": "word marker is off the symbol grid",
+    "marker_count": 10,
+    "expected_marker_count": 20
+  },
+  {
+    "file": "compact_aukey_room6_v2_00012.wav",
+    "raw_file": "/Users/kenburleson/Projects/B4-BL/recordings/compact_aukey_room6_v2_00012.raw.wav",
+    "category": "crc-rejected",
+    "acoustic_reason": "",
+    "parse_error": "CRC mismatch",
+    "marker_count": 17,
+    "expected_marker_count": 17
+  },
+  {
+    "file": "compact_aukey_room6_v2_00019.wav",
+    "raw_file": "/Users/kenburleson/Projects/B4-BL/recordings/compact_aukey_room6_v2_00019.raw.wav",
+    "category": "crc-rejected",
+    "acoustic_reason": "",
+    "parse_error": "CRC mismatch",
+    "marker_count": 18,
+    "expected_marker_count": 18
+  },
+  {
+    "file": "compact_aukey_room6_v2_00027.wav",
+    "raw_file": "/Users/kenburleson/Projects/B4-BL/recordings/compact_aukey_room6_v2_00027.raw.wav",
+    "category": "crc-rejected",
+    "acoustic_reason": "",
+    "parse_error": "CRC mismatch",
+    "marker_count": 21,
+    "expected_marker_count": 21
+  },
+  {
+    "file": "compact_aukey_room6_v2_00031.wav",
+    "raw_file": "/Users/kenburleson/Projects/B4-BL/recordings/compact_aukey_room6_v2_00031.raw.wav",
+    "category": "crc-rejected",
+    "acoustic_reason": "",
+    "parse_error": "CRC mismatch",
+    "marker_count": 21,
+    "expected_marker_count": 21
+  },
+  {
+    "file": "compact_aukey_room6_v2_00032.wav",
+    "raw_file": "/Users/kenburleson/Projects/B4-BL/recordings/compact_aukey_room6_v2_00032.raw.wav",
+    "category": "crc-rejected",
+    "acoustic_reason": "",
+    "parse_error": "CRC mismatch",
+    "marker_count": 17,
+    "expected_marker_count": 17
+  },
+  {
+    "file": "compact_aukey_room6_v2_00038.wav",
+    "raw_file": "/Users/kenburleson/Projects/B4-BL/recordings/compact_aukey_room6_v2_00038.raw.wav",
+    "category": "crc-rejected",
+    "acoustic_reason": "",
+    "parse_error": "CRC mismatch",
+    "marker_count": 18,
+    "expected_marker_count": 18
+  },
+  {
+    "file": "compact_aukey_room6_v2_00040.wav",
+    "raw_file": "/Users/kenburleson/Projects/B4-BL/recordings/compact_aukey_room6_v2_00040.raw.wav",
+    "category": "crc-rejected",
+    "acoustic_reason": "",
+    "parse_error": "CRC mismatch",
+    "marker_count": 21,
+    "expected_marker_count": 21
+  },
+  {
+    "file": "compact_aukey_room6_v2_00064.wav",
+    "raw_file": "/Users/kenburleson/Projects/B4-BL/recordings/compact_aukey_room6_v2_00064.raw.wav",
+    "category": "crc-rejected",
+    "acoustic_reason": "",
+    "parse_error": "CRC mismatch",
+    "marker_count": 19,
+    "expected_marker_count": 19
+  },
+  {
+    "file": "compact_aukey_room6_v2_00075.wav",
+    "raw_file": "/Users/kenburleson/Projects/B4-BL/recordings/compact_aukey_room6_v2_00075.raw.wav",
+    "category": "off-grid-framing",
+    "acoustic_reason": "word marker is off the symbol grid",
+    "parse_error": "word marker is off the symbol grid",
+    "marker_count": 14,
+    "expected_marker_count": 18
+  },
+  {
+    "file": "compact_aukey_room6_v2_00076.wav",
+    "raw_file": "/Users/kenburleson/Projects/B4-BL/recordings/compact_aukey_room6_v2_00076.raw.wav",
+    "category": "channel-loss-no-marker-pair",
+    "acoustic_reason": "no complete marker pair",
+    "parse_error": "no complete marker pair",
+    "marker_count": 0,
+    "expected_marker_count": 18
+  },
+  {
+    "file": "compact_aukey_room6_v2_00077.wav",
+    "raw_file": "/Users/kenburleson/Projects/B4-BL/recordings/compact_aukey_room6_v2_00077.raw.wav",
+    "category": "channel-loss-no-marker-pair",
+    "acoustic_reason": "no complete marker pair",
+    "parse_error": "no complete marker pair",
+    "marker_count": 0,
+    "expected_marker_count": 21
+  },
+  {
+    "file": "compact_aukey_room6_v2_00078.wav",
+    "raw_file": "/Users/kenburleson/Projects/B4-BL/recordings/compact_aukey_room6_v2_00078.raw.wav",
+    "category": "channel-loss-no-marker-pair",
+    "acoustic_reason": "no complete marker pair",
+    "parse_error": "no complete marker pair",
+    "marker_count": 0,
+    "expected_marker_count": 21
+  },
+  {
+    "file": "compact_aukey_room6_v2_00079.wav",
+    "raw_file": "/Users/kenburleson/Projects/B4-BL/recordings/compact_aukey_room6_v2_00079.raw.wav",
+    "category": "channel-loss-no-marker-pair",
+    "acoustic_reason": "no complete marker pair",
+    "parse_error": "no complete marker pair",
+    "marker_count": 0,
+    "expected_marker_count": 21
+  },
+  {
+    "file": "compact_aukey_room6_v2_00080.wav",
+    "raw_file": "/Users/kenburleson/Projects/B4-BL/recordings/compact_aukey_room6_v2_00080.raw.wav",
+    "category": "channel-loss-no-marker-pair",
+    "acoustic_reason": "no complete marker pair",
+    "parse_error": "no complete marker pair",
+    "marker_count": 0,
+    "expected_marker_count": 17
+  },
+  {
+    "file": "compact_aukey_room6_v2_00081.wav",
+    "raw_file": "/Users/kenburleson/Projects/B4-BL/recordings/compact_aukey_room6_v2_00081.raw.wav",
+    "category": "channel-loss-no-marker-pair",
+    "acoustic_reason": "no complete marker pair",
+    "parse_error": "no complete marker pair",
+    "marker_count": 0,
+    "expected_marker_count": 18
+  },
+  {
+    "file": "compact_aukey_room6_v2_00082.wav",
+    "raw_file": "/Users/kenburleson/Projects/B4-BL/recordings/compact_aukey_room6_v2_00082.raw.wav",
+    "category": "channel-loss-no-marker-pair",
+    "acoustic_reason": "no complete marker pair",
+    "parse_error": "no complete marker pair",
+    "marker_count": 0,
+    "expected_marker_count": 20
+  },
+  {
+    "file": "compact_aukey_room6_v2_00083.wav",
+    "raw_file": "/Users/kenburleson/Projects/B4-BL/recordings/compact_aukey_room6_v2_00083.raw.wav",
+    "category": "channel-loss-no-marker-pair",
+    "acoustic_reason": "no complete marker pair",
+    "parse_error": "no complete marker pair",
+    "marker_count": 0,
+    "expected_marker_count": 17
+  },
+  {
+    "file": "compact_aukey_room6_v2_00084.wav",
+    "raw_file": "/Users/kenburleson/Projects/B4-BL/recordings/compact_aukey_room6_v2_00084.raw.wav",
+    "category": "channel-loss-no-marker-pair",
+    "acoustic_reason": "no complete marker pair",
+    "parse_error": "no complete marker pair",
+    "marker_count": 0,
+    "expected_marker_count": 17
+  },
+  {
+    "file": "compact_aukey_room6_v2_00085.wav",
+    "raw_file": "/Users/kenburleson/Projects/B4-BL/recordings/compact_aukey_room6_v2_00085.raw.wav",
+    "category": "channel-loss-no-marker-pair",
+    "acoustic_reason": "no complete marker pair",
+    "parse_error": "no complete marker pair",
+    "marker_count": 0,
+    "expected_marker_count": 20
+  },
+  {
+    "file": "compact_aukey_room6_v2_00086.wav",
+    "raw_file": "/Users/kenburleson/Projects/B4-BL/recordings/compact_aukey_room6_v2_00086.raw.wav",
+    "category": "channel-loss-no-marker-pair",
+    "acoustic_reason": "no complete marker pair",
+    "parse_error": "no complete marker pair",
+    "marker_count": 0,
+    "expected_marker_count": 17
+  },
+  {
+    "file": "compact_aukey_room6_v2_00087.wav",
+    "raw_file": "/Users/kenburleson/Projects/B4-BL/recordings/compact_aukey_room6_v2_00087.raw.wav",
+    "category": "channel-loss-no-marker-pair",
+    "acoustic_reason": "no complete marker pair",
+    "parse_error": "no complete marker pair",
+    "marker_count": 0,
+    "expected_marker_count": 18
+  },
+  {
+    "file": "compact_aukey_room6_v2_00088.wav",
+    "raw_file": "/Users/kenburleson/Projects/B4-BL/recordings/compact_aukey_room6_v2_00088.raw.wav",
+    "category": "channel-loss-no-marker-pair",
+    "acoustic_reason": "no complete marker pair",
+    "parse_error": "no complete marker pair",
+    "marker_count": 0,
+    "expected_marker_count": 18
+  },
+  {
+    "file": "compact_aukey_room6_v2_00089.wav",
+    "raw_file": "/Users/kenburleson/Projects/B4-BL/recordings/compact_aukey_room6_v2_00089.raw.wav",
+    "category": "channel-loss-no-marker-pair",
+    "acoustic_reason": "no complete marker pair",
+    "parse_error": "no complete marker pair",
+    "marker_count": 0,
+    "expected_marker_count": 21
+  },
+  {
+    "file": "compact_aukey_room6_v2_00090.wav",
+    "raw_file": "/Users/kenburleson/Projects/B4-BL/recordings/compact_aukey_room6_v2_00090.raw.wav",
+    "category": "channel-loss-no-marker-pair",
+    "acoustic_reason": "no complete marker pair",
+    "parse_error": "no complete marker pair",
+    "marker_count": 0,
+    "expected_marker_count": 17
+  },
+  {
+    "file": "compact_aukey_room6_v2_00091.wav",
+    "raw_file": "/Users/kenburleson/Projects/B4-BL/recordings/compact_aukey_room6_v2_00091.raw.wav",
+    "category": "channel-loss-no-marker-pair",
+    "acoustic_reason": "no complete marker pair",
+    "parse_error": "no complete marker pair",
+    "marker_count": 0,
+    "expected_marker_count": 17
+  },
+  {
+    "file": "compact_aukey_room6_v2_00092.wav",
+    "raw_file": "/Users/kenburleson/Projects/B4-BL/recordings/compact_aukey_room6_v2_00092.raw.wav",
+    "category": "channel-loss-no-marker-pair",
+    "acoustic_reason": "no complete marker pair",
+    "parse_error": "no complete marker pair",
+    "marker_count": 0,
+    "expected_marker_count": 19
+  },
+  {
+    "file": "compact_aukey_room6_v2_00093.wav",
+    "raw_file": "/Users/kenburleson/Projects/B4-BL/recordings/compact_aukey_room6_v2_00093.raw.wav",
+    "category": "channel-loss-no-marker-pair",
+    "acoustic_reason": "no complete marker pair",
+    "parse_error": "no complete marker pair",
+    "marker_count": 0,
+    "expected_marker_count": 18
+  },
+  {
+    "file": "compact_aukey_room6_v2_00094.wav",
+    "raw_file": "/Users/kenburleson/Projects/B4-BL/recordings/compact_aukey_room6_v2_00094.raw.wav",
+    "category": "channel-loss-no-marker-pair",
+    "acoustic_reason": "no complete marker pair",
+    "parse_error": "no complete marker pair",
+    "marker_count": 0,
+    "expected_marker_count": 20
+  },
+  {
+    "file": "compact_aukey_room6_v2_00095.wav",
+    "raw_file": "/Users/kenburleson/Projects/B4-BL/recordings/compact_aukey_room6_v2_00095.raw.wav",
+    "category": "channel-loss-no-marker-pair",
+    "acoustic_reason": "no complete marker pair",
+    "parse_error": "no complete marker pair",
+    "marker_count": 0,
+    "expected_marker_count": 19
+  },
+  {
+    "file": "compact_aukey_room6_v2_00096.wav",
+    "raw_file": "/Users/kenburleson/Projects/B4-BL/recordings/compact_aukey_room6_v2_00096.raw.wav",
+    "category": "channel-loss-no-marker-pair",
+    "acoustic_reason": "no complete marker pair",
+    "parse_error": "no complete marker pair",
+    "marker_count": 0,
+    "expected_marker_count": 20
+  },
+  {
+    "file": "compact_aukey_room6_v2_00097.wav",
+    "raw_file": "/Users/kenburleson/Projects/B4-BL/recordings/compact_aukey_room6_v2_00097.raw.wav",
+    "category": "channel-loss-no-marker-pair",
+    "acoustic_reason": "no complete marker pair",
+    "parse_error": "no complete marker pair",
+    "marker_count": 0,
+    "expected_marker_count": 18
+  },
+  {
+    "file": "compact_aukey_room6_v2_00098.wav",
+    "raw_file": "/Users/kenburleson/Projects/B4-BL/recordings/compact_aukey_room6_v2_00098.raw.wav",
+    "category": "channel-loss-no-marker-pair",
+    "acoustic_reason": "no complete marker pair",
+    "parse_error": "no complete marker pair",
+    "marker_count": 0,
+    "expected_marker_count": 21
+  },
+  {
+    "file": "compact_aukey_room6_v2_00099.wav",
+    "raw_file": "/Users/kenburleson/Projects/B4-BL/recordings/compact_aukey_room6_v2_00099.raw.wav",
+    "category": "channel-loss-no-marker-pair",
+    "acoustic_reason": "no complete marker pair",
+    "parse_error": "no complete marker pair",
+    "marker_count": 0,
+    "expected_marker_count": 18
+  },
+  {
+    "file": "compact_aukey_room6_v2_00100.wav",
+    "raw_file": "/Users/kenburleson/Projects/B4-BL/recordings/compact_aukey_room6_v2_00100.raw.wav",
+    "category": "channel-loss-no-marker-pair",
+    "acoustic_reason": "no complete marker pair",
+    "parse_error": "no complete marker pair",
+    "marker_count": 0,
+    "expected_marker_count": 18
+  },
+  {
+    "file": "compact_aukey_room6_v2_00101.wav",
+    "raw_file": "/Users/kenburleson/Projects/B4-BL/recordings/compact_aukey_room6_v2_00101.raw.wav",
+    "category": "channel-loss-no-marker-pair",
+    "acoustic_reason": "no complete marker pair",
+    "parse_error": "no complete marker pair",
+    "marker_count": 0,
+    "expected_marker_count": 21
+  },
+  {
+    "file": "compact_aukey_room6_v2_00102.wav",
+    "raw_file": "/Users/kenburleson/Projects/B4-BL/recordings/compact_aukey_room6_v2_00102.raw.wav",
+    "category": "channel-loss-no-marker-pair",
+    "acoustic_reason": "no complete marker pair",
+    "parse_error": "no complete marker pair",
+    "marker_count": 0,
+    "expected_marker_count": 18
+  },
+  {
+    "file": "compact_aukey_room6_v2_00103.wav",
+    "raw_file": "/Users/kenburleson/Projects/B4-BL/recordings/compact_aukey_room6_v2_00103.raw.wav",
+    "category": "channel-loss-no-marker-pair",
+    "acoustic_reason": "no complete marker pair",
+    "parse_error": "no complete marker pair",
+    "marker_count": 0,
+    "expected_marker_count": 19
+  },
+  {
+    "file": "compact_aukey_room6_v2_00104.wav",
+    "raw_file": "/Users/kenburleson/Projects/B4-BL/recordings/compact_aukey_room6_v2_00104.raw.wav",
+    "category": "channel-loss-no-marker-pair",
+    "acoustic_reason": "no complete marker pair",
+    "parse_error": "no complete marker pair",
+    "marker_count": 0,
+    "expected_marker_count": 17
+  },
+  {
+    "file": "compact_aukey_room6_v2_00105.wav",
+    "raw_file": "/Users/kenburleson/Projects/B4-BL/recordings/compact_aukey_room6_v2_00105.raw.wav",
+    "category": "channel-loss-no-marker-pair",
+    "acoustic_reason": "no complete marker pair",
+    "parse_error": "no complete marker pair",
+    "marker_count": 0,
+    "expected_marker_count": 20
+  },
+  {
+    "file": "compact_aukey_room6_v2_00106.wav",
+    "raw_file": "/Users/kenburleson/Projects/B4-BL/recordings/compact_aukey_room6_v2_00106.raw.wav",
+    "category": "channel-loss-no-marker-pair",
+    "acoustic_reason": "no complete marker pair",
+    "parse_error": "no complete marker pair",
+    "marker_count": 0,
+    "expected_marker_count": 19
+  },
+  {
+    "file": "compact_aukey_room6_v2_00107.wav",
+    "raw_file": "/Users/kenburleson/Projects/B4-BL/recordings/compact_aukey_room6_v2_00107.raw.wav",
+    "category": "channel-loss-no-marker-pair",
+    "acoustic_reason": "no complete marker pair",
+    "parse_error": "no complete marker pair",
+    "marker_count": 0,
+    "expected_marker_count": 17
+  },
+  {
+    "file": "compact_aukey_room6_v2_00108.wav",
+    "raw_file": "/Users/kenburleson/Projects/B4-BL/recordings/compact_aukey_room6_v2_00108.raw.wav",
+    "category": "channel-loss-no-marker-pair",
+    "acoustic_reason": "no complete marker pair",
+    "parse_error": "no complete marker pair",
+    "marker_count": 0,
+    "expected_marker_count": 20
+  },
+  {
+    "file": "compact_aukey_room6_v2_00109.wav",
+    "raw_file": "/Users/kenburleson/Projects/B4-BL/recordings/compact_aukey_room6_v2_00109.raw.wav",
+    "category": "channel-loss-no-marker-pair",
+    "acoustic_reason": "no complete marker pair",
+    "parse_error": "no complete marker pair",
+    "marker_count": 0,
+    "expected_marker_count": 18
+  },
+  {
+    "file": "compact_aukey_room6_v2_00110.wav",
+    "raw_file": "/Users/kenburleson/Projects/B4-BL/recordings/compact_aukey_room6_v2_00110.raw.wav",
+    "category": "channel-loss-no-marker-pair",
+    "acoustic_reason": "no complete marker pair",
+    "parse_error": "no complete marker pair",
+    "marker_count": 0,
+    "expected_marker_count": 18
+  },
+  {
+    "file": "compact_aukey_room6_v2_00111.wav",
+    "raw_file": "/Users/kenburleson/Projects/B4-BL/recordings/compact_aukey_room6_v2_00111.raw.wav",
+    "category": "channel-loss-no-marker-pair",
+    "acoustic_reason": "no complete marker pair",
+    "parse_error": "no complete marker pair",
+    "marker_count": 0,
+    "expected_marker_count": 18
+  },
+  {
+    "file": "compact_aukey_room6_v2_00112.wav",
+    "raw_file": "/Users/kenburleson/Projects/B4-BL/recordings/compact_aukey_room6_v2_00112.raw.wav",
+    "category": "channel-loss-no-marker-pair",
+    "acoustic_reason": "no complete marker pair",
+    "parse_error": "no complete marker pair",
+    "marker_count": 0,
+    "expected_marker_count": 17
+  },
+  {
+    "file": "compact_aukey_room6_v2_00113.wav",
+    "raw_file": "/Users/kenburleson/Projects/B4-BL/recordings/compact_aukey_room6_v2_00113.raw.wav",
+    "category": "channel-loss-no-marker-pair",
+    "acoustic_reason": "no complete marker pair",
+    "parse_error": "no complete marker pair",
+    "marker_count": 0,
+    "expected_marker_count": 17
+  },
+  {
+    "file": "compact_aukey_room6_v2_00114.wav",
+    "raw_file": "/Users/kenburleson/Projects/B4-BL/recordings/compact_aukey_room6_v2_00114.raw.wav",
+    "category": "channel-loss-no-marker-pair",
+    "acoustic_reason": "no complete marker pair",
+    "parse_error": "no complete marker pair",
+    "marker_count": 0,
+    "expected_marker_count": 18
+  },
+  {
+    "file": "compact_aukey_room6_v2_00115.wav",
+    "raw_file": "/Users/kenburleson/Projects/B4-BL/recordings/compact_aukey_room6_v2_00115.raw.wav",
+    "category": "channel-loss-no-marker-pair",
+    "acoustic_reason": "no complete marker pair",
+    "parse_error": "no complete marker pair",
+    "marker_count": 0,
+    "expected_marker_count": 19
+  },
+  {
+    "file": "compact_aukey_room6_v2_00116.wav",
+    "raw_file": "/Users/kenburleson/Projects/B4-BL/recordings/compact_aukey_room6_v2_00116.raw.wav",
+    "category": "channel-loss-no-marker-pair",
+    "acoustic_reason": "no complete marker pair",
+    "parse_error": "no complete marker pair",
+    "marker_count": 0,
+    "expected_marker_count": 21
+  },
+  {
+    "file": "compact_aukey_room6_v2_00117.wav",
+    "raw_file": "/Users/kenburleson/Projects/B4-BL/recordings/compact_aukey_room6_v2_00117.raw.wav",
+    "category": "channel-loss-no-marker-pair",
+    "acoustic_reason": "no complete marker pair",
+    "parse_error": "no complete marker pair",
+    "marker_count": 0,
+    "expected_marker_count": 18
+  },
+  {
+    "file": "compact_aukey_room6_v2_00118.wav",
+    "raw_file": "/Users/kenburleson/Projects/B4-BL/recordings/compact_aukey_room6_v2_00118.raw.wav",
+    "category": "channel-loss-no-marker-pair",
+    "acoustic_reason": "no complete marker pair",
+    "parse_error": "no complete marker pair",
+    "marker_count": 0,
+    "expected_marker_count": 21
+  },
+  {
+    "file": "compact_aukey_room6_v2_00119.wav",
+    "raw_file": "/Users/kenburleson/Projects/B4-BL/recordings/compact_aukey_room6_v2_00119.raw.wav",
+    "category": "channel-loss-no-marker-pair",
+    "acoustic_reason": "no complete marker pair",
+    "parse_error": "no complete marker pair",
+    "marker_count": 0,
+    "expected_marker_count": 17
+  },
+  {
+    "file": "compact_aukey_room6_v2_00120.wav",
+    "raw_file": "/Users/kenburleson/Projects/B4-BL/recordings/compact_aukey_room6_v2_00120.raw.wav",
+    "category": "channel-loss-no-marker-pair",
+    "acoustic_reason": "no complete marker pair",
+    "parse_error": "no complete marker pair",
+    "marker_count": 0,
+    "expected_marker_count": 19
+  },
+  {
+    "file": "compact_aukey_room6_v2_00121.wav",
+    "raw_file": "/Users/kenburleson/Projects/B4-BL/recordings/compact_aukey_room6_v2_00121.raw.wav",
+    "category": "channel-loss-no-marker-pair",
+    "acoustic_reason": "no complete marker pair",
+    "parse_error": "no complete marker pair",
+    "marker_count": 0,
+    "expected_marker_count": 18
+  },
+  {
+    "file": "compact_aukey_room6_v2_00122.wav",
+    "raw_file": "/Users/kenburleson/Projects/B4-BL/recordings/compact_aukey_room6_v2_00122.raw.wav",
+    "category": "channel-loss-no-marker-pair",
+    "acoustic_reason": "no complete marker pair",
+    "parse_error": "no complete marker pair",
+    "marker_count": 0,
+    "expected_marker_count": 20
+  },
+  {
+    "file": "compact_aukey_room6_v2_00123.wav",
+    "raw_file": "/Users/kenburleson/Projects/B4-BL/recordings/compact_aukey_room6_v2_00123.raw.wav",
+    "category": "channel-loss-no-marker-pair",
+    "acoustic_reason": "no complete marker pair",
+    "parse_error": "no complete marker pair",
+    "marker_count": 0,
+    "expected_marker_count": 19
+  },
+  {
+    "file": "compact_aukey_room6_v2_00124.wav",
+    "raw_file": "/Users/kenburleson/Projects/B4-BL/recordings/compact_aukey_room6_v2_00124.raw.wav",
+    "category": "channel-loss-no-marker-pair",
+    "acoustic_reason": "no complete marker pair",
+    "parse_error": "no complete marker pair",
+    "marker_count": 0,
+    "expected_marker_count": 18
+  },
+  {
+    "file": "compact_aukey_room6_v2_00125.wav",
+    "raw_file": "/Users/kenburleson/Projects/B4-BL/recordings/compact_aukey_room6_v2_00125.raw.wav",
+    "category": "channel-loss-no-marker-pair",
+    "acoustic_reason": "no complete marker pair",
+    "parse_error": "no complete marker pair",
+    "marker_count": 0,
+    "expected_marker_count": 17
+  },
+  {
+    "file": "compact_aukey_room6_v2_00126.wav",
+    "raw_file": "/Users/kenburleson/Projects/B4-BL/recordings/compact_aukey_room6_v2_00126.raw.wav",
+    "category": "channel-loss-no-marker-pair",
+    "acoustic_reason": "no complete marker pair",
+    "parse_error": "no complete marker pair",
+    "marker_count": 0,
+    "expected_marker_count": 18
+  },
+  {
+    "file": "compact_aukey_room6_v2_00127.wav",
+    "raw_file": "/Users/kenburleson/Projects/B4-BL/recordings/compact_aukey_room6_v2_00127.raw.wav",
+    "category": "channel-loss-no-marker-pair",
+    "acoustic_reason": "no complete marker pair",
+    "parse_error": "no complete marker pair",
+    "marker_count": 0,
+    "expected_marker_count": 19
+  },
+  {
+    "file": "compact_aukey_room6_v2_00128.wav",
+    "raw_file": "/Users/kenburleson/Projects/B4-BL/recordings/compact_aukey_room6_v2_00128.raw.wav",
+    "category": "channel-loss-no-marker-pair",
+    "acoustic_reason": "no complete marker pair",
+    "parse_error": "no complete marker pair",
+    "marker_count": 0,
+    "expected_marker_count": 19
+  },
+  {
+    "file": "compact_aukey_room6_v2_00129.wav",
+    "raw_file": "/Users/kenburleson/Projects/B4-BL/recordings/compact_aukey_room6_v2_00129.raw.wav",
+    "category": "channel-loss-no-marker-pair",
+    "acoustic_reason": "no complete marker pair",
+    "parse_error": "no complete marker pair",
+    "marker_count": 0,
+    "expected_marker_count": 20
+  },
+  {
+    "file": "compact_aukey_room6_v2_00130.wav",
+    "raw_file": "/Users/kenburleson/Projects/B4-BL/recordings/compact_aukey_room6_v2_00130.raw.wav",
+    "category": "channel-loss-no-marker-pair",
+    "acoustic_reason": "no complete marker pair",
+    "parse_error": "no complete marker pair",
+    "marker_count": 0,
+    "expected_marker_count": 17
+  },
+  {
+    "file": "compact_aukey_room6_v2_00131.wav",
+    "raw_file": "/Users/kenburleson/Projects/B4-BL/recordings/compact_aukey_room6_v2_00131.raw.wav",
+    "category": "channel-loss-no-marker-pair",
+    "acoustic_reason": "no complete marker pair",
+    "parse_error": "no complete marker pair",
+    "marker_count": 0,
+    "expected_marker_count": 17
+  },
+  {
+    "file": "compact_aukey_room6_v2_00132.wav",
+    "raw_file": "/Users/kenburleson/Projects/B4-BL/recordings/compact_aukey_room6_v2_00132.raw.wav",
+    "category": "channel-loss-no-marker-pair",
+    "acoustic_reason": "no complete marker pair",
+    "parse_error": "no complete marker pair",
+    "marker_count": 0,
+    "expected_marker_count": 18
+  },
+  {
+    "file": "compact_aukey_room6_v2_00133.wav",
+    "raw_file": "/Users/kenburleson/Projects/B4-BL/recordings/compact_aukey_room6_v2_00133.raw.wav",
+    "category": "channel-loss-no-marker-pair",
+    "acoustic_reason": "no complete marker pair",
+    "parse_error": "no complete marker pair",
+    "marker_count": 0,
+    "expected_marker_count": 17
+  },
+  {
+    "file": "compact_aukey_room6_v2_00134.wav",
+    "raw_file": "/Users/kenburleson/Projects/B4-BL/recordings/compact_aukey_room6_v2_00134.raw.wav",
+    "category": "channel-loss-no-marker-pair",
+    "acoustic_reason": "no complete marker pair",
+    "parse_error": "no complete marker pair",
+    "marker_count": 0,
+    "expected_marker_count": 17
+  },
+  {
+    "file": "compact_aukey_room6_v2_00135.wav",
+    "raw_file": "/Users/kenburleson/Projects/B4-BL/recordings/compact_aukey_room6_v2_00135.raw.wav",
+    "category": "channel-loss-no-marker-pair",
+    "acoustic_reason": "no complete marker pair",
+    "parse_error": "no complete marker pair",
+    "marker_count": 0,
+    "expected_marker_count": 17
+  },
+  {
+    "file": "compact_aukey_room6_v2_00136.wav",
+    "raw_file": "/Users/kenburleson/Projects/B4-BL/recordings/compact_aukey_room6_v2_00136.raw.wav",
+    "category": "channel-loss-no-marker-pair",
+    "acoustic_reason": "no complete marker pair",
+    "parse_error": "no complete marker pair",
+    "marker_count": 0,
+    "expected_marker_count": 20
+  },
+  {
+    "file": "compact_aukey_room6_v2_00137.wav",
+    "raw_file": "/Users/kenburleson/Projects/B4-BL/recordings/compact_aukey_room6_v2_00137.raw.wav",
+    "category": "channel-loss-no-marker-pair",
+    "acoustic_reason": "no complete marker pair",
+    "parse_error": "no complete marker pair",
+    "marker_count": 0,
+    "expected_marker_count": 20
+  },
+  {
+    "file": "compact_aukey_room6_v2_00138.wav",
+    "raw_file": "/Users/kenburleson/Projects/B4-BL/recordings/compact_aukey_room6_v2_00138.raw.wav",
+    "category": "channel-loss-no-marker-pair",
+    "acoustic_reason": "no complete marker pair",
+    "parse_error": "no complete marker pair",
+    "marker_count": 0,
+    "expected_marker_count": 17
+  },
+  {
+    "file": "compact_aukey_room6_v2_00139.wav",
+    "raw_file": "/Users/kenburleson/Projects/B4-BL/recordings/compact_aukey_room6_v2_00139.raw.wav",
+    "category": "channel-loss-no-marker-pair",
+    "acoustic_reason": "no complete marker pair",
+    "parse_error": "no complete marker pair",
+    "marker_count": 0,
+    "expected_marker_count": 21
+  },
+  {
+    "file": "compact_aukey_room6_v2_00140.wav",
+    "raw_file": "/Users/kenburleson/Projects/B4-BL/recordings/compact_aukey_room6_v2_00140.raw.wav",
+    "category": "channel-loss-no-marker-pair",
+    "acoustic_reason": "no complete marker pair",
+    "parse_error": "no complete marker pair",
+    "marker_count": 0,
+    "expected_marker_count": 20
+  },
+  {
+    "file": "compact_aukey_room6_v2_00141.wav",
+    "raw_file": "/Users/kenburleson/Projects/B4-BL/recordings/compact_aukey_room6_v2_00141.raw.wav",
+    "category": "channel-loss-no-marker-pair",
+    "acoustic_reason": "no complete marker pair",
+    "parse_error": "no complete marker pair",
+    "marker_count": 0,
+    "expected_marker_count": 18
+  },
+  {
+    "file": "compact_aukey_room6_v2_00142.wav",
+    "raw_file": "/Users/kenburleson/Projects/B4-BL/recordings/compact_aukey_room6_v2_00142.raw.wav",
+    "category": "channel-loss-no-marker-pair",
+    "acoustic_reason": "no complete marker pair",
+    "parse_error": "no complete marker pair",
+    "marker_count": 0,
+    "expected_marker_count": 19
+  },
+  {
+    "file": "compact_aukey_room6_v2_00143.wav",
+    "raw_file": "/Users/kenburleson/Projects/B4-BL/recordings/compact_aukey_room6_v2_00143.raw.wav",
+    "category": "channel-loss-no-marker-pair",
+    "acoustic_reason": "no complete marker pair",
+    "parse_error": "no complete marker pair",
+    "marker_count": 0,
+    "expected_marker_count": 20
+  },
+  {
+    "file": "compact_aukey_room6_v2_00144.wav",
+    "raw_file": "/Users/kenburleson/Projects/B4-BL/recordings/compact_aukey_room6_v2_00144.raw.wav",
+    "category": "channel-loss-no-marker-pair",
+    "acoustic_reason": "no complete marker pair",
+    "parse_error": "no complete marker pair",
+    "marker_count": 0,
+    "expected_marker_count": 21
+  },
+  {
+    "file": "compact_aukey_room6_v2_00145.wav",
+    "raw_file": "/Users/kenburleson/Projects/B4-BL/recordings/compact_aukey_room6_v2_00145.raw.wav",
+    "category": "channel-loss-no-marker-pair",
+    "acoustic_reason": "no complete marker pair",
+    "parse_error": "no complete marker pair",
+    "marker_count": 0,
+    "expected_marker_count": 17
+  },
+  {
+    "file": "compact_aukey_room6_v2_00146.wav",
+    "raw_file": "/Users/kenburleson/Projects/B4-BL/recordings/compact_aukey_room6_v2_00146.raw.wav",
+    "category": "channel-loss-no-marker-pair",
+    "acoustic_reason": "no complete marker pair",
+    "parse_error": "no complete marker pair",
+    "marker_count": 0,
+    "expected_marker_count": 21
+  },
+  {
+    "file": "compact_aukey_room6_v2_00147.wav",
+    "raw_file": "/Users/kenburleson/Projects/B4-BL/recordings/compact_aukey_room6_v2_00147.raw.wav",
+    "category": "channel-loss-no-marker-pair",
+    "acoustic_reason": "no complete marker pair",
+    "parse_error": "no complete marker pair",
+    "marker_count": 0,
+    "expected_marker_count": 19
+  },
+  {
+    "file": "compact_aukey_room6_v2_00148.wav",
+    "raw_file": "/Users/kenburleson/Projects/B4-BL/recordings/compact_aukey_room6_v2_00148.raw.wav",
+    "category": "channel-loss-no-marker-pair",
+    "acoustic_reason": "no complete marker pair",
+    "parse_error": "no complete marker pair",
+    "marker_count": 0,
+    "expected_marker_count": 17
+  },
+  {
+    "file": "compact_aukey_room6_v2_00149.wav",
+    "raw_file": "/Users/kenburleson/Projects/B4-BL/recordings/compact_aukey_room6_v2_00149.raw.wav",
+    "category": "channel-loss-no-marker-pair",
+    "acoustic_reason": "no complete marker pair",
+    "parse_error": "no complete marker pair",
+    "marker_count": 0,
+    "expected_marker_count": 20
+  },
+  {
+    "file": "compact_aukey_room6_v2_00150.wav",
+    "raw_file": "/Users/kenburleson/Projects/B4-BL/recordings/compact_aukey_room6_v2_00150.raw.wav",
+    "category": "channel-loss-no-marker-pair",
+    "acoustic_reason": "no complete marker pair",
+    "parse_error": "no complete marker pair",
+    "marker_count": 0,
+    "expected_marker_count": 21
+  },
+  {
+    "file": "compact_aukey_room6_v2_00151.wav",
+    "raw_file": "/Users/kenburleson/Projects/B4-BL/recordings/compact_aukey_room6_v2_00151.raw.wav",
+    "category": "channel-loss-no-marker-pair",
+    "acoustic_reason": "no complete marker pair",
+    "parse_error": "no complete marker pair",
+    "marker_count": 0,
+    "expected_marker_count": 18
+  },
+  {
+    "file": "compact_aukey_room6_v2_00152.wav",
+    "raw_file": "/Users/kenburleson/Projects/B4-BL/recordings/compact_aukey_room6_v2_00152.raw.wav",
+    "category": "channel-loss-no-marker-pair",
+    "acoustic_reason": "no complete marker pair",
+    "parse_error": "no complete marker pair",
+    "marker_count": 0,
+    "expected_marker_count": 22
+  },
+  {
+    "file": "compact_aukey_room6_v2_00153.wav",
+    "raw_file": "/Users/kenburleson/Projects/B4-BL/recordings/compact_aukey_room6_v2_00153.raw.wav",
+    "category": "channel-loss-no-marker-pair",
+    "acoustic_reason": "no complete marker pair",
+    "parse_error": "no complete marker pair",
+    "marker_count": 0,
+    "expected_marker_count": 19
+  },
+  {
+    "file": "compact_aukey_room6_v2_00154.wav",
+    "raw_file": "/Users/kenburleson/Projects/B4-BL/recordings/compact_aukey_room6_v2_00154.raw.wav",
+    "category": "channel-loss-no-marker-pair",
+    "acoustic_reason": "no complete marker pair",
+    "parse_error": "no complete marker pair",
+    "marker_count": 0,
+    "expected_marker_count": 18
+  },
+  {
+    "file": "compact_aukey_room6_v2_00155.wav",
+    "raw_file": "/Users/kenburleson/Projects/B4-BL/recordings/compact_aukey_room6_v2_00155.raw.wav",
+    "category": "channel-loss-no-marker-pair",
+    "acoustic_reason": "no complete marker pair",
+    "parse_error": "no complete marker pair",
+    "marker_count": 0,
+    "expected_marker_count": 20
+  },
+  {
+    "file": "compact_aukey_room6_v2_00156.wav",
+    "raw_file": "/Users/kenburleson/Projects/B4-BL/recordings/compact_aukey_room6_v2_00156.raw.wav",
+    "category": "channel-loss-no-marker-pair",
+    "acoustic_reason": "no complete marker pair",
+    "parse_error": "no complete marker pair",
+    "marker_count": 0,
+    "expected_marker_count": 21
+  },
+  {
+    "file": "compact_aukey_room6_v2_00157.wav",
+    "raw_file": "/Users/kenburleson/Projects/B4-BL/recordings/compact_aukey_room6_v2_00157.raw.wav",
+    "category": "channel-loss-no-marker-pair",
+    "acoustic_reason": "no complete marker pair",
+    "parse_error": "no complete marker pair",
+    "marker_count": 0,
+    "expected_marker_count": 19
+  },
+  {
+    "file": "compact_aukey_room6_v2_00158.wav",
+    "raw_file": "/Users/kenburleson/Projects/B4-BL/recordings/compact_aukey_room6_v2_00158.raw.wav",
+    "category": "channel-loss-no-marker-pair",
+    "acoustic_reason": "no complete marker pair",
+    "parse_error": "no complete marker pair",
+    "marker_count": 0,
+    "expected_marker_count": 21
+  },
+  {
+    "file": "compact_aukey_room6_v2_00159.wav",
+    "raw_file": "/Users/kenburleson/Projects/B4-BL/recordings/compact_aukey_room6_v2_00159.raw.wav",
+    "category": "channel-loss-no-marker-pair",
+    "acoustic_reason": "no complete marker pair",
+    "parse_error": "no complete marker pair",
+    "marker_count": 0,
+    "expected_marker_count": 19
+  },
+  {
+    "file": "compact_aukey_room6_v2_00160.wav",
+    "raw_file": "/Users/kenburleson/Projects/B4-BL/recordings/compact_aukey_room6_v2_00160.raw.wav",
+    "category": "channel-loss-no-marker-pair",
+    "acoustic_reason": "no complete marker pair",
+    "parse_error": "no complete marker pair",
+    "marker_count": 0,
+    "expected_marker_count": 17
+  },
+  {
+    "file": "compact_aukey_room6_v2_00161.wav",
+    "raw_file": "/Users/kenburleson/Projects/B4-BL/recordings/compact_aukey_room6_v2_00161.raw.wav",
+    "category": "channel-loss-no-marker-pair",
+    "acoustic_reason": "no complete marker pair",
+    "parse_error": "no complete marker pair",
+    "marker_count": 0,
+    "expected_marker_count": 18
+  },
+  {
+    "file": "compact_aukey_room6_v2_00162.wav",
+    "raw_file": "/Users/kenburleson/Projects/B4-BL/recordings/compact_aukey_room6_v2_00162.raw.wav",
+    "category": "channel-loss-no-marker-pair",
+    "acoustic_reason": "no complete marker pair",
+    "parse_error": "no complete marker pair",
+    "marker_count": 0,
+    "expected_marker_count": 17
+  },
+  {
+    "file": "compact_aukey_room6_v2_00163.wav",
+    "raw_file": "/Users/kenburleson/Projects/B4-BL/recordings/compact_aukey_room6_v2_00163.raw.wav",
+    "category": "channel-loss-no-marker-pair",
+    "acoustic_reason": "no complete marker pair",
+    "parse_error": "no complete marker pair",
+    "marker_count": 1,
+    "expected_marker_count": 20
+  },
+  {
+    "file": "compact_aukey_room6_v2_00164.wav",
+    "raw_file": "/Users/kenburleson/Projects/B4-BL/recordings/compact_aukey_room6_v2_00164.raw.wav",
+    "category": "channel-loss-no-marker-pair",
+    "acoustic_reason": "no complete marker pair",
+    "parse_error": "no complete marker pair",
+    "marker_count": 0,
+    "expected_marker_count": 17
+  },
+  {
+    "file": "compact_aukey_room6_v2_00165.wav",
+    "raw_file": "/Users/kenburleson/Projects/B4-BL/recordings/compact_aukey_room6_v2_00165.raw.wav",
+    "category": "channel-loss-no-marker-pair",
+    "acoustic_reason": "no complete marker pair",
+    "parse_error": "no complete marker pair",
+    "marker_count": 0,
+    "expected_marker_count": 20
+  },
+  {
+    "file": "compact_aukey_room6_v2_00166.wav",
+    "raw_file": "/Users/kenburleson/Projects/B4-BL/recordings/compact_aukey_room6_v2_00166.raw.wav",
+    "category": "channel-loss-no-marker-pair",
+    "acoustic_reason": "no complete marker pair",
+    "parse_error": "no complete marker pair",
+    "marker_count": 0,
+    "expected_marker_count": 18
+  },
+  {
+    "file": "compact_aukey_room6_v2_00167.wav",
+    "raw_file": "/Users/kenburleson/Projects/B4-BL/recordings/compact_aukey_room6_v2_00167.raw.wav",
+    "category": "channel-loss-no-marker-pair",
+    "acoustic_reason": "no complete marker pair",
+    "parse_error": "no complete marker pair",
+    "marker_count": 0,
+    "expected_marker_count": 20
+  },
+  {
+    "file": "compact_aukey_room6_v2_00168.wav",
+    "raw_file": "/Users/kenburleson/Projects/B4-BL/recordings/compact_aukey_room6_v2_00168.raw.wav",
+    "category": "channel-loss-no-marker-pair",
+    "acoustic_reason": "no complete marker pair",
+    "parse_error": "no complete marker pair",
+    "marker_count": 0,
+    "expected_marker_count": 17
+  },
+  {
+    "file": "compact_aukey_room6_v2_00169.wav",
+    "raw_file": "/Users/kenburleson/Projects/B4-BL/recordings/compact_aukey_room6_v2_00169.raw.wav",
+    "category": "channel-loss-no-marker-pair",
+    "acoustic_reason": "no complete marker pair",
+    "parse_error": "no complete marker pair",
+    "marker_count": 0,
+    "expected_marker_count": 20
+  },
+  {
+    "file": "compact_aukey_room6_v2_00170.wav",
+    "category": "missing",
+    "reason": "no raw recording"
+  }
+]

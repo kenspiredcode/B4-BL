@@ -1,0 +1,350 @@
+{
+  "model": "experiments/clocked-balanced-final-20260916/clocked_classifier.joblib",
+  "totals": {
+    "n": 20,
+    "exact": 15,
+    "multi": 12,
+    "multi_exact": 8,
+    "accepted_wrong": 3,
+    "rejected": 2,
+    "markers_ok": 20,
+    "words": 47,
+    "words_correct": 41
+  },
+  "results": [
+    {
+      "file": "clocked_macbook_aukey_near_v1_00000.raw.wav",
+      "expected": [
+        "GREETING"
+      ],
+      "hypothesis": [
+        "GREETING"
+      ],
+      "accepted": true,
+      "reason": "",
+      "markers": 2,
+      "clock_scale": 1.0,
+      "clock_residual_ms": 0.022675736961451247
+    },
+    {
+      "file": "clocked_macbook_aukey_near_v1_00001.raw.wav",
+      "expected": [
+        "UNCHARGED",
+        "AROUND",
+        "TAKE",
+        "STOP_V",
+        "D7"
+      ],
+      "hypothesis": [
+        "CHARGE",
+        "AROUND",
+        "THAT",
+        "STOP_V",
+        "D7"
+      ],
+      "accepted": false,
+      "reason": "ambiguous word or no repetition majority",
+      "markers": 6,
+      "clock_scale": 1.0,
+      "clock_residual_ms": 0.022675736961451247
+    },
+    {
+      "file": "clocked_macbook_aukey_near_v1_00002.raw.wav",
+      "expected": [
+        "AFTER"
+      ],
+      "hypothesis": [
+        "AFTER"
+      ],
+      "accepted": true,
+      "reason": "",
+      "markers": 2,
+      "clock_scale": 1.00025,
+      "clock_residual_ms": 0.1132426303856248
+    },
+    {
+      "file": "clocked_macbook_aukey_near_v1_00003.raw.wav",
+      "expected": [
+        "SOON"
+      ],
+      "hypothesis": [
+        "SOON"
+      ],
+      "accepted": true,
+      "reason": "",
+      "markers": 2,
+      "clock_scale": 1.0,
+      "clock_residual_ms": 0.022675736961451247
+    },
+    {
+      "file": "clocked_macbook_aukey_near_v1_00004.raw.wav",
+      "expected": [
+        "GREETING",
+        "METER"
+      ],
+      "hypothesis": [
+        "GREETING",
+        "METER"
+      ],
+      "accepted": true,
+      "reason": "",
+      "markers": 3,
+      "clock_scale": 1.0,
+      "clock_residual_ms": 0.10204081632653061
+    },
+    {
+      "file": "clocked_macbook_aukey_near_v1_00005.raw.wav",
+      "expected": [
+        "SCAN",
+        "OR",
+        "CONTAINER"
+      ],
+      "hypothesis": [
+        "CLEAR",
+        "OR",
+        "CONTAINER"
+      ],
+      "accepted": false,
+      "reason": "ambiguous word or no repetition majority",
+      "markers": 4,
+      "clock_scale": 1.0,
+      "clock_residual_ms": 0.022675736961451247
+    },
+    {
+      "file": "clocked_macbook_aukey_near_v1_00006.raw.wav",
+      "expected": [
+        "CLEAN"
+      ],
+      "hypothesis": [
+        "CLEAN"
+      ],
+      "accepted": true,
+      "reason": "",
+      "markers": 2,
+      "clock_scale": 1.00025,
+      "clock_residual_ms": 0.014081632653042747
+    },
+    {
+      "file": "clocked_macbook_aukey_near_v1_00007.raw.wav",
+      "expected": [
+        "AFTER",
+        "NEAR"
+      ],
+      "hypothesis": [
+        "AFTER",
+        "STANDUP"
+      ],
+      "accepted": true,
+      "reason": "",
+      "markers": 3,
+      "clock_scale": 1.0,
+      "clock_residual_ms": 0.022675736961451247
+    },
+    {
+      "file": "clocked_macbook_aukey_near_v1_00008.raw.wav",
+      "expected": [
+        "ONSTATE",
+        "DONE",
+        "MANY",
+        "ROOM"
+      ],
+      "hypothesis": [
+        "ONSTATE",
+        "DONE",
+        "MANY",
+        "ROOM"
+      ],
+      "accepted": true,
+      "reason": "",
+      "markers": 5,
+      "clock_scale": 1.0,
+      "clock_residual_ms": 0.03401360544217687
+    },
+    {
+      "file": "clocked_macbook_aukey_near_v1_00009.raw.wav",
+      "expected": [
+        "KEY",
+        "GUEST"
+      ],
+      "hypothesis": [
+        "KEY",
+        "GUEST"
+      ],
+      "accepted": true,
+      "reason": "",
+      "markers": 3,
+      "clock_scale": 1.0,
+      "clock_residual_ms": 0.10204081632653061
+    },
+    {
+      "file": "clocked_macbook_aukey_near_v1_00010.raw.wav",
+      "expected": [
+        "FINISH"
+      ],
+      "hypothesis": [
+        "WAIT"
+      ],
+      "accepted": true,
+      "reason": "",
+      "markers": 2,
+      "clock_scale": 1.0,
+      "clock_residual_ms": 0.022675736961451247
+    },
+    {
+      "file": "clocked_macbook_aukey_near_v1_00011.raw.wav",
+      "expected": [
+        "ACK"
+      ],
+      "hypothesis": [
+        "ACK"
+      ],
+      "accepted": true,
+      "reason": "",
+      "markers": 2,
+      "clock_scale": 1.0,
+      "clock_residual_ms": 0.0
+    },
+    {
+      "file": "clocked_macbook_aukey_near_v1_00012.raw.wav",
+      "expected": [
+        "OBSTACLE",
+        "WATER",
+        "MSG_TELL",
+        "LATER"
+      ],
+      "hypothesis": [
+        "OBSTACLE",
+        "WATER",
+        "MSG_TELL",
+        "LATER"
+      ],
+      "accepted": true,
+      "reason": "",
+      "markers": 5,
+      "clock_scale": 1.0,
+      "clock_residual_ms": 0.09070294784580499
+    },
+    {
+      "file": "clocked_macbook_aukey_near_v1_00013.raw.wav",
+      "expected": [
+        "THANKS",
+        "FIND",
+        "MORE",
+        "CLOSE",
+        "HERE"
+      ],
+      "hypothesis": [
+        "THANKS",
+        "FIND",
+        "MORE",
+        "CLOSE",
+        "HERE"
+      ],
+      "accepted": true,
+      "reason": "",
+      "markers": 6,
+      "clock_scale": 1.0,
+      "clock_residual_ms": 0.18140589569160998
+    },
+    {
+      "file": "clocked_macbook_aukey_near_v1_00014.raw.wav",
+      "expected": [
+        "PARENT_M",
+        "BOX",
+        "CONTAINER",
+        "NONE"
+      ],
+      "hypothesis": [
+        "PARENT_M",
+        "BOX",
+        "CONTAINER",
+        "NONE"
+      ],
+      "accepted": true,
+      "reason": "",
+      "markers": 5,
+      "clock_scale": 1.0,
+      "clock_residual_ms": 0.18140589569160998
+    },
+    {
+      "file": "clocked_macbook_aukey_near_v1_00015.raw.wav",
+      "expected": [
+        "BOTTLE",
+        "BLOCKED",
+        "OTHER_BOT",
+        "LOW"
+      ],
+      "hypothesis": [
+        "BOTTLE",
+        "BLOCKED",
+        "OTHER_BOT",
+        "LOW"
+      ],
+      "accepted": true,
+      "reason": "",
+      "markers": 5,
+      "clock_scale": 1.0,
+      "clock_residual_ms": 0.022675736961451247
+    },
+    {
+      "file": "clocked_macbook_aukey_near_v1_00016.raw.wav",
+      "expected": [
+        "STOPPEDSTATE"
+      ],
+      "hypothesis": [
+        "STOPPEDSTATE"
+      ],
+      "accepted": true,
+      "reason": "",
+      "markers": 2,
+      "clock_scale": 0.99975,
+      "clock_residual_ms": 0.08359410430830291
+    },
+    {
+      "file": "clocked_macbook_aukey_near_v1_00017.raw.wav",
+      "expected": [
+        "WITHOUT",
+        "CHAIR"
+      ],
+      "hypothesis": [
+        "WITHOUT",
+        "SCAN"
+      ],
+      "accepted": true,
+      "reason": "",
+      "markers": 3,
+      "clock_scale": 1.0,
+      "clock_residual_ms": 0.022675736961451247
+    },
+    {
+      "file": "clocked_macbook_aukey_near_v1_00018.raw.wav",
+      "expected": [
+        "D2"
+      ],
+      "hypothesis": [
+        "D2"
+      ],
+      "accepted": true,
+      "reason": "",
+      "markers": 2,
+      "clock_scale": 1.0,
+      "clock_residual_ms": 0.022675736961451247
+    },
+    {
+      "file": "clocked_macbook_aukey_near_v1_00019.raw.wav",
+      "expected": [
+        "SLOW",
+        "CKSUM"
+      ],
+      "hypothesis": [
+        "SLOW",
+        "CKSUM"
+      ],
+      "accepted": true,
+      "reason": "",
+      "markers": 3,
+      "clock_scale": 1.0,
+      "clock_residual_ms": 0.12471655328798187
+    }
+  ]
+}

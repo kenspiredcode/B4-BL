@@ -1,0 +1,32 @@
+{
+  "profile": "compact-clocked-v2-crc32-base32",
+  "channel": "compact_room5_v2",
+  "model": "experiments/real-clocked-20260917/allrooms-periodicity05/real_classifier.joblib",
+  "model_sha256": "98abfef40eac3b35775e879cfd481369475ea68b4a13a34200ebc8803f997683",
+  "top_k": 5,
+  "beam_width": 10000,
+  "counts": {
+    "attempts": 20,
+    "available": 20,
+    "marker_count_ok": 20,
+    "top_path_exact": 10,
+    "verified_exact": 20,
+    "accepted_wrong": 0,
+    "rejected": 0,
+    "selected_by_validation": 10
+  },
+  "verified_delivery_rate": 1.0,
+  "accepted_wrong_rate": 0.0,
+  "parse_reasons": {
+    "accepted": 20
+  },
+  "candidate_paths_checked": {
+    "mean": 80.55,
+    "max": 1289
+  },
+  "limitations": [
+    "This channel is a measured environment, not universal room generalization.",
+    "CRC32 detects accidental corruption; it is not authentication.",
+    "The same packet corpus must not be used for both model tuning and final claims."
+  ]
+}
