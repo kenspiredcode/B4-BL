@@ -261,7 +261,7 @@ def main():
         p.add_argument("--model", default=DEFAULT_MODEL)
         p.add_argument("--split", choices=["development", "validation"], default="development")
         p.add_argument("--chunk-ms", type=float, default=100.0)
-        p.add_argument("--min-marker-snr-db", type=float, default=3.0)
+        p.add_argument("--min-marker-snr-db", type=float)
         p.add_argument("--no-marker-snr-gate", action="store_true",
                        help="rely on normalized marker shape, SYNC cadence, and CRC")
         p.add_argument("--marker-threshold", type=float, default=.55)

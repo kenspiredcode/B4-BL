@@ -48,7 +48,7 @@ def main():
     parser.add_argument("--max-files", type=int)
     parser.add_argument("--confirm-success", action="store_true")
     parser.add_argument("--no-repeat", action="store_true")
-    parser.add_argument("--min-marker-snr-db", type=float, default=3.0)
+    parser.add_argument("--min-marker-snr-db", type=float)
     parser.add_argument("--marker-threshold", type=float,
                         default=clocked_receiver.MARKER_THRESHOLD)
     parser.add_argument("--no-marker-snr-gate", action="store_true")

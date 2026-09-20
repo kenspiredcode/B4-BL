@@ -41,7 +41,11 @@ class RuntimeConfig:
     max_packet_seconds: float = 60.0
     noise_time_constant_seconds: float = 4.0
     noise_update_gate: float = 2.5
-    min_marker_snr_db: Optional[float] = 3.0
+    # Spectral marker correlation is amplitude-normalized. The former 3 dB gate
+    # rejected valid first markers in broadband ambience; SYNC cadence and CRC
+    # are the validated admission/integrity gates. Applications may opt in to a
+    # device-specific amplitude gate explicitly.
+    min_marker_snr_db: Optional[float] = None
     marker_threshold: float = clocked_receiver.MARKER_THRESHOLD
     target_marker_rms: float = 0.031
     min_gain: float = 0.25

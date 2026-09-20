@@ -31,7 +31,8 @@ def main():
     parser.add_argument("--chunk-ms", type=float, default=100.0)
     parser.add_argument("--confirm-success", action="store_true")
     parser.add_argument("--no-repeat", action="store_true")
-    parser.add_argument("--min-marker-snr-db", type=float, default=3.0)
+    parser.add_argument("--min-marker-snr-db", type=float,
+                        help="optional device-specific amplitude gate in dB")
     parser.add_argument("--reply-directory",
                         help="save suggested ACK/repeat audio here")
     parser.add_argument("--play-replies", action="store_true",
