@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>B4-BL — an acoustic language for robots</title>
+<meta name="description" content="A constructed language for robots that humans can learn by ear. Compose a sentence and hear it synthesized in your browser.">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<header class="hero">
+  <h1>B4-BL <span class="pron">("Babble")</span></h1>
+  <p class="tagline">A constructed language for robots, that humans can learn by ear.</p>
+  <p class="blurb">
+    Astromech droids beep at each other and, over time, you start to <em>get it</em> —
+    not the words, but the mood. B4-BL is a working version of that: an exact,
+    CRC-checked machine transport that carries human-readable affect in the same sound.
+  </p>
+</header>
+
+<!-- ===================================================================== -->
+<!-- SECTION 1 — HEAR IT. Four prosodies, same sentence. Zero interaction  -->
+<!-- required. This is the hook; it must work before anything else loads.  -->
+<!-- ===================================================================== -->
+<section id="hear" class="section">
+  <h2>Hear it</h2>
+  <p class="lede">
+    The same sentence — <strong>"Is your energy low?"</strong> — in four emotional
+    registers. The words are identical. Only the prosody changes, and the decoder
+    ignores it entirely.
+  </p>
+  <div class="prosody-grid" id="prosody-grid">
+    <!-- populated by js/hear.js from audio_samples/prosody_*.wav -->
+  </div>
+</section>
+
+<!-- ===================================================================== -->
+<!-- SECTION 2 — SAY SOMETHING. The sentence builder.                      -->
+<!-- Pick a grammar template, fill category-restricted slots, choose a      -->
+<!-- prosody, synthesize live in WebAudio. ~228k valid sentences, and      -->
+<!-- every one is guaranteed encodable because the slots come from the     -->
+<!-- real grammar.                                                         -->
+<!-- ===================================================================== -->
+<section id="say" class="section">
+  <h2>Say something</h2>
+  <p class="lede">
+    Pick a sentence shape, then fill it. The dropdowns only offer words the grammar
+    allows in that slot, so anything you can build is something a droid can say.
+  </p>
+
+  <div class="builder">
+    <div class="builder-row">
+      <label for="template">Sentence shape</label>
+      <select id="template"><!-- js/builder.js --></select>
+    </div>
+
+    <div class="builder-row">
+      <label>Words</label>
+      <div id="slots" class="slots"><!-- js/builder.js --></div>
+    </div>
+
+    <div class="builder-row">
+      <label>Prosody</label>
+      <div id="prosody" class="radios"><!-- js/builder.js --></div>
+    </div>
+
+    <div class="builder-row">
+      <button id="play" class="play">▶ Play</button>
+      <span id="duration" class="duration"></span>
+    </div>
+  </div>
+
+  <div class="presets">
+    <span class="presets-label">Or try:</span>
+    <div id="presets"><!-- js/builder.js, from language.json examples --></div>
+  </div>
+
+  <!-- Live breakdown: concepts -> phonemes, and the rendered spectrogram.
+       This is where the language stops being abstract. -->
+  <div class="breakdown">
+    <div id="concept-chain" class="chain"><!-- js/builder.js --></div>
+    <canvas id="spectrogram" class="spectrogram" width="900" height="260"></canvas>
+  </div>
+</section>
+
+<!-- ===================================================================== -->
+<!-- SECTION 3 — HOW IT WORKS. Compositional phoneme space + vocabulary.   -->
+<!-- Tables generated from language.json so they cannot drift.             -->
+<!-- ===================================================================== -->
+<section id="how" class="section">
+  <h2>How it works</h2>
+
+  <h3>The sounds</h3>
+  <p class="lede">
+    Every phoneme is a point in a four-dimensional space — band, contour, duration,
+    sound class. Click any one to hear it.
+  </p>
+  <div id="phoneme-grid" class="phoneme-grid"><!-- js/inventory.js --></div>
+
+  <h3>The vocabulary</h3>
+  <p class="lede">
+    215 morphemes. Common words get short codes; rare words get longer ones, assigned
+    with a minimum Hamming distance of 2 so one misheard sound cannot silently become
+    a different word.
+  </p>
+  <div id="vocab-table"><!-- js/inventory.js --></div>
+</section>
+
+<!-- ===================================================================== -->
+<!-- SECTION 4 — THE PACKET. Annotated structure.                          -->
+<!-- No decoder in the browser: it needs a 140MB model. This section is    -->
+<!-- explanatory, with a pre-rendered annotated spectrogram.               -->
+<!-- ===================================================================== -->
+<section id="packet" class="section">
+  <h2>Anatomy of a packet</h2>
+  <p class="lede">
+    Underneath the language is a transport: CRC32-protected packets with versioning,
+    addressing, and sequence numbers.
+  </p>
+  <figure class="packet-figure">
+    <!-- Generated by tools_render_packet_figure.py. Both themes are rendered
+         because the figure chrome follows light/dark; the spectrogram interior
+         is identical in both. -->
+    <picture>
+      <source media="(prefers-color-scheme: light)" srcset="img/packet-annotated-light.png">
+      <img id="packet-img" src="img/packet-annotated.png"
+           alt="Annotated spectrogram of a B4-BL packet showing SYNC marker, version, header, payload and CRC regions">
+    </picture>
+    <figcaption>
+      Metadata is base-32, and the 32 digits are ordinary vocabulary words — so
+      <code>DOCK</code> in the checksum is a numeral, not the concept "dock". Protocol
+      overhead reuses the existing sound inventory instead of inventing new noises.
+    </figcaption>
+  </figure>
+</section>
+
+<footer class="footer">
+  <p>
+    <a href="https://github.com/kenspiredcode/B4-BL">Source on GitHub</a> ·
+    MIT licensed · All audio newly synthesized; no film recordings used.
+  </p>
+  <p class="note">
+    Decoding is not part of this demo — it needs a trained model far too large for a
+    browser. See the repository for the receiver and its validation results.
+  </p>
+</footer>
+
+<script type="module" src="js/main.js"></script>
+</body>
+</html>

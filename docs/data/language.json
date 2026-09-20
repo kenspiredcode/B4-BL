@@ -1,0 +1,1986 @@
+{
+ "band_center_hz": {
+  "HIGH": 1750,
+  "LOW": 520,
+  "MID": 1000,
+  "SUB": 260,
+  "VHIGH": 2700
+ },
+ "band_span_hz": 300,
+ "categories": {
+  "act": [
+   "QUERY",
+   "CONFIRM",
+   "CLARIFY",
+   "ACK",
+   "DENY",
+   "WARN",
+   "DONE",
+   "REPEAT",
+   "WAIT",
+   "ERROR",
+   "ALARM",
+   "WORKING",
+   "CALCULATING"
+  ],
+  "digit": [
+   "D0",
+   "D1",
+   "D2",
+   "D3",
+   "D4",
+   "D5",
+   "D6",
+   "D7",
+   "D8",
+   "D9",
+   "NUM",
+   "AXIS"
+  ],
+  "logic": [
+   "AND",
+   "OR",
+   "NOT",
+   "IF",
+   "BECAUSE",
+   "VERY",
+   "MAYBE",
+   "SAME",
+   "DIFFERENT",
+   "AGAIN",
+   "WITH",
+   "WITHOUT"
+  ],
+  "object": [
+   "OBJECT",
+   "TOOL",
+   "DOOR",
+   "PERSON",
+   "CHARGER",
+   "CONTAINER",
+   "OBSTACLE",
+   "TARGET",
+   "ITEM",
+   "BOX",
+   "CUP",
+   "BOTTLE",
+   "KEY",
+   "PHONE",
+   "REMOTE",
+   "LIGHT",
+   "TABLE",
+   "CHAIR",
+   "FLOOR",
+   "WALL",
+   "STAIRS",
+   "PET",
+   "FOOD",
+   "WATER",
+   "PACKAGE",
+   "MAIL",
+   "BAG",
+   "CLOTHES",
+   "TOY",
+   "TRASH"
+  ],
+  "pronoun": [
+   "SELF",
+   "YOU",
+   "IT",
+   "THIS",
+   "THAT",
+   "OTHER_BOT",
+   "ALL",
+   "NONE",
+   "WE",
+   "PARENT_F",
+   "PARENT_M",
+   "CHILD_GIRL",
+   "CHILD_BOY",
+   "GUEST"
+  ],
+  "protocol": [
+   "SYNC",
+   "CKSUM",
+   "ADDR",
+   "MSG_TELL",
+   "MSG_ASK",
+   "MSG_ACKF",
+   "MSG_WARN"
+  ],
+  "quantity": [
+   "MORE",
+   "LESS",
+   "HALF",
+   "MANY",
+   "FEW",
+   "SOME",
+   "ENOUGH"
+  ],
+  "social": [
+   "GREETING",
+   "FAREWELL",
+   "THANKS",
+   "PLEASE",
+   "SORRY",
+   "WELCOME"
+  ],
+  "spatial": [
+   "FRONT",
+   "BACK",
+   "LEFT",
+   "RIGHT",
+   "UP",
+   "DOWN",
+   "NEAR",
+   "FAR",
+   "HERE",
+   "THERE",
+   "IN",
+   "ON",
+   "UNDER",
+   "TOWARD",
+   "AWAY",
+   "LOCATION",
+   "ROOM",
+   "DOORWAY",
+   "CORNER",
+   "CENTER",
+   "EDGE",
+   "ABOVE",
+   "BELOW",
+   "BESIDE",
+   "BETWEEN",
+   "AROUND",
+   "THROUGH",
+   "DISTANCE",
+   "METER",
+   "STEP"
+  ],
+  "state": [
+   "ENERGY",
+   "LOW",
+   "HIGH",
+   "OK",
+   "FAULT",
+   "BUSY",
+   "IDLE",
+   "FULL",
+   "EMPTY",
+   "HOT",
+   "COLD",
+   "FAST",
+   "SLOW",
+   "ONSTATE",
+   "OFFSTATE",
+   "LOCKED",
+   "UNLOCKED",
+   "READY",
+   "NOTREADY",
+   "MOVING",
+   "STOPPEDSTATE",
+   "CHARGED",
+   "UNCHARGED",
+   "CONNECTED",
+   "OFFLINE",
+   "SAFE",
+   "UNSAFE",
+   "CLEAR",
+   "BLOCKED"
+  ],
+  "time": [
+   "NOW",
+   "THEN",
+   "BEFORE",
+   "AFTER",
+   "SOON",
+   "LATER",
+   "EVERY",
+   "ONCE",
+   "AGAIN_T",
+   "UNTIL"
+  ],
+  "verb": [
+   "MOVE",
+   "STOP",
+   "FOLLOW",
+   "COME",
+   "GO",
+   "BRING",
+   "TAKE",
+   "GIVE",
+   "FIND",
+   "SEARCH",
+   "SCAN",
+   "CHARGE",
+   "DOCK",
+   "OPEN",
+   "CLOSE",
+   "PICK",
+   "PLACE",
+   "TURN",
+   "LOOK",
+   "TELL",
+   "ASK",
+   "HELP",
+   "CARRY",
+   "CLEAN",
+   "WAIT_V",
+   "START",
+   "FINISH",
+   "STORE",
+   "STOP_V",
+   "STAY",
+   "STAND",
+   "STANDBY",
+   "STANDDOWN",
+   "STANDUP",
+   "REMIND",
+   "PLAY",
+   "STOP_MEDIA",
+   "CALL",
+   "SEND",
+   "STORE_V",
+   "STOPPED",
+   "STANDBY_V",
+   "SLEEP",
+   "WAKE",
+   "STANDGUARD"
+  ]
+ },
+ "char_to_phones": {
+  "0": [
+   "Mr",
+   "Mf"
+  ],
+  "1": [
+   "Mr",
+   "Mr"
+  ],
+  "2": [
+   "Mr",
+   "Mfl"
+  ],
+  "3": [
+   "Mr",
+   "Hf"
+  ],
+  "4": [
+   "Mr",
+   "Hr"
+  ],
+  "5": [
+   "Mr",
+   "Hd"
+  ],
+  "6": [
+   "Mfl",
+   "Lf"
+  ],
+  "7": [
+   "Mfl",
+   "Lr"
+  ],
+  "8": [
+   "Mfl",
+   "Mf"
+  ],
+  "9": [
+   "Mfl",
+   "Mr"
+  ],
+  "a": [
+   "Lf",
+   "Lf"
+  ],
+  "b": [
+   "Lf",
+   "Lr"
+  ],
+  "c": [
+   "Lf",
+   "Mf"
+  ],
+  "d": [
+   "Lf",
+   "Mr"
+  ],
+  "e": [
+   "Lf",
+   "Mfl"
+  ],
+  "f": [
+   "Lf",
+   "Hf"
+  ],
+  "g": [
+   "Lf",
+   "Hr"
+  ],
+  "h": [
+   "Lf",
+   "Hd"
+  ],
+  "i": [
+   "Lr",
+   "Lf"
+  ],
+  "j": [
+   "Lr",
+   "Lr"
+  ],
+  "k": [
+   "Lr",
+   "Mf"
+  ],
+  "l": [
+   "Lr",
+   "Mr"
+  ],
+  "m": [
+   "Lr",
+   "Mfl"
+  ],
+  "n": [
+   "Lr",
+   "Hf"
+  ],
+  "o": [
+   "Lr",
+   "Hr"
+  ],
+  "p": [
+   "Lr",
+   "Hd"
+  ],
+  "q": [
+   "Mf",
+   "Lf"
+  ],
+  "r": [
+   "Mf",
+   "Lr"
+  ],
+  "s": [
+   "Mf",
+   "Mf"
+  ],
+  "t": [
+   "Mf",
+   "Mr"
+  ],
+  "u": [
+   "Mf",
+   "Mfl"
+  ],
+  "v": [
+   "Mf",
+   "Hf"
+  ],
+  "w": [
+   "Mf",
+   "Hr"
+  ],
+  "x": [
+   "Mf",
+   "Hd"
+  ],
+  "y": [
+   "Mr",
+   "Lf"
+  ],
+  "z": [
+   "Mr",
+   "Lr"
+  ]
+ },
+ "contour_swing": 0.33,
+ "dur_sec": {
+  "LONG": 0.5,
+  "SHORT": 0.16
+ },
+ "examples": [
+  {
+   "concepts": [
+    "QUERY",
+    "YOU",
+    "ENERGY",
+    "LOW"
+   ],
+   "english": "Is your energy low?"
+  },
+  {
+   "concepts": [
+    "SELF",
+    "ENERGY",
+    "LOW"
+   ],
+   "english": "My energy is low."
+  },
+  {
+   "concepts": [
+    "WARN",
+    "OBSTACLE",
+    "FRONT"
+   ],
+   "english": "Warning: obstacle ahead."
+  },
+  {
+   "concepts": [
+    "ACK"
+   ],
+   "english": "Acknowledged."
+  },
+  {
+   "concepts": [
+    "YOU",
+    "FOLLOW",
+    "SELF"
+   ],
+   "english": "Follow me."
+  },
+  {
+   "concepts": [
+    "YOU",
+    "BRING",
+    "SELF",
+    "CUP"
+   ],
+   "english": "Bring me the cup."
+  },
+  {
+   "concepts": [
+    "STOP"
+   ],
+   "english": "Stop."
+  }
+ ],
+ "morphemes": {
+  "ABOVE": [
+   "Lr",
+   "MdL",
+   "Hf"
+  ],
+  "ACK": [
+   "Hf"
+  ],
+  "ADDR": [
+   "Mf",
+   "Mc",
+   "MrL"
+  ],
+  "AFTER": [
+   "LiL",
+   "Hw",
+   "Hr"
+  ],
+  "AGAIN": [
+   "Lc",
+   "Mw",
+   "MaL"
+  ],
+  "AGAIN_T": [
+   "Lc",
+   "Lr",
+   "LiL"
+  ],
+  "ALARM": {
+   "rep": {
+    "alternate": false,
+    "count": 3,
+    "rate": 6.0,
+    "unit": [
+     "Vr"
+    ]
+   }
+  },
+  "ALL": [
+   "Mr"
+  ],
+  "AND": [
+   "Lc",
+   "LdL",
+   "Mf"
+  ],
+  "AROUND": [
+   "Lr",
+   "HaL",
+   "Hc"
+  ],
+  "ASK": [
+   "Hf",
+   "Hf"
+  ],
+  "AWAY": [
+   "Lr",
+   "Mr",
+   "Mf"
+  ],
+  "AXIS": [
+   "Mf",
+   "Md",
+   "MdL"
+  ],
+  "BACK": [
+   "Lf",
+   "HaL",
+   "HaL"
+  ],
+  "BAG": [
+   "LiL",
+   "Mf",
+   "Ld"
+  ],
+  "BECAUSE": [
+   "Lc",
+   "Mr",
+   "Ld"
+  ],
+  "BEFORE": [
+   "LiL",
+   "Hc",
+   "Sd"
+  ],
+  "BELOW": [
+   "Lr",
+   "Hf",
+   "MdL"
+  ],
+  "BESIDE": [
+   "Lr",
+   "Hr",
+   "Hd"
+  ],
+  "BETWEEN": [
+   "Lr",
+   "Hd",
+   "Hr"
+  ],
+  "BLOCKED": [
+   "LdL",
+   "LdL",
+   "Lf"
+  ],
+  "BOTTLE": [
+   "LdL",
+   "Hf",
+   "Mw"
+  ],
+  "BOX": [
+   "LdL",
+   "MrL",
+   "MdL"
+  ],
+  "BRING": [
+   "Sr"
+  ],
+  "BUSY": [
+   "Ld",
+   "LiL",
+   "Mf"
+  ],
+  "CALCULATING": {
+   "rep": {
+    "alternate": true,
+    "count": 6,
+    "rate": 3.0,
+    "unit": [
+     "Hum1",
+     "Hum0"
+    ]
+   }
+  },
+  "CALL": [
+   "Lf",
+   "MaL",
+   "MaL"
+  ],
+  "CARRY": [
+   "HaL",
+   "HaL"
+  ],
+  "CENTER": [
+   "Lr",
+   "Mw",
+   "MrL"
+  ],
+  "CHAIR": [
+   "LdL",
+   "Sf",
+   "Sr"
+  ],
+  "CHARGE": [
+   "LiL",
+   "Lc"
+  ],
+  "CHARGED": [
+   "Ld",
+   "Hw",
+   "Sr"
+  ],
+  "CHARGER": [
+   "LdL",
+   "Md",
+   "Mc"
+  ],
+  "CHILD_BOY": [
+   "MrL"
+  ],
+  "CHILD_GIRL": [
+   "Mw"
+  ],
+  "CKSUM": [
+   "Mf",
+   "MiL",
+   "Mw"
+  ],
+  "CLARIFY": [
+   "Mc",
+   "Mr"
+  ],
+  "CLEAN": [
+   "Hc",
+   "Hc"
+  ],
+  "CLEAR": [
+   "LdL",
+   "Ld",
+   "Lr"
+  ],
+  "CLOSE": [
+   "Md",
+   "MaL"
+  ],
+  "CLOTHES": [
+   "LiL",
+   "Mr",
+   "LdL"
+  ],
+  "COLD": [
+   "Ld",
+   "MaL",
+   "Mc"
+  ],
+  "COME": [
+   "Hc"
+  ],
+  "CONFIRM": [
+   "Ma",
+   "Ld"
+  ],
+  "CONNECTED": [
+   "Ld",
+   "Sr",
+   "Hw"
+  ],
+  "CONTAINER": [
+   "LdL",
+   "MaL",
+   "MiL"
+  ],
+  "CORNER": [
+   "Lr",
+   "Mc",
+   "MiL"
+  ],
+  "CUP": [
+   "LdL",
+   "MdL",
+   "MrL"
+  ],
+  "D0": [
+   "Lc",
+   "Sf",
+   "Hr"
+  ],
+  "D1": [
+   "Lc",
+   "Sr",
+   "Hc"
+  ],
+  "D2": [
+   "Lc",
+   "Sd",
+   "HaL"
+  ],
+  "D3": [
+   "Mf",
+   "Lf",
+   "Mf"
+  ],
+  "D4": [
+   "Mf",
+   "Lr",
+   "Mr"
+  ],
+  "D5": [
+   "Mf",
+   "Ld",
+   "LiL"
+  ],
+  "D6": [
+   "Mf",
+   "LdL",
+   "Lc"
+  ],
+  "D7": [
+   "Mf",
+   "LiL",
+   "Ld"
+  ],
+  "D8": [
+   "Mf",
+   "Lc",
+   "LdL"
+  ],
+  "D9": [
+   "Mf",
+   "Mf",
+   "Lf"
+  ],
+  "DENY": [
+   "Ld"
+  ],
+  "DIFFERENT": [
+   "Lc",
+   "Mc",
+   "MdL"
+  ],
+  "DISTANCE": [
+   "Lr",
+   "Hw",
+   "Sf"
+  ],
+  "DOCK": [
+   "Lc",
+   "Mf"
+  ],
+  "DONE": [
+   "Mr",
+   "Ha"
+  ],
+  "DOOR": [
+   "LdL",
+   "Mf",
+   "Lc"
+  ],
+  "DOORWAY": [
+   "Lr",
+   "MiL",
+   "Mc"
+  ],
+  "DOWN": [
+   "Lf",
+   "Sr",
+   "Sr"
+  ],
+  "EDGE": [
+   "Lr",
+   "MrL",
+   "Mw"
+  ],
+  "EMPTY": [
+   "Ld",
+   "Mr",
+   "Lc"
+  ],
+  "ENERGY": [
+   "Lr",
+   "Sd",
+   "Sr"
+  ],
+  "ENOUGH": [
+   "LiL",
+   "Hr",
+   "Hw"
+  ],
+  "ERROR": [
+   "Rz",
+   "Ld"
+  ],
+  "EVERY": [
+   "LiL",
+   "Sd",
+   "Hc"
+  ],
+  "FAR": [
+   "Lr",
+   "Lf",
+   "Lr"
+  ],
+  "FAREWELL": [
+   "Lc",
+   "Hr",
+   "Sf"
+  ],
+  "FAST": [
+   "Ld",
+   "MiL",
+   "Md"
+  ],
+  "FAULT": [
+   "Ld",
+   "LdL",
+   "Lr"
+  ],
+  "FEW": [
+   "LiL",
+   "MdL",
+   "MiL"
+  ],
+  "FIND": [
+   "Lr",
+   "Lr"
+  ],
+  "FINISH": [
+   "Sr",
+   "Sr"
+  ],
+  "FLOOR": [
+   "LdL",
+   "Sr",
+   "Sf"
+  ],
+  "FOLLOW": [
+   "HaL"
+  ],
+  "FOOD": [
+   "LiL",
+   "Ld",
+   "Mf"
+  ],
+  "FRONT": [
+   "Lf",
+   "Hd",
+   "Hd"
+  ],
+  "FULL": [
+   "Ld",
+   "Mf",
+   "LiL"
+  ],
+  "GIVE": [
+   "Lf",
+   "Lf"
+  ],
+  "GO": [
+   "Sf"
+  ],
+  "GREETING": [
+   "Lc",
+   "Hf",
+   "MiL"
+  ],
+  "GUEST": [
+   "MdL"
+  ],
+  "HALF": [
+   "LiL",
+   "Mw",
+   "Md"
+  ],
+  "HELP": [
+   "Hd",
+   "Hd"
+  ],
+  "HERE": [
+   "Lr",
+   "Lr",
+   "Lf"
+  ],
+  "HIGH": [
+   "Ld",
+   "Lr",
+   "LdL"
+  ],
+  "HOT": [
+   "Ld",
+   "Md",
+   "MiL"
+  ],
+  "IDLE": [
+   "Ld",
+   "Lc",
+   "Mr"
+  ],
+  "IF": [
+   "Lc",
+   "Mf",
+   "LdL"
+  ],
+  "IN": [
+   "Lr",
+   "LdL",
+   "Ld"
+  ],
+  "IT": [
+   "LdL"
+  ],
+  "ITEM": [
+   "LdL",
+   "Mw",
+   "Hf"
+  ],
+  "KEY": [
+   "LdL",
+   "Hr",
+   "Hc"
+  ],
+  "LATER": [
+   "LiL",
+   "Sr",
+   "HaL"
+  ],
+  "LEFT": [
+   "Lf",
+   "Hc",
+   "Hc"
+  ],
+  "LESS": [
+   "LiL",
+   "Mc",
+   "Hf"
+  ],
+  "LIGHT": [
+   "LdL",
+   "Hc",
+   "Hr"
+  ],
+  "LOCATION": [
+   "Lr",
+   "Md",
+   "MaL"
+  ],
+  "LOCKED": [
+   "Ld",
+   "MdL",
+   "Mw"
+  ],
+  "LOOK": [
+   "MrL",
+   "MrL"
+  ],
+  "LOW": [
+   "Ld",
+   "Lf",
+   "Ld"
+  ],
+  "MAIL": [
+   "LiL",
+   "Lc",
+   "Lr"
+  ],
+  "MANY": [
+   "LiL",
+   "MrL",
+   "MaL"
+  ],
+  "MAYBE": [
+   "Lc",
+   "MaL",
+   "Mw"
+  ],
+  "METER": [
+   "Lr",
+   "Sf",
+   "Hw"
+  ],
+  "MORE": [
+   "LiL",
+   "MiL",
+   "MdL"
+  ],
+  "MOVE": [
+   "Hr"
+  ],
+  "MOVING": [
+   "Ld",
+   "HaL",
+   "Hr"
+  ],
+  "MSG_ACKF": [
+   "Mf",
+   "MdL",
+   "Md"
+  ],
+  "MSG_ASK": [
+   "Mf",
+   "MrL",
+   "Mc"
+  ],
+  "MSG_TELL": [
+   "Mf",
+   "Mw",
+   "MiL"
+  ],
+  "MSG_WARN": [
+   "Mf",
+   "Hf",
+   "MaL"
+  ],
+  "NEAR": [
+   "Lf",
+   "Sd",
+   "Sd"
+  ],
+  "NONE": [
+   "Md"
+  ],
+  "NOT": [
+   "Lc",
+   "Lc",
+   "Lf"
+  ],
+  "NOTREADY": [
+   "Ld",
+   "Hd",
+   "Hc"
+  ],
+  "NOW": [
+   "LiL",
+   "Hd",
+   "Sf"
+  ],
+  "NUM": [
+   "Mf",
+   "Mr",
+   "Lr"
+  ],
+  "OBJECT": [
+   "LdL",
+   "LiL",
+   "Mr"
+  ],
+  "OBSTACLE": [
+   "LdL",
+   "MiL",
+   "MaL"
+  ],
+  "OFFLINE": [
+   "Ld",
+   "Sd",
+   "Sf"
+  ],
+  "OFFSTATE": [
+   "Ld",
+   "MrL",
+   "Hf"
+  ],
+  "OK": [
+   "Ld",
+   "Ld",
+   "Lf"
+  ],
+  "ON": [
+   "Lr",
+   "LiL",
+   "Lc"
+  ],
+  "ONCE": [
+   "Lc",
+   "Lf",
+   "Lc"
+  ],
+  "ONSTATE": [
+   "Ld",
+   "Mw",
+   "MdL"
+  ],
+  "OPEN": [
+   "Mf",
+   "Md"
+  ],
+  "OR": [
+   "Lc",
+   "LiL",
+   "Lr"
+  ],
+  "OTHER_BOT": [
+   "Mf"
+  ],
+  "PACKAGE": [
+   "LiL",
+   "LiL",
+   "Lf"
+  ],
+  "PARENT_F": [
+   "MiL"
+  ],
+  "PARENT_M": [
+   "Mc"
+  ],
+  "PERSON": [
+   "LdL",
+   "Mr",
+   "LiL"
+  ],
+  "PET": [
+   "LiL",
+   "Lr",
+   "Lc"
+  ],
+  "PHONE": [
+   "LdL",
+   "Hd",
+   "HaL"
+  ],
+  "PICK": [
+   "MaL",
+   "MiL"
+  ],
+  "PLACE": [
+   "MiL",
+   "Mc"
+  ],
+  "PLAY": [
+   "Lf",
+   "Mr",
+   "Mr"
+  ],
+  "PLEASE": [
+   "Lc",
+   "HaL",
+   "Sd"
+  ],
+  "QUERY": [
+   "Hr",
+   "Mr"
+  ],
+  "READY": [
+   "Ld",
+   "Hr",
+   "HaL"
+  ],
+  "REMIND": [
+   "Lf",
+   "Mf",
+   "Mf"
+  ],
+  "REMOTE": [
+   "LdL",
+   "HaL",
+   "Hd"
+  ],
+  "REPEAT": [
+   "Hw"
+  ],
+  "RIGHT": [
+   "Lf",
+   "Hw",
+   "Hw"
+  ],
+  "ROOM": [
+   "Lr",
+   "MaL",
+   "Md"
+  ],
+  "SAFE": [
+   "LdL",
+   "Lf",
+   "LdL"
+  ],
+  "SAME": [
+   "Lc",
+   "MiL",
+   "Hf"
+  ],
+  "SCAN": [
+   "LdL",
+   "LiL"
+  ],
+  "SEARCH": [
+   "Ld",
+   "LdL"
+  ],
+  "SELF": [
+   "Lf"
+  ],
+  "SEND": [
+   "Lf",
+   "MiL",
+   "MiL"
+  ],
+  "SLEEP": [
+   "Lf",
+   "MdL",
+   "MdL"
+  ],
+  "SLOW": [
+   "Ld",
+   "Mc",
+   "MaL"
+  ],
+  "SOME": [
+   "LiL",
+   "Hf",
+   "Mc"
+  ],
+  "SOON": [
+   "LiL",
+   "Sf",
+   "Hd"
+  ],
+  "SORRY": [
+   "Lc",
+   "Hc",
+   "Sr"
+  ],
+  "STAIRS": [
+   "LiL",
+   "Lf",
+   "LiL"
+  ],
+  "STAND": [
+   "Lf",
+   "Ld",
+   "Ld"
+  ],
+  "STANDBY": [
+   "Lf",
+   "LdL",
+   "LdL"
+  ],
+  "STANDBY_V": [
+   "Lf",
+   "MrL",
+   "MrL"
+  ],
+  "STANDDOWN": [
+   "Lf",
+   "LiL",
+   "LiL"
+  ],
+  "STANDGUARD": [
+   "Lf",
+   "Hr",
+   "Hr"
+  ],
+  "STANDUP": [
+   "Lf",
+   "Lc",
+   "Lc"
+  ],
+  "START": [
+   "Sf",
+   "Sf"
+  ],
+  "STAY": [
+   "Lf",
+   "Lr",
+   "Lr"
+  ],
+  "STEP": [
+   "Lr",
+   "Sr",
+   "Sd"
+  ],
+  "STOP": [
+   "Hd"
+  ],
+  "STOPPED": [
+   "Lf",
+   "Mw",
+   "Mw"
+  ],
+  "STOPPEDSTATE": [
+   "Ld",
+   "Hc",
+   "Hd"
+  ],
+  "STOP_MEDIA": [
+   "Lf",
+   "Md",
+   "Md"
+  ],
+  "STOP_V": [
+   "Lf",
+   "Lf",
+   "Lf"
+  ],
+  "STORE": [
+   "Sd",
+   "Sd"
+  ],
+  "STORE_V": [
+   "Lf",
+   "Mc",
+   "Mc"
+  ],
+  "SYNC": [
+   "Mf",
+   "MaL",
+   "Hf"
+  ],
+  "TABLE": [
+   "LdL",
+   "Hw",
+   "Sd"
+  ],
+  "TAKE": [
+   "Sd"
+  ],
+  "TARGET": [
+   "LdL",
+   "Mc",
+   "Md"
+  ],
+  "TELL": [
+   "MdL",
+   "MdL"
+  ],
+  "THANKS": [
+   "Lc",
+   "Hd",
+   "Hw"
+  ],
+  "THAT": [
+   "Lc"
+  ],
+  "THEN": [
+   "LiL",
+   "HaL",
+   "Sr"
+  ],
+  "THERE": [
+   "Lr",
+   "Ld",
+   "LdL"
+  ],
+  "THIS": [
+   "LiL"
+  ],
+  "THROUGH": [
+   "Lr",
+   "Hc",
+   "HaL"
+  ],
+  "TOOL": [
+   "LdL",
+   "Lc",
+   "Mf"
+  ],
+  "TOWARD": [
+   "Lr",
+   "Mf",
+   "Mr"
+  ],
+  "TOY": [
+   "LiL",
+   "Md",
+   "Mw"
+  ],
+  "TRASH": [
+   "LiL",
+   "MaL",
+   "MrL"
+  ],
+  "TURN": [
+   "Mw",
+   "Mw"
+  ],
+  "UNCHARGED": [
+   "Ld",
+   "Sf",
+   "Sd"
+  ],
+  "UNDER": [
+   "Lr",
+   "Lc",
+   "LiL"
+  ],
+  "UNLOCKED": [
+   "Ld",
+   "Hf",
+   "MrL"
+  ],
+  "UNSAFE": [
+   "LdL",
+   "Lr",
+   "Ld"
+  ],
+  "UNTIL": [
+   "Lc",
+   "Ld",
+   "Mr"
+  ],
+  "UP": [
+   "Lf",
+   "Sf",
+   "Sf"
+  ],
+  "VERY": [
+   "Lc",
+   "Md",
+   "MrL"
+  ],
+  "WAIT": [
+   "MfL"
+  ],
+  "WAIT_V": [
+   "Hw",
+   "Hw"
+  ],
+  "WAKE": [
+   "Lf",
+   "Hf",
+   "Hf"
+  ],
+  "WALL": [
+   "LdL",
+   "Sd",
+   "Hw"
+  ],
+  "WARN": [
+   "Hr",
+   "Hr"
+  ],
+  "WATER": [
+   "LiL",
+   "LdL",
+   "Mr"
+  ],
+  "WE": [
+   "MaL"
+  ],
+  "WELCOME": [
+   "Lc",
+   "Hw",
+   "Hd"
+  ],
+  "WITH": [
+   "Lc",
+   "MrL",
+   "Md"
+  ],
+  "WITHOUT": [
+   "Lc",
+   "MdL",
+   "Mc"
+  ],
+  "WORKING": {
+   "rep": {
+    "alternate": true,
+    "count": 6,
+    "rate": 3.0,
+    "unit": [
+     "Hum1",
+     "Hum0"
+    ]
+   }
+  },
+  "YOU": [
+   "Lr"
+  ]
+ },
+ "phonemes": {
+  "Grl": {
+   "band": "MID",
+   "center_hz": 1000,
+   "cls": "GARGLE",
+   "contour": "FLAT",
+   "dur": "LONG",
+   "inventory": false,
+   "seconds": 0.5
+  },
+  "Grm": {
+   "band": "MID",
+   "center_hz": 1000,
+   "cls": "GARGLE",
+   "contour": "FLAT",
+   "dur": "SHORT",
+   "inventory": false,
+   "seconds": 0.16
+  },
+  "Ha": {
+   "band": "HIGH",
+   "center_hz": 1750,
+   "cls": "TONE",
+   "contour": "ARCH",
+   "dur": "LONG",
+   "inventory": false,
+   "seconds": 0.5
+  },
+  "HaL": {
+   "band": "HIGH",
+   "center_hz": 1750,
+   "cls": "TONE",
+   "contour": "ARCH",
+   "dur": "LONG",
+   "inventory": true,
+   "seconds": 0.5
+  },
+  "Hc": {
+   "band": "HIGH",
+   "center_hz": 1750,
+   "cls": "TONE",
+   "contour": "SCOOP",
+   "dur": "SHORT",
+   "inventory": true,
+   "seconds": 0.16
+  },
+  "Hd": {
+   "band": "HIGH",
+   "center_hz": 1750,
+   "cls": "TONE",
+   "contour": "FALL",
+   "dur": "SHORT",
+   "inventory": true,
+   "seconds": 0.16
+  },
+  "Hf": {
+   "band": "HIGH",
+   "center_hz": 1750,
+   "cls": "TONE",
+   "contour": "FLAT",
+   "dur": "SHORT",
+   "inventory": true,
+   "seconds": 0.16
+  },
+  "Hr": {
+   "band": "HIGH",
+   "center_hz": 1750,
+   "cls": "TONE",
+   "contour": "RISE",
+   "dur": "SHORT",
+   "inventory": true,
+   "seconds": 0.16
+  },
+  "Hum0": {
+   "band": "LOW",
+   "center_hz": 190,
+   "cls": "GARGLE",
+   "contour": "FLAT",
+   "dur": "SHORT",
+   "inventory": false,
+   "seconds": 0.16
+  },
+  "Hum1": {
+   "band": "LOW",
+   "center_hz": 300,
+   "cls": "GARGLE",
+   "contour": "FLAT",
+   "dur": "SHORT",
+   "inventory": false,
+   "seconds": 0.16
+  },
+  "Hw": {
+   "band": "HIGH",
+   "center_hz": 1750,
+   "cls": "TONE",
+   "contour": "DOUBLE",
+   "dur": "SHORT",
+   "inventory": true,
+   "seconds": 0.16
+  },
+  "Lc": {
+   "band": "LOW",
+   "center_hz": 520,
+   "cls": "TONE",
+   "contour": "SCOOP",
+   "dur": "SHORT",
+   "inventory": true,
+   "seconds": 0.16
+  },
+  "Ld": {
+   "band": "LOW",
+   "center_hz": 520,
+   "cls": "TONE",
+   "contour": "FALL",
+   "dur": "SHORT",
+   "inventory": true,
+   "seconds": 0.16
+  },
+  "LdL": {
+   "band": "LOW",
+   "center_hz": 520,
+   "cls": "TONE",
+   "contour": "FALL",
+   "dur": "LONG",
+   "inventory": true,
+   "seconds": 0.5
+  },
+  "LdR": {
+   "band": "LOW",
+   "center_hz": 520,
+   "cls": "RASP",
+   "contour": "FALL",
+   "dur": "SHORT",
+   "inventory": true,
+   "seconds": 0.16
+  },
+  "Lf": {
+   "band": "LOW",
+   "center_hz": 520,
+   "cls": "TONE",
+   "contour": "FLAT",
+   "dur": "SHORT",
+   "inventory": true,
+   "seconds": 0.16
+  },
+  "LfG": {
+   "band": "LOW",
+   "center_hz": 520,
+   "cls": "GARGLE",
+   "contour": "FLAT",
+   "dur": "SHORT",
+   "inventory": true,
+   "seconds": 0.16
+  },
+  "LiL": {
+   "band": "LOW",
+   "center_hz": 520,
+   "cls": "TONE",
+   "contour": "DIP",
+   "dur": "LONG",
+   "inventory": true,
+   "seconds": 0.5
+  },
+  "Lr": {
+   "band": "LOW",
+   "center_hz": 520,
+   "cls": "TONE",
+   "contour": "RISE",
+   "dur": "SHORT",
+   "inventory": true,
+   "seconds": 0.16
+  },
+  "Ma": {
+   "band": "MID",
+   "center_hz": 1000,
+   "cls": "TONE",
+   "contour": "ARCH",
+   "dur": "LONG",
+   "inventory": false,
+   "seconds": 0.5
+  },
+  "MaL": {
+   "band": "MID",
+   "center_hz": 1000,
+   "cls": "TONE",
+   "contour": "ARCH",
+   "dur": "LONG",
+   "inventory": true,
+   "seconds": 0.5
+  },
+  "Mc": {
+   "band": "MID",
+   "center_hz": 1000,
+   "cls": "TONE",
+   "contour": "SCOOP",
+   "dur": "SHORT",
+   "inventory": true,
+   "seconds": 0.16
+  },
+  "Md": {
+   "band": "MID",
+   "center_hz": 1000,
+   "cls": "TONE",
+   "contour": "FALL",
+   "dur": "SHORT",
+   "inventory": true,
+   "seconds": 0.16
+  },
+  "MdL": {
+   "band": "MID",
+   "center_hz": 1000,
+   "cls": "TONE",
+   "contour": "FALL",
+   "dur": "LONG",
+   "inventory": true,
+   "seconds": 0.5
+  },
+  "MdR": {
+   "band": "MID",
+   "center_hz": 1000,
+   "cls": "RASP",
+   "contour": "FALL",
+   "dur": "SHORT",
+   "inventory": true,
+   "seconds": 0.16
+  },
+  "Mf": {
+   "band": "MID",
+   "center_hz": 1000,
+   "cls": "TONE",
+   "contour": "FLAT",
+   "dur": "SHORT",
+   "inventory": true,
+   "seconds": 0.16
+  },
+  "MfG": {
+   "band": "MID",
+   "center_hz": 1000,
+   "cls": "GARGLE",
+   "contour": "FLAT",
+   "dur": "SHORT",
+   "inventory": true,
+   "seconds": 0.16
+  },
+  "MfL": {
+   "band": "MID",
+   "center_hz": 1000,
+   "cls": "TONE",
+   "contour": "FLAT",
+   "dur": "LONG",
+   "inventory": true,
+   "seconds": 0.5
+  },
+  "MfLG": {
+   "band": "MID",
+   "center_hz": 1000,
+   "cls": "GARGLE",
+   "contour": "FLAT",
+   "dur": "LONG",
+   "inventory": true,
+   "seconds": 0.5
+  },
+  "Mfl": {
+   "band": "MID",
+   "center_hz": 1000,
+   "cls": "TONE",
+   "contour": "FALL",
+   "dur": "SHORT",
+   "inventory": false,
+   "seconds": 0.16
+  },
+  "Mi": {
+   "band": "MID",
+   "center_hz": 1000,
+   "cls": "TONE",
+   "contour": "DIP",
+   "dur": "LONG",
+   "inventory": false,
+   "seconds": 0.5
+  },
+  "MiL": {
+   "band": "MID",
+   "center_hz": 1000,
+   "cls": "TONE",
+   "contour": "DIP",
+   "dur": "LONG",
+   "inventory": true,
+   "seconds": 0.5
+  },
+  "Mr": {
+   "band": "MID",
+   "center_hz": 1000,
+   "cls": "TONE",
+   "contour": "RISE",
+   "dur": "SHORT",
+   "inventory": true,
+   "seconds": 0.16
+  },
+  "MrL": {
+   "band": "MID",
+   "center_hz": 1000,
+   "cls": "TONE",
+   "contour": "RISE",
+   "dur": "LONG",
+   "inventory": true,
+   "seconds": 0.5
+  },
+  "Mw": {
+   "band": "MID",
+   "center_hz": 1000,
+   "cls": "TONE",
+   "contour": "DOUBLE",
+   "dur": "SHORT",
+   "inventory": true,
+   "seconds": 0.16
+  },
+  "Rz": {
+   "band": "LOW",
+   "center_hz": 520,
+   "cls": "RASP",
+   "contour": "FALL",
+   "dur": "SHORT",
+   "inventory": false,
+   "seconds": 0.16
+  },
+  "Sd": {
+   "band": "SUB",
+   "center_hz": 260,
+   "cls": "TONE",
+   "contour": "FALL",
+   "dur": "SHORT",
+   "inventory": true,
+   "seconds": 0.16
+  },
+  "Sf": {
+   "band": "SUB",
+   "center_hz": 260,
+   "cls": "TONE",
+   "contour": "FLAT",
+   "dur": "SHORT",
+   "inventory": true,
+   "seconds": 0.16
+  },
+  "Sr": {
+   "band": "SUB",
+   "center_hz": 260,
+   "cls": "TONE",
+   "contour": "RISE",
+   "dur": "SHORT",
+   "inventory": true,
+   "seconds": 0.16
+  },
+  "Vr": {
+   "band": "VHIGH",
+   "center_hz": 2700,
+   "cls": "TONE",
+   "contour": "RISE",
+   "dur": "SHORT",
+   "inventory": true,
+   "seconds": 0.16
+  },
+  "Vw": {
+   "band": "VHIGH",
+   "center_hz": 2700,
+   "cls": "TONE",
+   "contour": "DOUBLE",
+   "dur": "SHORT",
+   "inventory": true,
+   "seconds": 0.16
+  }
+ },
+ "prosody": {
+  "calm": {
+   "confidence": 0.9,
+   "urgency": 0.05
+  },
+  "neutral": {
+   "confidence": 0.8,
+   "urgency": 0.3
+  },
+  "uncertain": {
+   "confidence": 0.25,
+   "urgency": 0.2
+  },
+  "urgent": {
+   "confidence": 0.9,
+   "urgency": 0.95
+  }
+ },
+ "spell_marker": [
+  "Grm"
+ ],
+ "templates": [
+  {
+   "name": "single word",
+   "slots": [
+    {
+     "category": "act",
+     "optional": false
+    }
+   ]
+  },
+  {
+   "name": "command",
+   "slots": [
+    {
+     "category": "act",
+     "optional": true
+    },
+    {
+     "category": "verb",
+     "optional": false
+    },
+    {
+     "category": "object",
+     "optional": true
+    }
+   ]
+  },
+  {
+   "name": "query state",
+   "slots": [
+    {
+     "category": "act",
+     "optional": false
+    },
+    {
+     "category": "pronoun",
+     "optional": false
+    },
+    {
+     "category": "state",
+     "optional": false
+    },
+    {
+     "category": "state",
+     "optional": true
+    }
+   ]
+  },
+  {
+   "name": "move",
+   "slots": [
+    {
+     "category": "act",
+     "optional": true
+    },
+    {
+     "category": "verb",
+     "optional": false
+    },
+    {
+     "category": "spatial",
+     "optional": false
+    }
+   ]
+  },
+  {
+   "name": "subject predicate",
+   "slots": [
+    {
+     "category": "pronoun",
+     "optional": false
+    },
+    {
+     "category": "verb",
+     "optional": false
+    },
+    {
+     "category": "object",
+     "optional": true
+    }
+   ]
+  },
+  {
+   "name": "pronoun state",
+   "slots": [
+    {
+     "category": "pronoun",
+     "optional": false
+    },
+    {
+     "category": "state",
+     "optional": false
+    }
+   ]
+  },
+  {
+   "name": "warning",
+   "slots": [
+    {
+     "category": "act",
+     "optional": false
+    },
+    {
+     "category": "object",
+     "optional": false
+    },
+    {
+     "category": "spatial",
+     "optional": true
+    }
+   ]
+  }
+ ],
+ "timing": {
+  "geminate_dur": 0.02,
+  "phone_gap": 0.04,
+  "sample_rate": 44100,
+  "word_gap": 0.14
+ }
+}

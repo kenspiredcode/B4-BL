@@ -39,3 +39,7 @@ experiments/real-clocked-20260917/extratrees-periodicity05/
 experiments/real-clocked-20260917/periodicity04/
 experiments/real-clocked-20260917/periodicity06/
 experiments/real-clocked-20260917/phoneme_diagnostic.py
+
+# docs/ is the GitHub Pages site root. Its generated files (data/language.json,
+# audio/, img/) ARE committed on purpose: Pages serves straight from the repo,
+# so the site breaks if they are absent. Regenerate with tools_build_demo.py.
