@@ -12,6 +12,75 @@ for machines that share physical space — and it is designed so that a human wh
 around those machines gradually learns roughly what is going on, without ever being
 taught.
 
+## Clocked profiles
+
+The installable Python package has two explicitly selected profiles:
+
+| Profile | What it sends | `YOU ENERGY LOW` example | Decode status |
+|---|---|---:|---|
+| `packet` (Full) | Addresses, type, sequence, payload, CRC32 | 14.3 s | Verified only when CRC32 passes |
+| `message` (Messages) | Concept words and acoustic word markers | 2.90 s | Unverified hypotheses |
+
+Install the v0.1.0 wheel:
+
+```sh
+python -m pip install 'b4bl[decode] @ https://github.com/kenspiredcode/B4-BL/releases/download/v0.1.0/b4bl-0.1.0-py3-none-any.whl'
+```
+
+The same version can be installed from its tagged source with
+`python -m pip install 'b4bl[decode] @ git+https://github.com/kenspiredcode/B4-BL.git@v0.1.0'`.
+The decoder extra pins scikit-learn 1.6.1 and joblib 1.5.1, the frozen
+classifier's serialization environment. The
+frozen ambient model is [published separately](https://github.com/kenspiredcode/B4-BL/releases/tag/model-ambient-multipitch-v2)
+from the wheel. Its SHA256 is
+`d0f0d8170229da869332ae0754e05e488602d13f2fac6cd2ef6ae80a974ad551`:
+
+```sh
+b4bl models fetch
+b4bl models verify
+b4bl encode --profile packet --sender 3 --recipient 7 --type MSG_ASK --seq 42 --output full.wav YOU ENERGY LOW
+b4bl encode --profile message --output message.wav YOU ENERGY LOW
+b4bl decode --profile packet --input full.wav
+b4bl decode --profile message --input message.wav
+```
+
+For an offline install, download the model asset and `SHA256SUMS.txt` on a
+connected machine, verify the checksum, then run
+`b4bl models install /path/to/ambient-multipitch-v2-*.joblib` with the trusted
+file. `joblib` files can execute code when loaded. Decode commands emit JSON with profile,
+model hash, hypotheses, margins, and integrity status. The Messages decoder
+expects a bounded recording or explicit push-to-talk interval; it is not an
+always-on ambient detector. Its retrospective offline results are reported
+below; no standalone prospective Messages validation has been run.
+
+The two clocked profiles support 212 words. `ALARM`, `WORKING`,
+`CALCULATING`, and character-spelling fallback are outside this transport;
+unsupported words fail before audio is generated. The older 215-morpheme
+language inventory remains available to the `codec.encode` sound demo. The
+full clocked list is available through `b4bl words` or
+`b4bl.supported_words()`. The
+[browser demo](https://kenspiredcode.github.io/B4-BL/) synthesizes that older
+sound demo, not either released clocked waveform, and its output cannot be
+fed directly to the released decoder.
+
+For Messages, a word is ambiguous when its best acoustic score is less than
+0.5 log-score units above the runner-up (the default receiver margin). A
+missing marker pair, off-grid interval, missing word-length candidate, or any
+ambiguous word rejects the bounded utterance. An accepted hypothesis remains
+unverified: this threshold is not an integrity check.
+
+On a **retrospective** analysis of 200 retained physical music recordings of
+Full packets, 194 payload intervals could be extracted. Messages accepted 188
+exact payloads and **one wrong payload**, rejected five, and had six extraction
+failures. Exact accepted results were 188/194 extracted intervals (96.9%), or
+188/200 selected attempts (94.0%) when extraction failures stay in the
+denominator. The source packets supplied the extraction boundaries; these were
+not independent Messages captures or a prospective Messages validation.
+The [selection manifest](experiments/message-retrospective-v1/selection.json),
+[per-recording results](experiments/message-retrospective-v1/predictions.jsonl),
+and [summary](experiments/message-retrospective-v1/summary.json) record the
+retrospective run. No always-on ambient Messages detection is claimed.
+
 ## Hear it
 
 The same sentence — *"Is your energy low?"* — rendered in four emotional registers.
@@ -173,9 +242,11 @@ The dropdowns only offer words the grammar allows in each slot, so all ~228,000
 buildable sentences are ones a droid can actually say.
 
 The page also has a clickable phoneme inventory and the packet breakdown above.
-Synthesis runs entirely client-side — it is a verified port of the Python encoder,
-agreeing sample-for-sample. Decoding is not in the demo; it needs a trained model
-far too large for a browser.
+The interactive builder runs a verified browser port of the older
+`codec.encode` sound demo, agreeing with that encoder sample for sample. It does
+not render either clocked profile and its output cannot be fed to their decoders.
+The page also offers [playable Full and Messages samples](https://kenspiredcode.github.io/B4-BL/#packet)
+rendered by the actual clocked encoders. Decoding is outside the browser.
 
 ## Design notes
 
@@ -218,25 +289,28 @@ audio_samples/         rendered demos (WAV/MP3)
 
 <br>
 
-Short answer: **yes, in measured conditions, with zero wrong packets ever accepted** —
+Short answer: **yes, in measured conditions, with zero accepted-wrong packets in
+the listed frozen CRC-protected validation runs** —
 and the qualifier matters enough that the long answer is long.
 
 This section is a research log, not a sales pitch. It includes the runs that failed.
 
 ### Headline results
 
-Every number below comes from a **prospective** run: the model and decoder settings
-were frozen before the data was collected or evaluated.
+The prospective rows used model and decoder settings frozen before evaluation.
+The clean AUKEY row is a post-tuning development result, as explained below.
 
 | Condition | Verified delivery | Wrong packets |
 |---|---:|---:|
 | Quiet room (room 5), 500 packets | 95.8% (479/500) | 0 |
-| Clean AUKEY mic / Bluetooth speaker, 200 packets | 95.0% (190/200) | 0 |
+| Clean AUKEY mic / Bluetooth speaker, post-tuning development, 200 packets | 95.0% (190/200) | 0 |
 | Room with continuous music, 200 packets | 96.0% (192/200) | 0 |
 | Digital ambient mixtures ≥ +24 dB SNR, 64 cases | 98.4% (63/64) | 0 |
 
-**No run, in any condition, has ever accepted a wrong packet.** When the channel is
-too degraded, the receiver rejects. It fails closed.
+The listed frozen CRC-protected validation runs observed zero accepted-wrong
+packets. Earlier experimental decoders did accept wrong words or packets; zero
+observed here does not imply a zero underlying error rate or authenticity.
+Messages has no CRC gate and cannot inherit these Full packet figures.
 
 The music-validation run is the strongest single result: 192/200 exact (96.0%, exact
 95% interval 92.27–98.26%), all 200 raw recordings present, music present throughout
@@ -279,8 +353,11 @@ problem, not a framing problem. That failure directly produced the next model, w
 then passed at 96.0% on untouched data.
 
 **Folding the last 50 tuning attempts into training was rejected**, because clean
-AUKEY delivery fell from 199/200 to 181/200. The selected model is frozen at SHA256
+AUKEY delivery fell from 199/200 to 181/200. The physical music-validation
+model is frozen at SHA256
 `3e096f33384da5ef707ac563fc3a48edc8abce86c70c2da515d661ffac1c110f`.
+The newer ambient digital-mixture endpoint used a separate model at SHA256
+`d0f0d8170229da869332ae0754e05e488602d13f2fac6cd2ef6ae80a974ad551`.
 
 ### Where the hard problems were
 
@@ -361,10 +438,10 @@ python3 src/ambient_benchmark.py mixed \
   --output experiments/ambient-mixtures-development
 ```
 
-JSON summaries are retained in `experiments/`. Feature caches, per-recording
-predictions, and model snapshots are local and gitignored — **which means a fresh clone
-can synthesize B4-BL but cannot yet decode it.** Publishing hash-verified frozen models
-is tracked as adoption work.
+JSON summaries are retained in `experiments/`. Historical feature caches and
+model snapshots are local and gitignored, so reproducing those validation runs
+requires their original inputs. Fresh installations can decode the published
+fixtures using the hash-verified ambient model from `b4bl models fetch`.
 
 Live capture requires explicit devices, performs an audible self-test, and logs every
 attempt including failures:

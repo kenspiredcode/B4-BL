@@ -1,0 +1,28 @@
+[build-system]
+requires = ["setuptools>=77", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "b4bl"
+version = "0.1.0"
+description = "B4-BL clocked acoustic messages and CRC-protected packets"
+readme = "README.md"
+requires-python = ">=3.10"
+license = "MIT"
+license-files = ["LICENSE"]
+dependencies = [
+  "numpy>=1.24",
+  "scipy>=1.10,<1.15; python_version < '3.11'",
+  "scipy>=1.10; python_version >= '3.11'",
+]
+
+[project.optional-dependencies]
+decode = ["scikit-learn==1.6.1", "joblib==1.5.1"]
+live = ["scikit-learn==1.6.1", "joblib==1.5.1", "sounddevice>=0.4"]
+
+[project.scripts]
+b4bl = "b4bl.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["b4bl*"]
+exclude = ["tests*", "src*", "experiments*", "recordings*"]

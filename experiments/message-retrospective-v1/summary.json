@@ -1,0 +1,36 @@
+{
+  "status": "retrospective_offline_extracted_payloads",
+  "channel": "compact_aukey_room6_music_validation_v3",
+  "model_sha256": "d0f0d8170229da869332ae0754e05e488602d13f2fac6cd2ef6ae80a974ad551",
+  "model_profile": "clocked-v1-fixed-300ms",
+  "wire_profile_source": "compact-clocked-v2-crc32-base32",
+  "message_profile": "clocked-v1-fixed-300ms",
+  "source_attempt_rows": 200,
+  "selected_attempts": 200,
+  "selection": "all unique labeled channel attempts sorted by filename",
+  "counts": {
+    "extraction_failed": 6,
+    "evaluated": 194,
+    "accepted_exact": 188,
+    "accepted_wrong": 1,
+    "rejected": 5
+  },
+  "reasons": {
+    "marker_count_20_expected_21": 1,
+    "accepted": 189,
+    "marker_count_6_expected_17": 1,
+    "marker_count_12_expected_22": 1,
+    "marker_count_18_expected_19": 2,
+    "marker_count_11_expected_17": 1,
+    "ambiguous word or no repetition majority": 5
+  },
+  "exact_rate_over_all_selected": 0.94,
+  "exact_rate_over_extracted": 0.9690721649484536,
+  "limits": [
+    "Payloads are cut from recordings of Full packets; no standalone Messages capture exists.",
+    "Full packet markers provide the extraction boundary; extraction failures remain in the all-selected denominator.",
+    "The model was developed before this Full validation corpus, but this Messages analysis was designed after data collection.",
+    "No CRC or integrity verification exists for Messages; accepted-wrong means an acoustic hypothesis was returned for the wrong words.",
+    "These figures do not measure always-on ambient detection or new hardware and rooms."
+  ]
+}

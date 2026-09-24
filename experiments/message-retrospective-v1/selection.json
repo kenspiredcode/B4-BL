@@ -1,0 +1,1730 @@
+[
+  {
+    "file": "compact_aukey_room6_music_validation_v3_00000.raw.wav",
+    "sha256": "bd922545dc4c129009a0c706e49dac8545c5558d0f47fb7af95c0d73f3f7134f",
+    "expected": [
+      "WITH",
+      "MSG_TELL",
+      "OR",
+      "TELL",
+      "START"
+    ]
+  },
+  {
+    "file": "compact_aukey_room6_music_validation_v3_00001.raw.wav",
+    "sha256": "b80b3cfb95e7607c7f1f152d5463d80c8c355918a6995ba365e019b79f1ea6f3",
+    "expected": [
+      "FAR"
+    ]
+  },
+  {
+    "file": "compact_aukey_room6_music_validation_v3_00002.raw.wav",
+    "sha256": "a9b04816498eb01ae8645bad1f62bd35ea592a24163c57f19714206d6c734c4d",
+    "expected": [
+      "CHARGER",
+      "OPEN",
+      "SCAN"
+    ]
+  },
+  {
+    "file": "compact_aukey_room6_music_validation_v3_00003.raw.wav",
+    "sha256": "20d9a383db9b7aac981c3a98d2d548030b591d595048651fa450f91a582c1400",
+    "expected": [
+      "OR",
+      "BELOW",
+      "LEFT",
+      "CLEAN"
+    ]
+  },
+  {
+    "file": "compact_aukey_room6_music_validation_v3_00004.raw.wav",
+    "sha256": "006245628fcb6fd37fba7195612442083bce9bc3c4e8b7658ade77b138d51237",
+    "expected": [
+      "PET"
+    ]
+  },
+  {
+    "file": "compact_aukey_room6_music_validation_v3_00005.raw.wav",
+    "sha256": "83698954b39ef55ca448b4029d551fe304e4e52e6f6e8b4fd8af2de565fe2288",
+    "expected": [
+      "AND"
+    ]
+  },
+  {
+    "file": "compact_aukey_room6_music_validation_v3_00006.raw.wav",
+    "sha256": "c74886ed5b0b817ee9c9bd6b854714dd4a87a92d3ad1ccd5a370bfacdbcab07d",
+    "expected": [
+      "IT",
+      "COLD",
+      "KEY",
+      "WELCOME"
+    ]
+  },
+  {
+    "file": "compact_aukey_room6_music_validation_v3_00007.raw.wav",
+    "sha256": "bc0c93ce0188e712dc72a0713ba0e3a0449a818021d4d72d03f2d107c5ee99b9",
+    "expected": [
+      "FLOOR",
+      "TURN"
+    ]
+  },
+  {
+    "file": "compact_aukey_room6_music_validation_v3_00008.raw.wav",
+    "sha256": "3749b678b3d800e0c7ad8b212e30203f1dc21d8b7265e1ded9a6b16369e49c59",
+    "expected": [
+      "IT"
+    ]
+  },
+  {
+    "file": "compact_aukey_room6_music_validation_v3_00009.raw.wav",
+    "sha256": "4831ccf0fe57ea57236255505c7516129f597de17072dfeacf47b3d70b94473e",
+    "expected": [
+      "NUM",
+      "D7",
+      "UNLOCKED"
+    ]
+  },
+  {
+    "file": "compact_aukey_room6_music_validation_v3_00010.raw.wav",
+    "sha256": "3974b6408e886463ad26b7519f57784d8a43896a1924e92be4f700aee62331db",
+    "expected": [
+      "PLACE",
+      "STOP_MEDIA",
+      "NOTREADY",
+      "MOVING"
+    ]
+  },
+  {
+    "file": "compact_aukey_room6_music_validation_v3_00011.raw.wav",
+    "sha256": "b9407513d39d003773982c791eff063150d229d023f4e449d258b0b8f75adf61",
+    "expected": [
+      "WITHOUT"
+    ]
+  },
+  {
+    "file": "compact_aukey_room6_music_validation_v3_00012.raw.wav",
+    "sha256": "874ead34e0b64b9448a48e850eada594cb67a3683d46dbe3ee0f24a36873e443",
+    "expected": [
+      "EVERY"
+    ]
+  },
+  {
+    "file": "compact_aukey_room6_music_validation_v3_00013.raw.wav",
+    "sha256": "8d3a446cdbcbf742b334211536c94f72e1fca535516e8b21a6b936e41f2c14c3",
+    "expected": [
+      "BESIDE",
+      "OFFSTATE"
+    ]
+  },
+  {
+    "file": "compact_aukey_room6_music_validation_v3_00014.raw.wav",
+    "sha256": "1f3e9ce9622380b0a779df3c941402cc1aa993c0cd43b05df052327927d10c73",
+    "expected": [
+      "NUM",
+      "D5",
+      "D3",
+      "D5",
+      "STOP_V",
+      "IT"
+    ]
+  },
+  {
+    "file": "compact_aukey_room6_music_validation_v3_00015.raw.wav",
+    "sha256": "ee8a16428fad5d7b53671896a66146caa2b1d0663ad275aacb15674600cbc7b0",
+    "expected": [
+      "OPEN"
+    ]
+  },
+  {
+    "file": "compact_aukey_room6_music_validation_v3_00016.raw.wav",
+    "sha256": "e7442633e9959fa0e122aa4f7dcc8d022efdbacdf1eca8838c2ba8abc753f9bf",
+    "expected": [
+      "SLEEP",
+      "LOCATION",
+      "BOTTLE",
+      "ONSTATE",
+      "COME"
+    ]
+  },
+  {
+    "file": "compact_aukey_room6_music_validation_v3_00017.raw.wav",
+    "sha256": "1ed0ee02121bd17888366859b005e76242829af67d89e4d2d803d735a82ed8a0",
+    "expected": [
+      "PACKAGE",
+      "ONCE"
+    ]
+  },
+  {
+    "file": "compact_aukey_room6_music_validation_v3_00018.raw.wav",
+    "sha256": "2d2e08992dea6938f9d8cda6cce232f81df8c7ab905fb9a8c1bd17f278732469",
+    "expected": [
+      "BESIDE",
+      "REPEAT",
+      "WARN",
+      "BELOW",
+      "WALL"
+    ]
+  },
+  {
+    "file": "compact_aukey_room6_music_validation_v3_00019.raw.wav",
+    "sha256": "bdae0e3654f7d60c33fb474dda971e75247a2f269f9179f4b301a53ed217fd09",
+    "expected": [
+      "SAFE"
+    ]
+  },
+  {
+    "file": "compact_aukey_room6_music_validation_v3_00020.raw.wav",
+    "sha256": "e63c971187570a7caba4c0d41f4fb6bdf70c90c81c8f647a5d5e5a678deccc72",
+    "expected": [
+      "KEY"
+    ]
+  },
+  {
+    "file": "compact_aukey_room6_music_validation_v3_00021.raw.wav",
+    "sha256": "7e0071daf0a235568b3d00cb9841de18485e077bb1bf9cc4b6cb9dbb3307525b",
+    "expected": [
+      "NUM",
+      "D8",
+      "BACK",
+      "DISTANCE"
+    ]
+  },
+  {
+    "file": "compact_aukey_room6_music_validation_v3_00022.raw.wav",
+    "sha256": "b481375137bc90de932e5de00e80cd82f94f26ecd37061d18e5cb299d191086c",
+    "expected": [
+      "PLACE",
+      "D3",
+      "MOVE"
+    ]
+  },
+  {
+    "file": "compact_aukey_room6_music_validation_v3_00023.raw.wav",
+    "sha256": "4285afe2d927ce8490e930bf471990583471cab08c075e4874934fd007471f4d",
+    "expected": [
+      "NUM",
+      "D2",
+      "D0",
+      "UNTIL"
+    ]
+  },
+  {
+    "file": "compact_aukey_room6_music_validation_v3_00024.raw.wav",
+    "sha256": "4c919bdd696b4371aec638b5c4ae7ee98e9fe19804e88cb2c133b161cb95d435",
+    "expected": [
+      "LESS",
+      "UNCHARGED",
+      "ABOVE",
+      "OK",
+      "BOTTLE"
+    ]
+  },
+  {
+    "file": "compact_aukey_room6_music_validation_v3_00025.raw.wav",
+    "sha256": "64ddf23cd6675b525822f0fa1ed3f3a9ad8a90e85730600df502292f195d17f6",
+    "expected": [
+      "ENOUGH",
+      "WALL"
+    ]
+  },
+  {
+    "file": "compact_aukey_room6_music_validation_v3_00026.raw.wav",
+    "sha256": "5faeca8341ae035ea64b2185f047daf5cc6b70cfe5314fa365750789c0fbba87",
+    "expected": [
+      "FAST"
+    ]
+  },
+  {
+    "file": "compact_aukey_room6_music_validation_v3_00027.raw.wav",
+    "sha256": "09300ff8791572edb566197527934538a6910e2ef3874e7f8618ffb2460007bb",
+    "expected": [
+      "CENTER",
+      "IDLE",
+      "ACK"
+    ]
+  },
+  {
+    "file": "compact_aukey_room6_music_validation_v3_00028.raw.wav",
+    "sha256": "0b3d3b4cbbf059c5a2805d2673a9aa919ad66e495fedc5194f46d54eec649fb7",
+    "expected": [
+      "MAYBE",
+      "PARENT_F"
+    ]
+  },
+  {
+    "file": "compact_aukey_room6_music_validation_v3_00029.raw.wav",
+    "sha256": "d2794ed539c17218b06bbde3784eccec6308fef65603340b1c0c1f61f9a48dad",
+    "expected": [
+      "RIGHT",
+      "VERY",
+      "WE",
+      "LOOK",
+      "PLEASE"
+    ]
+  },
+  {
+    "file": "compact_aukey_room6_music_validation_v3_00030.raw.wav",
+    "sha256": "928945a5e6fe625217ddd690488500386af6ff1a5b8cf05ef720d3bb1a633435",
+    "expected": [
+      "MOVING",
+      "STANDDOWN",
+      "KEY"
+    ]
+  },
+  {
+    "file": "compact_aukey_room6_music_validation_v3_00031.raw.wav",
+    "sha256": "c541fbc42b1571397cd4062c4ba7c26623e6a4160935f41205f1970456360ce0",
+    "expected": [
+      "STANDBY_V"
+    ]
+  },
+  {
+    "file": "compact_aukey_room6_music_validation_v3_00032.raw.wav",
+    "sha256": "90ab1768bd624ff40ede6d66fcade712a1dc4574597110a34c9c7e7f5f645413",
+    "expected": [
+      "STORE"
+    ]
+  },
+  {
+    "file": "compact_aukey_room6_music_validation_v3_00033.raw.wav",
+    "sha256": "dfd08fae0730d7971f0d6202b091b8f312c06bcb73874772fbf7d659b2404e2d",
+    "expected": [
+      "LIGHT",
+      "COME",
+      "LATER",
+      "GUEST",
+      "STOP"
+    ]
+  },
+  {
+    "file": "compact_aukey_room6_music_validation_v3_00034.raw.wav",
+    "sha256": "fe8373885767d39c6a929471ae2fba039e9296d78d72fe0b9e36407d7895999e",
+    "expected": [
+      "DISTANCE",
+      "MOVE",
+      "DOCK",
+      "ROOM"
+    ]
+  },
+  {
+    "file": "compact_aukey_room6_music_validation_v3_00035.raw.wav",
+    "sha256": "7c1328b1effd07aa6163b8a0092186623a260b8c9bf47d7c1b97ffb17b4f73e4",
+    "expected": [
+      "OR",
+      "SELF",
+      "ROOM"
+    ]
+  },
+  {
+    "file": "compact_aukey_room6_music_validation_v3_00036.raw.wav",
+    "sha256": "e09ce9cd9508d6cb1555559acd11ec1a30ef2063b31fed8f658ff90667b8ebed",
+    "expected": [
+      "CLEAR",
+      "CHILD_GIRL",
+      "ADDR",
+      "IT"
+    ]
+  },
+  {
+    "file": "compact_aukey_room6_music_validation_v3_00037.raw.wav",
+    "sha256": "52acb030babf5c379e3b811376616086a819e27c01e194eb1b1bd403bca37d17",
+    "expected": [
+      "ASK"
+    ]
+  },
+  {
+    "file": "compact_aukey_room6_music_validation_v3_00038.raw.wav",
+    "sha256": "c0ef24cabab1711d34948bee99e0bc07148887a2cf02ddf3af7e01374f4c46ee",
+    "expected": [
+      "WARN",
+      "CALL"
+    ]
+  },
+  {
+    "file": "compact_aukey_room6_music_validation_v3_00039.raw.wav",
+    "sha256": "d7b409b2896754502db44fc738a0261d3fc9fc14a38c869a4ce9f1a2b017230f",
+    "expected": [
+      "THERE",
+      "RIGHT",
+      "OFFSTATE",
+      "MSG_TELL",
+      "NOW"
+    ]
+  },
+  {
+    "file": "compact_aukey_room6_music_validation_v3_00040.raw.wav",
+    "sha256": "cddb31cc93b236f553ecee0e90b9d8ffd8c4f06e84f7b63682d58a3f73028c22",
+    "expected": [
+      "UNCHARGED",
+      "CENTER",
+      "TOY"
+    ]
+  },
+  {
+    "file": "compact_aukey_room6_music_validation_v3_00041.raw.wav",
+    "sha256": "2e8ca2f722aa54efb3531986ce936ecdc5e0742c8ecc997b4961dedb83275c0e",
+    "expected": [
+      "PICK",
+      "CHILD_BOY",
+      "THERE",
+      "WITH",
+      "READY"
+    ]
+  },
+  {
+    "file": "compact_aukey_room6_music_validation_v3_00042.raw.wav",
+    "sha256": "548cf7b39470c5cd42d1b7a37b2707466a7ad7596af656e086a381fda75bb98b",
+    "expected": [
+      "LATER",
+      "SELF",
+      "D7",
+      "HELP"
+    ]
+  },
+  {
+    "file": "compact_aukey_room6_music_validation_v3_00043.raw.wav",
+    "sha256": "321dbe9d60fdc8de0a6f205a2b8d6746f2092f33b5702b41a47841d28e6b2b46",
+    "expected": [
+      "CENTER"
+    ]
+  },
+  {
+    "file": "compact_aukey_room6_music_validation_v3_00044.raw.wav",
+    "sha256": "cb49bb1d0d09d0a502b0ad6f77f984dd237c359ecf3045836c3b21adc279d21c",
+    "expected": [
+      "CLEAR"
+    ]
+  },
+  {
+    "file": "compact_aukey_room6_music_validation_v3_00045.raw.wav",
+    "sha256": "d9fdc6ada1ad26a7b7bd457077f373e8441c060d0753771940533ddcdb7b7225",
+    "expected": [
+      "COLD",
+      "CLEAR",
+      "WAIT_V",
+      "D4",
+      "WITH"
+    ]
+  },
+  {
+    "file": "compact_aukey_room6_music_validation_v3_00046.raw.wav",
+    "sha256": "a2958ac3ab80609d5d932ec132e3ae2651e8fffaf6e1562cbe2e35a2423652df",
+    "expected": [
+      "MOVE"
+    ]
+  },
+  {
+    "file": "compact_aukey_room6_music_validation_v3_00047.raw.wav",
+    "sha256": "a52d5337fd23360c1b9f795198c9d48984dac102453ad1dd212643d1abf96c49",
+    "expected": [
+      "UNDER"
+    ]
+  },
+  {
+    "file": "compact_aukey_room6_music_validation_v3_00048.raw.wav",
+    "sha256": "2f05429bab733aac570ad588ff2fbbe1dda9dfd3bc3423d74899b72ed42836e8",
+    "expected": [
+      "LOCATION",
+      "UNLOCKED",
+      "WE"
+    ]
+  },
+  {
+    "file": "compact_aukey_room6_music_validation_v3_00049.raw.wav",
+    "sha256": "a3ddce50495583b450065d9f432e4eb4cabf737f266e52ec4384b08ad475fd13",
+    "expected": [
+      "BETWEEN",
+      "TAKE",
+      "GREETING"
+    ]
+  },
+  {
+    "file": "compact_aukey_room6_music_validation_v3_00050.raw.wav",
+    "sha256": "e93626601ede070b605f6455e4d5b2002454ccbb0d02b7fc87f23a3485a04819",
+    "expected": [
+      "IF",
+      "AGAIN_T",
+      "FAREWELL",
+      "LESS",
+      "TABLE"
+    ]
+  },
+  {
+    "file": "compact_aukey_room6_music_validation_v3_00051.raw.wav",
+    "sha256": "7aa72299cfabc2a3f1ca5f0e0b89af6b25a203cf68f462e4ce0fbee3e1c76484",
+    "expected": [
+      "OBJECT"
+    ]
+  },
+  {
+    "file": "compact_aukey_room6_music_validation_v3_00052.raw.wav",
+    "sha256": "6ae5ec18f14cf2c7b755eaa09411a531b82b4213a28d97c599cffb7b5af0e2bd",
+    "expected": [
+      "SELF"
+    ]
+  },
+  {
+    "file": "compact_aukey_room6_music_validation_v3_00053.raw.wav",
+    "sha256": "8ba57f96af7b25a97ecb6d0aac400d2107dae37a64e244733b9ed58a14fc7bda",
+    "expected": [
+      "THROUGH",
+      "BEFORE"
+    ]
+  },
+  {
+    "file": "compact_aukey_room6_music_validation_v3_00054.raw.wav",
+    "sha256": "c4d79877a48037d2f5685ef53cc31df73435d33c01b99f8848dd92bea92d538a",
+    "expected": [
+      "SORRY"
+    ]
+  },
+  {
+    "file": "compact_aukey_room6_music_validation_v3_00055.raw.wav",
+    "sha256": "f72f4353b793e9f7c28ceee258d008cb8d739ee2b9ec38f1597108d90fe666a8",
+    "expected": [
+      "UP"
+    ]
+  },
+  {
+    "file": "compact_aukey_room6_music_validation_v3_00056.raw.wav",
+    "sha256": "2d918594faa3064ac993dd0fd1f62ce17e1a195439feeca4d4dbf32f7d7ca2b5",
+    "expected": [
+      "SOON",
+      "BEFORE",
+      "CUP",
+      "LOCATION",
+      "MSG_ASK"
+    ]
+  },
+  {
+    "file": "compact_aukey_room6_music_validation_v3_00057.raw.wav",
+    "sha256": "f9b9545ea5c44904edf824de015a0f10b1a69789ef7df5f4232421b70d2d8e91",
+    "expected": [
+      "STOPPED",
+      "TARGET",
+      "SELF",
+      "SAME"
+    ]
+  },
+  {
+    "file": "compact_aukey_room6_music_validation_v3_00058.raw.wav",
+    "sha256": "7206da6c893b9b2ed35db3c9e8bd7c07a159f71236821d162486a91f1aa42730",
+    "expected": [
+      "FOLLOW"
+    ]
+  },
+  {
+    "file": "compact_aukey_room6_music_validation_v3_00059.raw.wav",
+    "sha256": "18aa3d9aec31055c50d15a755daabb55358d91e521a0cc719c2a81ed6f19da0b",
+    "expected": [
+      "FOOD",
+      "SOME",
+      "CONTAINER",
+      "UNDER"
+    ]
+  },
+  {
+    "file": "compact_aukey_room6_music_validation_v3_00060.raw.wav",
+    "sha256": "9ec78c8e0ba9baa4e813938566e680530c0837ca3bde489bc0dfb45d393fda16",
+    "expected": [
+      "CHILD_BOY",
+      "CLEAN"
+    ]
+  },
+  {
+    "file": "compact_aukey_room6_music_validation_v3_00061.raw.wav",
+    "sha256": "f807138288acb6e38bfa90daad360006532db4b862cbe7f38da1877b67f019cf",
+    "expected": [
+      "LOCKED",
+      "BOX",
+      "D7",
+      "TOOL",
+      "COME"
+    ]
+  },
+  {
+    "file": "compact_aukey_room6_music_validation_v3_00062.raw.wav",
+    "sha256": "44a5a9c18a71f0028ddbffae5008127b5e23a87fbdd00ec387b63d8fa9bba991",
+    "expected": [
+      "IT",
+      "OFFSTATE"
+    ]
+  },
+  {
+    "file": "compact_aukey_room6_music_validation_v3_00063.raw.wav",
+    "sha256": "8fd15525c2687a276f078e7c71d0951df7139fcfbb86d1ec4958d1ab5a93a48c",
+    "expected": [
+      "HALF",
+      "GIVE",
+      "PACKAGE",
+      "STOPPED",
+      "PLEASE"
+    ]
+  },
+  {
+    "file": "compact_aukey_room6_music_validation_v3_00064.raw.wav",
+    "sha256": "d01cf2c85a695aaf957e16713b803a8643e88e3deda54bb6f7efb1307a45d1a9",
+    "expected": [
+      "STEP",
+      "IN",
+      "CENTER",
+      "AND"
+    ]
+  },
+  {
+    "file": "compact_aukey_room6_music_validation_v3_00065.raw.wav",
+    "sha256": "e64bfada3515477f7ad157803a955c6dd0aa45e3c8ce402ef16448fee2da2fc7",
+    "expected": [
+      "NUM",
+      "D5",
+      "STAIRS",
+      "LESS"
+    ]
+  },
+  {
+    "file": "compact_aukey_room6_music_validation_v3_00066.raw.wav",
+    "sha256": "64885381cb31bdef35aea0d8d9764bb8c2b1f4b662e8823f485786234dd9c7eb",
+    "expected": [
+      "START",
+      "NEAR",
+      "TRASH",
+      "UNLOCKED"
+    ]
+  },
+  {
+    "file": "compact_aukey_room6_music_validation_v3_00067.raw.wav",
+    "sha256": "f912892d1bde32d1fe85f79d2f0639477974dbe4afd768b00d9147506ab96502",
+    "expected": [
+      "STANDDOWN"
+    ]
+  },
+  {
+    "file": "compact_aukey_room6_music_validation_v3_00068.raw.wav",
+    "sha256": "955884449d8fe501696e070a15720aba5da806890266f0f1c62ec089a815578b",
+    "expected": [
+      "AGAIN"
+    ]
+  },
+  {
+    "file": "compact_aukey_room6_music_validation_v3_00069.raw.wav",
+    "sha256": "373013038f046fcfd836a5c0cac9e5bed8cf1a26ea4577775ba01968b90006f0",
+    "expected": [
+      "START",
+      "ENOUGH",
+      "LIGHT",
+      "SELF",
+      "BEFORE"
+    ]
+  },
+  {
+    "file": "compact_aukey_room6_music_validation_v3_00070.raw.wav",
+    "sha256": "954daa9803d09963bbdeae053209ba44450e8ae02fc0bdbd07a509e481d61edf",
+    "expected": [
+      "NUM",
+      "D6"
+    ]
+  },
+  {
+    "file": "compact_aukey_room6_music_validation_v3_00071.raw.wav",
+    "sha256": "050f17de058eae6d0933b0b082fa6b635a8363c907f643849f480dbb53d1c644",
+    "expected": [
+      "NUM",
+      "D5"
+    ]
+  },
+  {
+    "file": "compact_aukey_room6_music_validation_v3_00072.raw.wav",
+    "sha256": "aa67489c51919a3bd177385396e93d00f97c6d6e34e129615d201e189d862644",
+    "expected": [
+      "PLEASE"
+    ]
+  },
+  {
+    "file": "compact_aukey_room6_music_validation_v3_00073.raw.wav",
+    "sha256": "74392b1611b457fc0d88064ae897089304a5a6a31ddd2c8b48d29b6d92babb93",
+    "expected": [
+      "TOOL"
+    ]
+  },
+  {
+    "file": "compact_aukey_room6_music_validation_v3_00074.raw.wav",
+    "sha256": "9ad65114ce47c59d924128bbbd38b2a602b4152b290b54d12720922e8edb5962",
+    "expected": [
+      "WARN"
+    ]
+  },
+  {
+    "file": "compact_aukey_room6_music_validation_v3_00075.raw.wav",
+    "sha256": "5b5845d4de3fd41c29f55fd8cf829d341e4270507e9ab9ccb69526dea27b562f",
+    "expected": [
+      "HALF",
+      "ERROR",
+      "UNCHARGED",
+      "HOT"
+    ]
+  },
+  {
+    "file": "compact_aukey_room6_music_validation_v3_00076.raw.wav",
+    "sha256": "f3d948615a215cc0fb465b4389341832fa2120cc946d0cc2ee8f3bed4ca058b9",
+    "expected": [
+      "METER",
+      "REMIND",
+      "LOW",
+      "DIFFERENT"
+    ]
+  },
+  {
+    "file": "compact_aukey_room6_music_validation_v3_00077.raw.wav",
+    "sha256": "67250ae9b26d468b319ff52c5aa7bb92307b7b9ad90553335503a04defe50c8d",
+    "expected": [
+      "DOOR"
+    ]
+  },
+  {
+    "file": "compact_aukey_room6_music_validation_v3_00078.raw.wav",
+    "sha256": "08e30144793744aa539a11a840e2d57f6b95d67d15ead30d415f12a7a27d5e96",
+    "expected": [
+      "SEARCH"
+    ]
+  },
+  {
+    "file": "compact_aukey_room6_music_validation_v3_00079.raw.wav",
+    "sha256": "264a8c991a075773b7ca01d418ad731547f7379013db1e95bbcb2c0789f86c73",
+    "expected": [
+      "CHARGED"
+    ]
+  },
+  {
+    "file": "compact_aukey_room6_music_validation_v3_00080.raw.wav",
+    "sha256": "b667e6774a55aebbf81f7c9e04b4d6c29fbb3820c53b7f68e80327e6eaea49da",
+    "expected": [
+      "LOOK",
+      "HERE",
+      "STAY",
+      "TOOL",
+      "BLOCKED"
+    ]
+  },
+  {
+    "file": "compact_aukey_room6_music_validation_v3_00081.raw.wav",
+    "sha256": "f4653e2f0f90c4f9f5177626034ca7e92f2e7e11679bc89d2cee0dd3a8ecb1df",
+    "expected": [
+      "STANDUP",
+      "OBSTACLE",
+      "ENOUGH"
+    ]
+  },
+  {
+    "file": "compact_aukey_room6_music_validation_v3_00082.raw.wav",
+    "sha256": "5ef8cefc7efd8bc0424d1844cd57db5155688ba9e7954c3df774db888fa43b6c",
+    "expected": [
+      "PLAY",
+      "MOVING",
+      "BAG",
+      "SOON",
+      "MOVE"
+    ]
+  },
+  {
+    "file": "compact_aukey_room6_music_validation_v3_00083.raw.wav",
+    "sha256": "784cdd956cf565a9779a18785a8beb45afa722eb7cf88be51e3632355548108d",
+    "expected": [
+      "ASK",
+      "PICK",
+      "LEFT",
+      "FAST"
+    ]
+  },
+  {
+    "file": "compact_aukey_room6_music_validation_v3_00084.raw.wav",
+    "sha256": "0d9a124551bb10bbc0d99d510d4223f4208f9423b3a9d9e012d8bed58f86b11b",
+    "expected": [
+      "RIGHT"
+    ]
+  },
+  {
+    "file": "compact_aukey_room6_music_validation_v3_00085.raw.wav",
+    "sha256": "3e30828a2eb07252c6a4178393890aa68b0744c0b2cc240ac839d15f8075fec1",
+    "expected": [
+      "FEW",
+      "SELF"
+    ]
+  },
+  {
+    "file": "compact_aukey_room6_music_validation_v3_00086.raw.wav",
+    "sha256": "30632f73b87d3d0c1c9084c1c695e8be5387a56e6853395c1c72fc57e2f9a431",
+    "expected": [
+      "CARRY",
+      "MSG_ACKF",
+      "ALL",
+      "THANKS",
+      "PLACE"
+    ]
+  },
+  {
+    "file": "compact_aukey_room6_music_validation_v3_00087.raw.wav",
+    "sha256": "9d435120ae8ac1528cb99e70dcba5694914e638b45135ae89de310e80a77a5cd",
+    "expected": [
+      "TARGET",
+      "FOOD"
+    ]
+  },
+  {
+    "file": "compact_aukey_room6_music_validation_v3_00088.raw.wav",
+    "sha256": "65fd512c3a4f3a515890fa4ca57dd02d5aa62a8a4137d82361fd0b088a5bd770",
+    "expected": [
+      "SCAN"
+    ]
+  },
+  {
+    "file": "compact_aukey_room6_music_validation_v3_00089.raw.wav",
+    "sha256": "3b5fbd64018ebebd9dea51ca9c96d1d4ef42a54ed2f8e070ec6c79db19e2a8ae",
+    "expected": [
+      "STEP",
+      "UNDER",
+      "PLACE"
+    ]
+  },
+  {
+    "file": "compact_aukey_room6_music_validation_v3_00090.raw.wav",
+    "sha256": "e0b0aeb97ca07f39d0e749e5baf60a6e36776df4677fbe1904d6b10ad06e7408",
+    "expected": [
+      "WARN",
+      "MAIL",
+      "UNDER",
+      "CUP"
+    ]
+  },
+  {
+    "file": "compact_aukey_room6_music_validation_v3_00091.raw.wav",
+    "sha256": "8ded6510c3927b133b93be1a1b6657316b3633237b74fd8a24898ff87fe28726",
+    "expected": [
+      "BOTTLE",
+      "MAYBE",
+      "CARRY"
+    ]
+  },
+  {
+    "file": "compact_aukey_room6_music_validation_v3_00092.raw.wav",
+    "sha256": "b7cc20091cc2454e96b4c89a550f1ce32600a41bc4fb5c099f44f77336aa856f",
+    "expected": [
+      "BEFORE"
+    ]
+  },
+  {
+    "file": "compact_aukey_room6_music_validation_v3_00093.raw.wav",
+    "sha256": "9a14cd860aa8de643cca5bb8f598fb162536f03f5eac9bae42051ecc18e68cce",
+    "expected": [
+      "NUM",
+      "D4",
+      "SLOW"
+    ]
+  },
+  {
+    "file": "compact_aukey_room6_music_validation_v3_00094.raw.wav",
+    "sha256": "9727d398ad4ae54993d7386588446d01d2bc320c07ae0c63fe2fd44fe5358767",
+    "expected": [
+      "TOY",
+      "METER",
+      "IDLE",
+      "LESS"
+    ]
+  },
+  {
+    "file": "compact_aukey_room6_music_validation_v3_00095.raw.wav",
+    "sha256": "97ee74a1ab028735732e9e499f14af74af45212fadee84110ed700435a943950",
+    "expected": [
+      "MOVING"
+    ]
+  },
+  {
+    "file": "compact_aukey_room6_music_validation_v3_00096.raw.wav",
+    "sha256": "a48117831598b4dfbde6b561d3bb9d2f5addf246ace3dccbeda2de9a6ded809b",
+    "expected": [
+      "AROUND"
+    ]
+  },
+  {
+    "file": "compact_aukey_room6_music_validation_v3_00097.raw.wav",
+    "sha256": "c567cabc83ab3e8af4ac9f17838512ef48a01606d5cd7adaef4b3788bcbacf3d",
+    "expected": [
+      "TOY",
+      "STAND",
+      "READY"
+    ]
+  },
+  {
+    "file": "compact_aukey_room6_music_validation_v3_00098.raw.wav",
+    "sha256": "7699b37226fb4a8f209bd113940f8bd9bff3082bc3eaeea8f7e46cb14d73037f",
+    "expected": [
+      "STOPPEDSTATE",
+      "IT",
+      "STAND"
+    ]
+  },
+  {
+    "file": "compact_aukey_room6_music_validation_v3_00099.raw.wav",
+    "sha256": "4ffc764010f6cb50a6846597c40fcb44f8f6ffdec1d8041ed0d28e968eef2a6b",
+    "expected": [
+      "MSG_ASK",
+      "STANDBY_V"
+    ]
+  },
+  {
+    "file": "compact_aukey_room6_music_validation_v3_00100.raw.wav",
+    "sha256": "9edeece2bc8961838bff7889400fb4f779818debd742be1a891b4cffc8d7fd9f",
+    "expected": [
+      "CLEAN"
+    ]
+  },
+  {
+    "file": "compact_aukey_room6_music_validation_v3_00101.raw.wav",
+    "sha256": "890f3691decf34448d58d5ab60df62ed44d0fc395dff34194d40eb2119c3723d",
+    "expected": [
+      "ACK",
+      "MSG_TELL"
+    ]
+  },
+  {
+    "file": "compact_aukey_room6_music_validation_v3_00102.raw.wav",
+    "sha256": "07677c9706b361ccf2e70b733441a0b73ccd27910b588ffdffa549d6002f8941",
+    "expected": [
+      "STAND"
+    ]
+  },
+  {
+    "file": "compact_aukey_room6_music_validation_v3_00103.raw.wav",
+    "sha256": "95b3257f67fef79728f2c6e2b07425f9cd150a34a936b4164c5a0b6040b3f9d0",
+    "expected": [
+      "STANDUP"
+    ]
+  },
+  {
+    "file": "compact_aukey_room6_music_validation_v3_00104.raw.wav",
+    "sha256": "556d3e9b76fcb077d9c73a21583bfa4097579c94a3be7255e2f48a4dad2fce45",
+    "expected": [
+      "BAG",
+      "FAST"
+    ]
+  },
+  {
+    "file": "compact_aukey_room6_music_validation_v3_00105.raw.wav",
+    "sha256": "0b6304b28e4ed2aa440007509fdb1bb4dbcc94a455a3823e9774d7ec5779c94a",
+    "expected": [
+      "UNSAFE"
+    ]
+  },
+  {
+    "file": "compact_aukey_room6_music_validation_v3_00106.raw.wav",
+    "sha256": "8dd4fc1a7390de9a9a4d838c4a71bfb940cf10d747bcf04daf7f5d7a2d86837b",
+    "expected": [
+      "GUEST"
+    ]
+  },
+  {
+    "file": "compact_aukey_room6_music_validation_v3_00107.raw.wav",
+    "sha256": "9b9f8c478668fbe210a04517b3994508b17df08e589ff4aa56972aa426c1e5aa",
+    "expected": [
+      "NUM",
+      "D9"
+    ]
+  },
+  {
+    "file": "compact_aukey_room6_music_validation_v3_00108.raw.wav",
+    "sha256": "e7348b6254fc240aa50304c7b163f4426e3d962af2e854d885f3625fc18125da",
+    "expected": [
+      "START",
+      "D8",
+      "BETWEEN",
+      "EDGE",
+      "FOLLOW"
+    ]
+  },
+  {
+    "file": "compact_aukey_room6_music_validation_v3_00109.raw.wav",
+    "sha256": "5527988ee1165af0e04f3fb59f8eab0ec47768f42c98b3572392f1915e88a9cd",
+    "expected": [
+      "ONSTATE"
+    ]
+  },
+  {
+    "file": "compact_aukey_room6_music_validation_v3_00110.raw.wav",
+    "sha256": "c513ef432400c53ad44a99c01c7eea62a4268d4a7c834e4268584e93f051245f",
+    "expected": [
+      "METER",
+      "FEW",
+      "EDGE"
+    ]
+  },
+  {
+    "file": "compact_aukey_room6_music_validation_v3_00111.raw.wav",
+    "sha256": "612ec16bd7bbf6cb97848194ccb8c1f9bc64f26a291926c322f46077d05a800e",
+    "expected": [
+      "STANDGUARD",
+      "BEFORE",
+      "D6"
+    ]
+  },
+  {
+    "file": "compact_aukey_room6_music_validation_v3_00112.raw.wav",
+    "sha256": "9104900f325ce63dc1f7605d8d075361dbb693d8aa82c5ae528a2bb4c05759af",
+    "expected": [
+      "MSG_TELL",
+      "FOOD"
+    ]
+  },
+  {
+    "file": "compact_aukey_room6_music_validation_v3_00113.raw.wav",
+    "sha256": "fe27d57532103840d9459b7b0207525a0f89f8c6795d0e438a46782b3ef14384",
+    "expected": [
+      "MSG_ACKF",
+      "OBSTACLE",
+      "ADDR",
+      "LOOK",
+      "STORE"
+    ]
+  },
+  {
+    "file": "compact_aukey_room6_music_validation_v3_00114.raw.wav",
+    "sha256": "0e89701c8650081d0bbe9fc6527159e94d16cc20149cd501ffd208a7c5fb722f",
+    "expected": [
+      "TELL"
+    ]
+  },
+  {
+    "file": "compact_aukey_room6_music_validation_v3_00115.raw.wav",
+    "sha256": "7d8396deb9f99eace77176d7497bc7b3a446af1194612f64d059c100f288a974",
+    "expected": [
+      "BUSY",
+      "D3",
+      "FOOD"
+    ]
+  },
+  {
+    "file": "compact_aukey_room6_music_validation_v3_00116.raw.wav",
+    "sha256": "f9a1ca11802cfc3ad2d5785b0f8580d96c5cec99ebd3daf00361d4a6e42c0b6d",
+    "expected": [
+      "STAIRS",
+      "LOOK",
+      "WALL",
+      "CONTAINER"
+    ]
+  },
+  {
+    "file": "compact_aukey_room6_music_validation_v3_00117.raw.wav",
+    "sha256": "0f67626f6fba0980982261466e728ef7582f15c12ac389be9734ff3ba445731f",
+    "expected": [
+      "MAYBE",
+      "AGAIN",
+      "ITEM"
+    ]
+  },
+  {
+    "file": "compact_aukey_room6_music_validation_v3_00118.raw.wav",
+    "sha256": "59bb7d3f40c1e983181ab244fc345d5adc184a9fbe054370d5a86cab489feb05",
+    "expected": [
+      "CLEAR",
+      "MOVING",
+      "OR",
+      "CHILD_GIRL",
+      "NOW"
+    ]
+  },
+  {
+    "file": "compact_aukey_room6_music_validation_v3_00119.raw.wav",
+    "sha256": "a119623a09f474eb7658b9bf37c45167d1b0f45aabce13f82754ca4add5b05ab",
+    "expected": [
+      "PERSON"
+    ]
+  },
+  {
+    "file": "compact_aukey_room6_music_validation_v3_00120.raw.wav",
+    "sha256": "2f7fea9ff4dea72b2199468e167c7ce9b8d498f157b978e8234be6332ff3548f",
+    "expected": [
+      "LATER"
+    ]
+  },
+  {
+    "file": "compact_aukey_room6_music_validation_v3_00121.raw.wav",
+    "sha256": "ff85bd4cf1409ed3449869262650cdb5fb4d1bf1c712bb559a83b927b2924ed9",
+    "expected": [
+      "FLOOR",
+      "IDLE",
+      "OFFLINE",
+      "FOLLOW",
+      "FEW"
+    ]
+  },
+  {
+    "file": "compact_aukey_room6_music_validation_v3_00122.raw.wav",
+    "sha256": "055aa0ad9f76349cd1477ff6e8a77dff61b03d412c425e416cb66cf68515ca02",
+    "expected": [
+      "HIGH"
+    ]
+  },
+  {
+    "file": "compact_aukey_room6_music_validation_v3_00123.raw.wav",
+    "sha256": "189bd79392c5bed1ec983f7c68c0f9db34120292d8e961af319599ba840e265c",
+    "expected": [
+      "CONFIRM"
+    ]
+  },
+  {
+    "file": "compact_aukey_room6_music_validation_v3_00124.raw.wav",
+    "sha256": "18574944fe721c15a2edc51a4af4597f8c1e111cebb9dc82cf56cf7f78ebd6b2",
+    "expected": [
+      "MANY"
+    ]
+  },
+  {
+    "file": "compact_aukey_room6_music_validation_v3_00125.raw.wav",
+    "sha256": "ec5d817e4da3b31046f3c3cccfffd547e5a63321fceff9e4764b0d97fd6f3513",
+    "expected": [
+      "UNCHARGED",
+      "THROUGH",
+      "ONCE"
+    ]
+  },
+  {
+    "file": "compact_aukey_room6_music_validation_v3_00126.raw.wav",
+    "sha256": "4eb1ba0ef370254760f294f1bb709e0fbba3bb08ea01218e3416601d71fdb0c8",
+    "expected": [
+      "NUM",
+      "D7",
+      "BECAUSE"
+    ]
+  },
+  {
+    "file": "compact_aukey_room6_music_validation_v3_00127.raw.wav",
+    "sha256": "e90d1d699c0fb13be7be144f37d8cad8159020545805ff1bbb264e2762dd3e49",
+    "expected": [
+      "FAST",
+      "D3",
+      "BRING",
+      "GIVE",
+      "MSG_ASK"
+    ]
+  },
+  {
+    "file": "compact_aukey_room6_music_validation_v3_00128.raw.wav",
+    "sha256": "aa078f0061072ddc0f30e97079af13e2cd65775da407fbd7f72a0e15bbe6f2a7",
+    "expected": [
+      "ASK",
+      "WITH",
+      "STOPPED",
+      "BLOCKED",
+      "CLEAN"
+    ]
+  },
+  {
+    "file": "compact_aukey_room6_music_validation_v3_00129.raw.wav",
+    "sha256": "1ead749e057238fd6fdcde04e0e0861e10fc4b5138222fb2b5b914e503ca7d1c",
+    "expected": [
+      "WAIT_V",
+      "KEY",
+      "D6",
+      "GO"
+    ]
+  },
+  {
+    "file": "compact_aukey_room6_music_validation_v3_00130.raw.wav",
+    "sha256": "564dc3a21cc68325f39aa220999122d874b1eb2861eeb0480be28cc57f044590",
+    "expected": [
+      "FLOOR"
+    ]
+  },
+  {
+    "file": "compact_aukey_room6_music_validation_v3_00131.raw.wav",
+    "sha256": "689c0fb0e2c3e4b43c54826f7652807d7a88aff7ffa778769ad8f25b93fa5919",
+    "expected": [
+      "PARENT_M",
+      "ENOUGH"
+    ]
+  },
+  {
+    "file": "compact_aukey_room6_music_validation_v3_00132.raw.wav",
+    "sha256": "210a00cf4cd837a671f6ac9aa30f19c38a28d0aec6e9508c98e4cb4a5b9b9481",
+    "expected": [
+      "STOPPEDSTATE",
+      "STOP_V",
+      "LOCKED",
+      "D7",
+      "WAIT"
+    ]
+  },
+  {
+    "file": "compact_aukey_room6_music_validation_v3_00133.raw.wav",
+    "sha256": "d22e37c03ec79701ca33faeed1bd9aa91c38c2029f80e0c31c90a2a6b0a2f757",
+    "expected": [
+      "IN"
+    ]
+  },
+  {
+    "file": "compact_aukey_room6_music_validation_v3_00134.raw.wav",
+    "sha256": "a18dd82790d11ead36bd59d2921cb93231db1ffee917e05e0e85a07711f03051",
+    "expected": [
+      "OFFSTATE",
+      "BEFORE",
+      "NUM",
+      "DISTANCE"
+    ]
+  },
+  {
+    "file": "compact_aukey_room6_music_validation_v3_00135.raw.wav",
+    "sha256": "b2e1a04d50d78c71a882e3498027eac82fca4155db2292390e84294452da841c",
+    "expected": [
+      "ALL",
+      "CARRY"
+    ]
+  },
+  {
+    "file": "compact_aukey_room6_music_validation_v3_00136.raw.wav",
+    "sha256": "419a058d39929cc4e08af790c7f02560ddee065b7c8a3fa09532034f041e7648",
+    "expected": [
+      "BESIDE"
+    ]
+  },
+  {
+    "file": "compact_aukey_room6_music_validation_v3_00137.raw.wav",
+    "sha256": "73cd2c380af58c6d9f6afa07156ead49a48555b9b884ca40e6e859b65348c010",
+    "expected": [
+      "AGAIN_T",
+      "THAT",
+      "CORNER",
+      "STORE_V",
+      "START"
+    ]
+  },
+  {
+    "file": "compact_aukey_room6_music_validation_v3_00138.raw.wav",
+    "sha256": "be14ed0b64494de696bf5359f9099a7f862dd534b4b77b1cd7de314f32ea2b65",
+    "expected": [
+      "EDGE"
+    ]
+  },
+  {
+    "file": "compact_aukey_room6_music_validation_v3_00139.raw.wav",
+    "sha256": "8ba1764e9f9b94f6576a7d31c77c7b060e4bf38167c5f22d3d5d356f415b2b77",
+    "expected": [
+      "REMOTE",
+      "WALL",
+      "MOVE",
+      "TOWARD"
+    ]
+  },
+  {
+    "file": "compact_aukey_room6_music_validation_v3_00140.raw.wav",
+    "sha256": "05a62ab040ceba3d970e80a1e6103adc85cc28b8750654acbca99fe882d58fbf",
+    "expected": [
+      "LIGHT",
+      "MANY",
+      "MSG_WARN"
+    ]
+  },
+  {
+    "file": "compact_aukey_room6_music_validation_v3_00141.raw.wav",
+    "sha256": "2aec48b48baeebdf9b8b661079038d943545e3f6367f99d8d7e0cddc5c9b2583",
+    "expected": [
+      "READY"
+    ]
+  },
+  {
+    "file": "compact_aukey_room6_music_validation_v3_00142.raw.wav",
+    "sha256": "dc60b9f5a2eb69daae318931cd1c984b5121dbb179e29122c83f8d90080b1fef",
+    "expected": [
+      "CORNER",
+      "UNLOCKED",
+      "FAREWELL",
+      "D2"
+    ]
+  },
+  {
+    "file": "compact_aukey_room6_music_validation_v3_00143.raw.wav",
+    "sha256": "0b2fe844c6b181b8b9878a6f30038564738c4641bf07dc307bb7f01ca08b5018",
+    "expected": [
+      "CORNER",
+      "WAIT",
+      "CLOSE"
+    ]
+  },
+  {
+    "file": "compact_aukey_room6_music_validation_v3_00144.raw.wav",
+    "sha256": "8a8575ffa639cba4fb370c293e03cd27ddc2efb647b543076b9a0dc9f774117a",
+    "expected": [
+      "CONNECTED"
+    ]
+  },
+  {
+    "file": "compact_aukey_room6_music_validation_v3_00145.raw.wav",
+    "sha256": "eb39cd1e122c29867982b2bb36241c61c3179ce90e03767ac36d7acd9b5290a4",
+    "expected": [
+      "WAIT",
+      "MSG_ACKF",
+      "FAREWELL",
+      "D6",
+      "CUP"
+    ]
+  },
+  {
+    "file": "compact_aukey_room6_music_validation_v3_00146.raw.wav",
+    "sha256": "f2a461e7dd164b12550b05f8758b6fcb406ca8980614bc03f83f34da2615e0f3",
+    "expected": [
+      "LOCKED",
+      "GIVE",
+      "STAY",
+      "CUP"
+    ]
+  },
+  {
+    "file": "compact_aukey_room6_music_validation_v3_00147.raw.wav",
+    "sha256": "bb90894d72a5d8c875e85fbc1074d9fb8b5d96aee8c692653450c92506569988",
+    "expected": [
+      "CHAIR"
+    ]
+  },
+  {
+    "file": "compact_aukey_room6_music_validation_v3_00148.raw.wav",
+    "sha256": "6747f02943b24d28fa480a93d25f393d6310900690eee39a1062dc877c458add",
+    "expected": [
+      "AGAIN_T"
+    ]
+  },
+  {
+    "file": "compact_aukey_room6_music_validation_v3_00149.raw.wav",
+    "sha256": "ae2e75042e015a21bc56bea42de6ac0f9ac7227d1d8f269e15c741eac5b7104d",
+    "expected": [
+      "VERY",
+      "FULL",
+      "EDGE",
+      "SOON"
+    ]
+  },
+  {
+    "file": "compact_aukey_room6_music_validation_v3_00150.raw.wav",
+    "sha256": "70a347b67b4e6af294b5ff14f00072b320070d044ae1da09e942390f41b678da",
+    "expected": [
+      "PARENT_F",
+      "STOP_MEDIA"
+    ]
+  },
+  {
+    "file": "compact_aukey_room6_music_validation_v3_00151.raw.wav",
+    "sha256": "3b40b2f8292ab9a0e4fac5af2f666545f65d1d0f37abdeda1da18348cf1f53dc",
+    "expected": [
+      "BLOCKED",
+      "MAYBE"
+    ]
+  },
+  {
+    "file": "compact_aukey_room6_music_validation_v3_00152.raw.wav",
+    "sha256": "4e701373522149d5bbf230de44d15b0b9f2f6deb69b26d44d4d07fb2c3f7925f",
+    "expected": [
+      "LOCKED"
+    ]
+  },
+  {
+    "file": "compact_aukey_room6_music_validation_v3_00153.raw.wav",
+    "sha256": "75aabf1fc965b452cc0de42ee968257c1fd6bb4e6d5d58b6c9939886f7a877c2",
+    "expected": [
+      "REMOTE",
+      "DONE",
+      "D3",
+      "GUEST"
+    ]
+  },
+  {
+    "file": "compact_aukey_room6_music_validation_v3_00154.raw.wav",
+    "sha256": "0f93fc985d83488e7de9ac4f45f004a3d4e6575dd96f2ceec61fd7e0e3e2804b",
+    "expected": [
+      "NONE",
+      "STOP_V",
+      "DOWN",
+      "GUEST"
+    ]
+  },
+  {
+    "file": "compact_aukey_room6_music_validation_v3_00155.raw.wav",
+    "sha256": "5d563b7114c346d8e80ed6593434340e7ee6a5c9ce3657597475436042fa314b",
+    "expected": [
+      "LOOK",
+      "LOW",
+      "D9",
+      "DOCK"
+    ]
+  },
+  {
+    "file": "compact_aukey_room6_music_validation_v3_00156.raw.wav",
+    "sha256": "48f31b2a58a53059b309445457c79fcaa2681ed181f85ffabde893912a82d71d",
+    "expected": [
+      "STOP_V",
+      "NOTREADY"
+    ]
+  },
+  {
+    "file": "compact_aukey_room6_music_validation_v3_00157.raw.wav",
+    "sha256": "f813b530d4033259eb48be6e2911d2d798826e4f1900a7a83c13c0c4673dfc73",
+    "expected": [
+      "HOT"
+    ]
+  },
+  {
+    "file": "compact_aukey_room6_music_validation_v3_00158.raw.wav",
+    "sha256": "14ee9c400c19317c654adee8900e1c6219d0aa78ae0b3e8e8aab13d58b6563cb",
+    "expected": [
+      "OBJECT",
+      "LOW"
+    ]
+  },
+  {
+    "file": "compact_aukey_room6_music_validation_v3_00159.raw.wav",
+    "sha256": "01a1b7ba0b365ec62335a24ff92b97569e022c751547bf55077e2c3194018e1d",
+    "expected": [
+      "TURN",
+      "MAIL",
+      "GUEST"
+    ]
+  },
+  {
+    "file": "compact_aukey_room6_music_validation_v3_00160.raw.wav",
+    "sha256": "cd35df223d32c0283aba73a3662d5434148d71723e7de5637cd2922cf916ee90",
+    "expected": [
+      "PICK"
+    ]
+  },
+  {
+    "file": "compact_aukey_room6_music_validation_v3_00161.raw.wav",
+    "sha256": "97e901568da35b81b5edd6a6eac8f8836736f78e17384d753a99aad849d86487",
+    "expected": [
+      "MANY",
+      "DIFFERENT",
+      "RIGHT",
+      "TOY",
+      "WALL"
+    ]
+  },
+  {
+    "file": "compact_aukey_room6_music_validation_v3_00162.raw.wav",
+    "sha256": "a075a93c99f8a571a7b8939de1976d921d61f9febdc8d7171532aa8f70ec903e",
+    "expected": [
+      "ONCE"
+    ]
+  },
+  {
+    "file": "compact_aukey_room6_music_validation_v3_00163.raw.wav",
+    "sha256": "a88fff40069f95f23b3480393a2cefd73f347cae77d9b060d4e7a95904f67e01",
+    "expected": [
+      "NUM",
+      "D2",
+      "TABLE",
+      "SORRY",
+      "D2"
+    ]
+  },
+  {
+    "file": "compact_aukey_room6_music_validation_v3_00164.raw.wav",
+    "sha256": "5f72c6ff4fbec99670dcc3f8f3136f0add3d7e4ae0e678339cc313dff17cb77a",
+    "expected": [
+      "WITH"
+    ]
+  },
+  {
+    "file": "compact_aukey_room6_music_validation_v3_00165.raw.wav",
+    "sha256": "6384ce3753232510edfc06241af1306cc2068a37a3ed697d3aa5b95a12275b37",
+    "expected": [
+      "MSG_ASK",
+      "ONSTATE",
+      "HOT"
+    ]
+  },
+  {
+    "file": "compact_aukey_room6_music_validation_v3_00166.raw.wav",
+    "sha256": "3721fa22f8f535b43131d44d05d678a73a452e8d326ef54825d8490414459be2",
+    "expected": [
+      "IDLE",
+      "GREETING",
+      "D1"
+    ]
+  },
+  {
+    "file": "compact_aukey_room6_music_validation_v3_00167.raw.wav",
+    "sha256": "c22066cbb53eace9b59c9e3514415515fcf4c4c1b5c39b182147af3586319f3d",
+    "expected": [
+      "ITEM",
+      "IF",
+      "STAND",
+      "FIND"
+    ]
+  },
+  {
+    "file": "compact_aukey_room6_music_validation_v3_00168.raw.wav",
+    "sha256": "fb5fee0388a01ea05d110e3f5d29af2f8f6353d87e45d67ecfb21c618341bd7a",
+    "expected": [
+      "ENOUGH"
+    ]
+  },
+  {
+    "file": "compact_aukey_room6_music_validation_v3_00169.raw.wav",
+    "sha256": "e3a5994ff7033cb3f48fa6d39b4d406fd07201241cf2148de3622514145a9648",
+    "expected": [
+      "BUSY",
+      "STAY"
+    ]
+  },
+  {
+    "file": "compact_aukey_room6_music_validation_v3_00170.raw.wav",
+    "sha256": "c100496ba2ca1e44babdcf4b1853612da338fa9d733c069906eb0d19a86af499",
+    "expected": [
+      "FAULT",
+      "FRONT",
+      "PACKAGE",
+      "IF",
+      "STANDGUARD"
+    ]
+  },
+  {
+    "file": "compact_aukey_room6_music_validation_v3_00171.raw.wav",
+    "sha256": "1ab1ceda6f8c1a4866a2ab60aec64ab537a266027ff22ef822ab2495d97fe72a",
+    "expected": [
+      "ALL"
+    ]
+  },
+  {
+    "file": "compact_aukey_room6_music_validation_v3_00172.raw.wav",
+    "sha256": "9da7d00285b54bc9eb638c1f00824a0c71ff612b4dd97f051234e5796e5b1eda",
+    "expected": [
+      "LATER",
+      "FAR",
+      "MSG_ACKF"
+    ]
+  },
+  {
+    "file": "compact_aukey_room6_music_validation_v3_00173.raw.wav",
+    "sha256": "cdb10c8c5e5dd6ae792c8d30cf252ab926472028f5798d3f6cbdecffb20059c6",
+    "expected": [
+      "NOT"
+    ]
+  },
+  {
+    "file": "compact_aukey_room6_music_validation_v3_00174.raw.wav",
+    "sha256": "46071ccaad3a34e550a5dbc578f84463d6af37fc49f056095159f516b69288c0",
+    "expected": [
+      "BOTTLE"
+    ]
+  },
+  {
+    "file": "compact_aukey_room6_music_validation_v3_00175.raw.wav",
+    "sha256": "ae1762d65d9d9ae4d456d5e8a87ca2967d3a8e5012992c8768c5ae3803916dfb",
+    "expected": [
+      "BEFORE",
+      "SELF"
+    ]
+  },
+  {
+    "file": "compact_aukey_room6_music_validation_v3_00176.raw.wav",
+    "sha256": "015b77b7f749dcaa77f9fe03d2c1e869dc5c58a1d14573a90600002aeb65b749",
+    "expected": [
+      "MAYBE"
+    ]
+  },
+  {
+    "file": "compact_aukey_room6_music_validation_v3_00177.raw.wav",
+    "sha256": "06ab9712a6dc73da338cbd2fdd423bfa9932717dfefdbef1cdb87f116160093f",
+    "expected": [
+      "STEP"
+    ]
+  },
+  {
+    "file": "compact_aukey_room6_music_validation_v3_00178.raw.wav",
+    "sha256": "095354dadff8be5709e4ed2d0086620359ae530717769ef55bf8a1f97bd5a362",
+    "expected": [
+      "UNDER",
+      "MOVING",
+      "D7",
+      "ABOVE"
+    ]
+  },
+  {
+    "file": "compact_aukey_room6_music_validation_v3_00179.raw.wav",
+    "sha256": "9d5db726925d566da9ae177f5c377db28a62020bae0ee327eeda957cf331bc07",
+    "expected": [
+      "FINISH",
+      "GUEST",
+      "HOT",
+      "SAFE"
+    ]
+  },
+  {
+    "file": "compact_aukey_room6_music_validation_v3_00180.raw.wav",
+    "sha256": "ec87b6f6e9dcaa9a59fb5f9eab6ce428fcf3c5ff814f229e27c235e92957b5d3",
+    "expected": [
+      "COLD",
+      "EDGE",
+      "LESS",
+      "ALL"
+    ]
+  },
+  {
+    "file": "compact_aukey_room6_music_validation_v3_00181.raw.wav",
+    "sha256": "8ee9542e00cda1b41fc63ae43caec620b8b87db8fa8f39af424e5b991f7883d7",
+    "expected": [
+      "OTHER_BOT",
+      "MAIL",
+      "ADDR",
+      "TOWARD"
+    ]
+  },
+  {
+    "file": "compact_aukey_room6_music_validation_v3_00182.raw.wav",
+    "sha256": "358ee47111eb298e906d7c4d3955010481b305a66416a981adf99777ba278d64",
+    "expected": [
+      "SELF",
+      "ASK",
+      "ENOUGH",
+      "STAIRS"
+    ]
+  },
+  {
+    "file": "compact_aukey_room6_music_validation_v3_00183.raw.wav",
+    "sha256": "ed77a6ca2dc64e81a00a954b4650ff657e66b0dfa052ede0a0cfa46c2f79239b",
+    "expected": [
+      "SOME"
+    ]
+  },
+  {
+    "file": "compact_aukey_room6_music_validation_v3_00184.raw.wav",
+    "sha256": "d67de8009f33f6c3510e9b285eca582ca78e6bf75d7e84f723540aac0bc9f172",
+    "expected": [
+      "STEP",
+      "CLOSE"
+    ]
+  },
+  {
+    "file": "compact_aukey_room6_music_validation_v3_00185.raw.wav",
+    "sha256": "9f358600e0f21fe2f1df66d3568da9a5e784bd09f9cc1b0f1dc7ab9211f8be92",
+    "expected": [
+      "STOP_V",
+      "MAYBE",
+      "ONCE",
+      "SLEEP",
+      "MSG_TELL"
+    ]
+  },
+  {
+    "file": "compact_aukey_room6_music_validation_v3_00186.raw.wav",
+    "sha256": "122d7cd06e6d202b66e9350117b79781c20f9b2958df402e2ad0764731c5429a",
+    "expected": [
+      "FIND",
+      "WATER",
+      "GO",
+      "PLEASE",
+      "WALL"
+    ]
+  },
+  {
+    "file": "compact_aukey_room6_music_validation_v3_00187.raw.wav",
+    "sha256": "77d7a044b99ec7f39f59ddf5f111d6d3d9854d6e99108a4b9bfcb07a7f6d86cf",
+    "expected": [
+      "MOVING",
+      "PICK"
+    ]
+  },
+  {
+    "file": "compact_aukey_room6_music_validation_v3_00188.raw.wav",
+    "sha256": "637cfc267273c0f68c4a3eb3bfc4815fe7e1ecf515b1557e47e4ca13d8e6a8aa",
+    "expected": [
+      "WAIT_V",
+      "TARGET"
+    ]
+  },
+  {
+    "file": "compact_aukey_room6_music_validation_v3_00189.raw.wav",
+    "sha256": "943636c95899b9ca1532e0a6796285f488a0c811da14fc3c6fff05b5e2463815",
+    "expected": [
+      "CLARIFY"
+    ]
+  },
+  {
+    "file": "compact_aukey_room6_music_validation_v3_00190.raw.wav",
+    "sha256": "835d052d613234d757562b403e2d9560cb26157758768e1c9315cb519ca91408",
+    "expected": [
+      "CHILD_BOY"
+    ]
+  },
+  {
+    "file": "compact_aukey_room6_music_validation_v3_00191.raw.wav",
+    "sha256": "3efca8252318e5ec1ca13c7e1c2cce9cad84ee3edd889ecdc3dd9134589d9638",
+    "expected": [
+      "LOCATION",
+      "DOORWAY",
+      "PARENT_M",
+      "DENY",
+      "PLEASE"
+    ]
+  },
+  {
+    "file": "compact_aukey_room6_music_validation_v3_00192.raw.wav",
+    "sha256": "798a367c9bfe802e4bc566660b96fd47d25afc1539516f331d58f6e7d574f2ee",
+    "expected": [
+      "WAIT",
+      "NONE",
+      "EDGE",
+      "D7",
+      "HERE"
+    ]
+  },
+  {
+    "file": "compact_aukey_room6_music_validation_v3_00193.raw.wav",
+    "sha256": "df1f8698b139eb6bc039c42bb554bc33ad60b813987a960f7739cc26a9d75d40",
+    "expected": [
+      "CLOTHES"
+    ]
+  },
+  {
+    "file": "compact_aukey_room6_music_validation_v3_00194.raw.wav",
+    "sha256": "ee79deb285a6441aa7d6e05ae31bd725c413f085c4dda4221ffaa9bdc194a715",
+    "expected": [
+      "STOP_MEDIA",
+      "WALL",
+      "BLOCKED"
+    ]
+  },
+  {
+    "file": "compact_aukey_room6_music_validation_v3_00195.raw.wav",
+    "sha256": "10b4a3c579a338d1c444543ee6694c5948603ca37e2acf565d2c0282e0a4f95a",
+    "expected": [
+      "UNLOCKED"
+    ]
+  },
+  {
+    "file": "compact_aukey_room6_music_validation_v3_00196.raw.wav",
+    "sha256": "57f33a58cb1866355ef58ea0bc0c4b2ab8654f851d16a347e378874a75a1fb0c",
+    "expected": [
+      "DONE"
+    ]
+  },
+  {
+    "file": "compact_aukey_room6_music_validation_v3_00197.raw.wav",
+    "sha256": "94ff0f61d36fb564418a73e145eb98a270261bef327b6c8f08e7c0b56d940706",
+    "expected": [
+      "TRASH"
+    ]
+  },
+  {
+    "file": "compact_aukey_room6_music_validation_v3_00198.raw.wav",
+    "sha256": "6fae0925605b750eb82ac55780c70ce1b99679e2e849227124863d421f78ac59",
+    "expected": [
+      "PARENT_F"
+    ]
+  },
+  {
+    "file": "compact_aukey_room6_music_validation_v3_00199.raw.wav",
+    "sha256": "1244d08b8b1bffd85dfded405c1e2220c72a4eecb82b28f8305e90a7a14aa06a",
+    "expected": [
+      "BACK",
+      "SORRY",
+      "IN",
+      "PLACE",
+      "REPEAT"
+    ]
+  }
+]

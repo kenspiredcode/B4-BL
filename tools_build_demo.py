@@ -25,6 +25,8 @@ SAMPLES = [
     "prosody_calm.wav",
     "phoneme_inventory.wav",
     "sentences_neutral.wav",
+    "clocked_packet_full.wav",
+    "clocked_message.wav",
 ]
 
 

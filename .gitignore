@@ -4,6 +4,8 @@ __pycache__/
 .venv/
 venv/
 *.egg-info/
+build/
+dist/
 
 # OS
 .DS_Store
@@ -26,6 +28,7 @@ b4bl/models/
 experiments/**/*.npz
 experiments/**/*.joblib
 experiments/**/*.jsonl
+!experiments/message-retrospective-v1/predictions.jsonl
 experiments/**/*.log
 experiments/**/*.wav
 experiments/**/recordings.json

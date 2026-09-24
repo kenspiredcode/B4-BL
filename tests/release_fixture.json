@@ -1,0 +1,28 @@
+{
+  "source_commit": "007222950bdfe71c49d52a7dc0fb9380614c356d",
+  "sample_rate": 44100,
+  "model_sha256": "d0f0d8170229da869332ae0754e05e488602d13f2fac6cd2ef6ae80a974ad551",
+  "model_profile": "clocked-v1-fixed-300ms",
+  "tested_python": ["3.9.6 source and decode", "3.10.19 installed source distribution", "3.11.13 installed wheel", "3.12 installed wheel"],
+  "note": "Reference hashes are from the source commit's existing encoders on Python 3.9.6, NumPy 2.0.2 and SciPy 1.13.1. Fresh installations on Python 3.10, 3.11, and 3.12 matched both waveform hashes and decoded both published fixtures using the listed frozen model. These decoder checks are not a prospective Messages validation.",
+  "cases": {
+    "packet": {
+      "input": {"sender": 3, "recipient": 7, "msg_type": "MSG_ASK", "seq": 42, "payload": ["YOU", "ENERGY", "LOW"]},
+      "wire_profile": "compact-clocked-v2-crc32-base32",
+      "samples": 630630,
+      "float32_sha256": "c47593dfe638a81a8d3f941babbdea9ec0e90201df73c9b1444ff412907c600b",
+      "wav_sha256": "82d63c4804cdbb9706c381ed86def4de5cefdb769a1ba7347a3f9e1a1087409c",
+      "decoded_payload": ["YOU", "ENERGY", "LOW"],
+      "integrity_verified": true
+    },
+    "message": {
+      "input": {"words": ["YOU", "ENERGY", "LOW"]},
+      "wire_profile": "clocked-v1-fixed-300ms",
+      "samples": 127890,
+      "float32_sha256": "5d8fbe234a00bbd7fe704dfe8f9add14ca8e66d38b587deeaa3393f7567f4ede",
+      "wav_sha256": "7848b24acb0f298bfd3de732d9a95cd5deb89f74e807827a98f08f4c7a61b506",
+      "decoded_words": ["YOU", "ENERGY", "LOW"],
+      "integrity_verified": false
+    }
+  }
+}

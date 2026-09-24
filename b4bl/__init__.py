@@ -15,3 +15,9 @@ See docs in the CollabHarness vault (projects/B4-BL/docs/) for the full plan.
 
 __version__ = "0.1.0"
 SR = 44100
+
+# Public release API. Research modules remain importable for reproducibility.
+from .release import (DecodeOutcome, decode_message, decode_packet,
+                      encode_message, encode_packet, supported_words)
+from .models import load_model
+from .runtime_receiver import RuntimeConfig, StreamingPacketReceiver

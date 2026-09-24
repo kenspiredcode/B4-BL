@@ -39,6 +39,13 @@ body {
 .section h3 { font-size: 1.15rem; margin: 32px 0 8px; color: var(--accent-warm); }
 .lede { color: var(--muted); max-width: 66ch; }
 
+.transport-samples { display: grid; gap: 12px; margin: 20px 0; }
+.transport-samples > div {
+  background: var(--panel); border: 1px solid var(--border);
+  border-radius: 8px; padding: 14px;
+}
+.transport-samples audio { display: block; width: 100%; margin-top: 8px; }
+
 /* --- prosody players --- */
 .prosody-grid { display: grid; gap: 12px; margin-top: 20px; }
 .prosody-row {

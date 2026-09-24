@@ -48,9 +48,10 @@ the lexicon or phoneme inventory. If the demo and the Python implementation disa
 about what a word sounds like, the demo is wrong and the trained decoder is the reason
 it matters.
 
-**`js/synth.js` is a port, not a reimplementation.** It must produce audio equivalent
-to `codec.encode` for the same concepts and prosody. Changes to how B4-BL *sounds* go
-into the Python implementation first, because the decoder was trained on it.
+**`js/synth.js` is a port of the older sound demo, not a clocked transport encoder.**
+It must produce audio equivalent to `codec.encode` for the same concepts and prosody.
+Changes to how that demo sounds go into the Python implementation first. The
+released `packet` and `message` decoders require different, clocked waveforms.
 
 `tools_verify_port.py` proves this numerically: it renders the same cases in both
 implementations and compares sample by sample. Current agreement is 5.96e-08 (float32
@@ -59,8 +60,9 @@ noise and approximates scipy's Butterworth filter, so it matches perceptually ra
 than exactly. The check also renders all 215 morphemes, so a phoneme missing from the
 export cannot silently reach the page. It runs as part of `tools_build_demo.py`.
 
-**No decoder here.** Decoding needs a ~140 MB trained classifier. The demo is
-transmit-only by design; the receiver lives in the repository.
+**No decoder here.** The frozen ambient classifier is about 192 MiB. The builder
+is a language and sound demonstration; the two staged clocked WAVs are examples
+rendered by their actual profile encoders.
 
 ## Build status
 
