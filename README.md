@@ -12,6 +12,12 @@ for machines that share physical space — and it is designed so that a human wh
 around those machines gradually learns roughly what is going on, without ever being
 taught.
 
+## Watch the demo
+
+[![R2-D2 and C-3PO in the desert; watch the B4-BL demo video](docs/img/r2-demo-poster.jpg)](https://kenspiredcode.github.io/B4-BL/#video)
+
+[Watch the 2:49 demo video](https://kenspiredcode.github.io/B4-BL/#video), which pairs B4-BL sounds with Star Wars footage.
+
 ## Clocked profiles
 
 The installable Python package has two explicitly selected profiles:

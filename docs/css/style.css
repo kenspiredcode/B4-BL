@@ -38,6 +38,10 @@ body {
 .section h2 { font-size: 1.75rem; margin: 0 0 8px; }
 .section h3 { font-size: 1.15rem; margin: 32px 0 8px; color: var(--accent-warm); }
 .lede { color: var(--muted); max-width: 66ch; }
+.demo-video {
+  display: block; width: 100%; aspect-ratio: 16 / 9;
+  background: #000; border: 1px solid var(--border); border-radius: 8px;
+}
 
 .transport-samples { display: grid; gap: 12px; margin: 20px 0; }
 .transport-samples > div {
