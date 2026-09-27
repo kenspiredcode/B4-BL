@@ -2,15 +2,15 @@
   <title id="title">Talking astromech droid</title>
   <style>
     .head {
-      transform-origin: 223px 183px;
+      transform-origin: 344px 231px;
       animation: droid-talk 3.2s ease-in-out infinite;
     }
     @keyframes droid-talk {
       0%, 13%, 62%, 100% { transform: rotate(0deg); }
-      20%, 39% { transform: rotate(-5deg); }
-      29% { transform: rotate(1deg); }
+      20%, 39% { transform: rotate(-4deg); }
+      29% { transform: rotate(4deg); }
       47% { transform: rotate(-3deg); }
-      54% { transform: rotate(1deg); }
+      54% { transform: rotate(3deg); }
     }
     @media (prefers-reduced-motion: reduce) {
       .head { animation: none; }
