@@ -4,37 +4,76 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>B4-BL — an acoustic language for robots</title>
-<meta name="description" content="A constructed language for robots that humans can learn by ear. Compose a sentence and hear it synthesized in your browser.">
+<meta name="description" content="What if R2-D2's beeps meant something? Meet B4-BL, a learnable acoustic language for robots, and hear it in action.">
 <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
 
-<header class="hero">
-  <h1>B4-BL <span class="pron">("Babble")</span></h1>
-  <p class="tagline">A constructed language for robots, that humans can learn by ear.</p>
-  <p class="blurb">
-    Astromech droids beep at each other and, over time, you start to <em>get it</em> —
-    not the words, but the mood. This page demonstrates B4-BL's language and sound.
-    The separately encoded Full transport adds addressing and CRC32 verification.
-  </p>
+<header class="site-header">
+  <a class="wordmark" href="#top" aria-label="B4-BL, back to top">B4<span>·</span>BL <small>“Babble”</small></a>
+  <nav aria-label="Page sections">
+    <a href="#video">Watch</a>
+    <a href="#hear">Listen</a>
+    <a href="#say">Speak</a>
+    <a href="#how">Explore</a>
+  </nav>
 </header>
 
+<main>
+<section class="hero" id="top">
+  <div class="hero-copy">
+    <p class="eyebrow">A language for the droids we grew up wishing for</p>
+    <h1>What if the <em>beeps</em> meant something?</h1>
+    <p class="hero-lead">
+      Remember R2 whistling at Luke, and Luke answering like he understood every word?
+      Didn't you want to learn those sounds too?
+    </p>
+    <p>
+      The letdown: for all their personality, those beeps weren't a language you could study.
+      No vocabulary tucked away in the whistles. No way to become Luke.
+    </p>
+    <p>
+      Real robots are getting capable fast. If droids are going to share our spaces, of course
+      they need a way to talk to each other — and to beep and whoop at us. B4-BL is a working
+      attempt: vocabulary, grammar, expressive sounds you can learn by ear, and a separate
+      checked packet format when machines need certainty.
+    </p>
+    <p class="hero-payoff">So we dubbed a few familiar droid scenes. <strong>Here’s R2 as if he really spoke B4-BL.</strong></p>
+    <div class="hero-actions">
+      <a class="button-link" href="#video">▶ Watch the dub</a>
+      <a class="text-link" href="#say">Try speaking B4-BL <span aria-hidden="true">↗</span></a>
+    </div>
+  </div>
+  <div class="hero-signal" aria-hidden="true">
+    <span class="signal-label signal-label-top">SIGNAL / MEANING</span>
+    <div class="signal-orbit">
+      <div class="signal-bars">
+        <i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+      </div>
+    </div>
+    <span class="signal-label signal-label-bottom">B4-BL · 001</span>
+  </div>
+</section>
+
 <section id="video" class="section">
-  <h2>Watch the demo</h2>
-  <p class="lede">B4-BL sounds paired with Star Wars footage.</p>
-  <video class="demo-video" controls preload="none" poster="img/r2-demo-poster.jpg"
-         aria-label="B4-BL demo video with Star Wars footage">
-    <source src="video/r2-demo-540p.mp4" type="video/mp4">
-    <a href="video/r2-demo-540p.mp4">Download the demo video</a>.
-  </video>
+  <div class="section-heading"><span class="section-number">01 / WATCH</span><h2>A little movie magic, with real words</h2></div>
+  <p class="lede">A speculative dub of familiar Star Wars moments, with B4-BL in place of R2’s original sounds. The scenes are a playful illustration of the language.</p>
+  <div class="video-frame">
+    <video class="demo-video" controls preload="none" poster="img/r2-demo-poster.jpg"
+           aria-label="B4-BL demo video with Star Wars footage">
+      <source src="video/r2-demo-540p.mp4" type="video/mp4">
+      <a href="video/r2-demo-540p.mp4">Download the demo video</a>.
+    </video>
+  </div>
+  <p class="media-caption"><span class="caption-dot" aria-hidden="true"></span> The droid dialogue is B4-BL. The footage is from Star Wars.</p>
 </section>
 
 <!-- ===================================================================== -->
-<!-- SECTION 1 — HEAR IT. Four prosodies, same sentence. Zero interaction  -->
-<!-- required. This is the hook; it must work before anything else loads.  -->
+<!-- SECTION 2 — HEAR IT. Four prosodies, same sentence. Zero interaction  -->
+<!-- required; the samples work before the interactive builder loads.      -->
 <!-- ===================================================================== -->
 <section id="hear" class="section">
-  <h2>Hear it</h2>
+  <div class="section-heading"><span class="section-number">02 / LISTEN</span><h2>Same words. Different feeling.</h2></div>
   <p class="lede">
     The same sentence — <strong>"Is your energy low?"</strong> — in four emotional
     registers. The words are identical; only the expressive prosody changes.
@@ -46,14 +85,14 @@
 </section>
 
 <!-- ===================================================================== -->
-<!-- SECTION 2 — SAY SOMETHING. The sentence builder.                      -->
+<!-- SECTION 3 — SAY SOMETHING. The sentence builder.                      -->
 <!-- Pick a grammar template, fill category-restricted slots, choose a      -->
 <!-- prosody, synthesize live in WebAudio. ~228k valid sentences, and      -->
 <!-- every one is guaranteed encodable because the slots come from the     -->
 <!-- real grammar.                                                         -->
 <!-- ===================================================================== -->
 <section id="say" class="section">
-  <h2>Say something</h2>
+  <div class="section-heading"><span class="section-number">03 / SPEAK</span><h2>Give the droid a line</h2></div>
   <p class="lede">
     Pick a sentence shape, then fill it. The dropdowns only offer words the grammar
     allows in that slot. This builder synthesizes <code>codec.encode</code> for
@@ -96,11 +135,11 @@
 </section>
 
 <!-- ===================================================================== -->
-<!-- SECTION 3 — HOW IT WORKS. Compositional phoneme space + vocabulary.   -->
+<!-- SECTION 4 — HOW IT WORKS. Compositional phoneme space + vocabulary.   -->
 <!-- Tables generated from language.json so they cannot drift.             -->
 <!-- ===================================================================== -->
 <section id="how" class="section">
-  <h2>How it works</h2>
+  <div class="section-heading"><span class="section-number">04 / EXPLORE</span><h2>How the sounds become words</h2></div>
 
   <h3>The sounds</h3>
   <p class="lede">
@@ -119,12 +158,12 @@
 </section>
 
 <!-- ===================================================================== -->
-<!-- SECTION 4 — THE PACKET. Annotated structure.                          -->
+<!-- SECTION 5 — THE PACKET. Annotated structure.                          -->
 <!-- No decoder in the browser: the current ambient model is 192 MiB.      -->
 <!-- explanatory, with a pre-rendered annotated spectrogram.               -->
 <!-- ===================================================================== -->
 <section id="packet" class="section">
-  <h2>Anatomy of a packet</h2>
+  <div class="section-heading"><span class="section-number">05 / UNDER THE HOOD</span><h2>When machines need certainty</h2></div>
   <p class="lede">
     Underneath the language is a transport: CRC32-protected packets with versioning,
     addressing, and sequence numbers.
@@ -157,6 +196,7 @@
     </figcaption>
   </figure>
 </section>
+</main>
 
 <footer class="footer">
   <p>
